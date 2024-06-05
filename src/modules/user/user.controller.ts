@@ -4,15 +4,17 @@ import userSchema from "./user.model"
 import { IuserCreaction } from "./user.interface";
 import {hashPassword, sendOtpEmail} from "./user.service"
 import { AppError } from "../../utils/appError";
+import { validateSignupUser } from "./user.validation";
 
 
 // Generate and send OTP to user email
 export const signupUser = (req: Request, res: Response, next: NextFunction) => {
-    // Destructer the user details from request body
-   const { name, email, password, confirmPassword, phone }: IuserCreaction = req.body;
-   // Check the required fields are present or not
-   if (!name || !email || !password || !confirmPassword || !phone) {
-    return next(new AppError("All fields are required", 400));
+   try {
+    // Validate the user details in validator function
+    validateSignupUser(req.body);
+    const { name, email, password, confirmPassword, phone} = req.body;
+   } catch (error) {
+    
    }
 };
 // Verify the OTP and create a new user
