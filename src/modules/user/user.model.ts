@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import {IUser}  from "./user.interface";
+import { IUser } from "./user.interface";
 
 export interface IuserModel extends IUser, Document {}
 
@@ -23,7 +23,7 @@ const userSchema: Schema<IuserModel> = new Schema(
     },
     phone: {
       type: String,
-      required: true
+      required: true,
     },
     role: {
       type: String,
@@ -31,9 +31,9 @@ const userSchema: Schema<IuserModel> = new Schema(
       default: "user",
     },
     avatar: {
-      public_id: String,
-      url: String,
-      default: "https://media.istockphoto.com/id/2041572395/vector/blank-avatar-photo-placeholder-icon-vector-illustration.jpg?s=612x612&w=0&k=20&c=wSuiu-si33m-eiwGhXiX_5DvKQDHNS--CBLcyuy68n0="
+      type: String,
+      default:
+        "https://media.istockphoto.com/id/2041572395/vector/blank-avatar-photo-placeholder-icon-vector-illustration.jpg?s=612x612&w=0&k=20&c=wSuiu-si33m-eiwGhXiX_5DvKQDHNS--CBLcyuy68n0=",
     },
   },
   {

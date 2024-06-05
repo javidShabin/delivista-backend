@@ -15,7 +15,7 @@ export const signupUser = async (
   try {
     // Validate the user details in validator function
     validateSignupUser(req.body);
-    const { name, email, password, confirmPassword, phone } = req.body;
+    const { name, email, password, phone } = req.body;
     // Check the user is already exist in database
     const existingUser = await userSchema.findOne({ email });
     if (existingUser) return next(new AppError("User already exists", 400));
