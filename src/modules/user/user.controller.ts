@@ -1,10 +1,20 @@
+import { Request, Response, NextFunction } from "express";
 import tempUserSchema from "./user.tempModel"
 import userSchema from "./user.model"
+import { IuserCreaction } from "./user.interface";
 import {hashPassword, sendOtpEmail} from "./user.service"
+import { AppError } from "../../utils/appError";
 
 
 // Generate and send OTP to user email
-export const generateOtp = (req: Request, res: Response) => {};
+export const signupUser = (req: Request, res: Response, next: NextFunction) => {
+    // Destructer the user details from request body
+   const { name, email, password, confirmPassword, phone }: IuserCreaction = req.body;
+   // Check the required fields are present or not
+   if (!name || !email || !password || !confirmPassword || !phone) {
+    return next(new AppError("All fields are required", 400));
+   }
+};
 // Verify the OTP and create a new user
 export const verifyOtpAndCreateUser = (req: Request, res: Response) => {};
 // Log in the user
