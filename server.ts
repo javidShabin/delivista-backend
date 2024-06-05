@@ -7,6 +7,7 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import { connectDb } from "./src/configs/connectDb";
+import app from "./src/app";
 
 const server = express();
 const PORT = 5000; // Server listening port
@@ -30,6 +31,8 @@ server.use(
 server.use(cookieParser()); // Parse cookies attached to client requests
 server.use(helmet()); // Secure HTTP headers to protect against common vulnerabilities
 server.use(express.json()); // Parse incoming JSON payloads into JavaScript objects
+
+server.use("/app", app)
 
 // Root route for server health check
 server.get("/", (req: Request, res: Response) => {
