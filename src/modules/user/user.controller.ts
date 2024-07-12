@@ -4,7 +4,7 @@ import userSchema from "./user.model";
 import { IuserCreaction } from "./user.interface";
 import { hashPassword, sendOtpEmail } from "./user.service";
 import { AppError } from "../../utils/appError";
-import { validateSignupUser } from "./user.validation";
+import { validateSignupUser, validateUserOTP } from "./user.validation";
 
 // Generate and send OTP to user email
 export const signupUser = async (
@@ -44,8 +44,31 @@ export const signupUser = async (
   }
 };
 // Verify the OTP and create a new user
-export const verifyOtpAndCreateUser = async (req: Request, res: Response) => {
-  
+export const verifyOtpAndCreateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Validate the OTP and user email in validator function
+    validateUserOTP(req.body);
+    // Destructer the emial and otp from request body
+    const { email, otp } = req.body;
+    // Find the temporary user usigng email
+    const tempUser = await tempUserSchema.findOne({email})
+    if (!tempUser) {
+      return next(new AppError("User already exists", 400))
+    }
+    // Compare the OTP 
+    if (tempUser.otp !== otp) {
+      return next(new AppError("invalid OTP", 400))
+    }
+    // Check the OTP expire or not
+    if (tempUser.otpExpires.getTime() < Date.now()) {
+      return next(new AppError("OTP has expired", 400))
+    }
+
+  } catch (error) {}
 };
 // Log in the user
 export const loginUser = (req: Request, res: Response) => {};

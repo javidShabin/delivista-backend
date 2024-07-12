@@ -34,3 +34,8 @@ export interface IuserCreaction {
   confirmPassword: string;
   phone: string;
 }
+// User login interface
+export interface IuserOTPverifying {
+  email: string;
+  otp: string;
+}
