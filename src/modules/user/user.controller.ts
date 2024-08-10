@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import tempUserSchema from "./user.tempModel";
 import userSchema from "./user.model";
-import { IuserCreaction } from "./user.interface";
 import { hashPassword, sendOtpEmail } from "./user.service";
 import { AppError } from "../../utils/appError";
 import { validateSignupUser, validateUserOTP } from "./user.validation";
@@ -67,6 +66,14 @@ export const verifyOtpAndCreateUser = async (
     if (tempUser.otpExpires.getTime() < Date.now()) {
       return next(new AppError("OTP has expired", 400))
     }
+    // Create and save new user
+    const newUser = new userSchema({
+      name: tempUser.name,
+      email: tempUser.email,
+      password: tempUser.password,
+      avatar: tempUser.avatar
+    })
+    await newUser.save()
 
   } catch (error) {}
 };
