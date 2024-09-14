@@ -44,7 +44,9 @@ export const signupUser = async (
   }
 };
 // Verify the OTP and create a new user
-export const verifyOtpAndCreateUser = (req: Request, res: Response) => {};
+export const verifyOtpAndCreateUser = async (req: Request, res: Response) => {
+  
+};
 // Log in the user
 export const loginUser = (req: Request, res: Response) => {};
 // Get users list

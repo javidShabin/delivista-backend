@@ -1,6 +1,7 @@
 import { IuserCreaction } from "./user.interface";
 import { AppError } from "../../utils/appError";
 
+// Validation for user signup
 export const validateSignupUser = (data: IuserCreaction) => {
     // Destructer the user details as data from interface
     const { name, email, password, confirmPassword, phone } = data
@@ -19,5 +20,4 @@ export const validateSignupUser = (data: IuserCreaction) => {
   if (password.length < 6) {
     throw new AppError("Password must be at least 6 characters", 400);
   }
-
 }
