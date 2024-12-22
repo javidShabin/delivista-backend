@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import { TempUser } from "../models/tempUserModel.js";
 import { User } from "../models/userModel.js";
 
+// User registration
 const userRegistration = async (req, res) => {
   const { email, password, conformPassword, name, phone, ...rest } = req.body;
 
@@ -74,6 +75,74 @@ const userRegistration = async (req, res) => {
     });
   }
 };
+// Verify the otp
+const verifyOtpAndCreateUser = async (req, res) => {
+  const { email, otp } = req.body;
+
+  // Check if required fields are missing
+  if (!email || !otp) {
+    return res.status(400).json({ message: "Email and OTP are required" });
+  }
+
+  try {
+    // Find the temporary user by email
+    const tempUser = await TempUser.findOne({ email });
+
+    // Check if user doesn't exist
+    if (!tempUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if OTP is invalid or expired
+    if (tempUser.otp !== otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+    if (tempUser.otpExpiresAt < Date.now()) {
+      return res.status(400).json({ message: "OTP has expired" });
+    }
+
+    // Create the actual user
+    const newUser = new User({
+      name: tempUser.name,
+      phone: tempUser.phone,
+      email: tempUser.email,
+      password: tempUser.password,
+    });
+
+    // Save new user to the database
+    await newUser.save();
+
+    // Generate the user token
+    const token = generateUserToken({
+      _id: newUser._id,
+      email: newUser.email,
+      role: "user",
+    });
+
+    // Set the token as a secure cookie
+    res.cookie("userToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Ensure cookie is secure only in production
+      sameSite: "None", // Ensure cross-site cookie is handled properly
+    });
+
+    // Remove the temporary user from the database after successful registration
+    await TempUser.deleteOne({ email });
+
+    // Send success response
+    return res.status(201).json({
+      success: true,
+      message: "User created successfully",
+    });
+  } catch (error) {
+    console.error("OTP verification error:", error); // Improved logging for debugging
+    return res.status(500).json({
+      message: "OTP verification failed",
+      error: error.message,
+    });
+  }
+};
 
 
-export default userRegistration;
+// Export the functions correctly
+export { userRegistration, verifyOtpAndCreateUser };
