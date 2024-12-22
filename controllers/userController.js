@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import { TempUser } from "../models/tempUserModel.js";
 import { User } from "../models/userModel.js";
+import { generateUserToken } from "../utils/token.js";
 
 // User registration
 const userRegistration = async (req, res) => {
