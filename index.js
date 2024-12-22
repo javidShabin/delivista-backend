@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDb } from "./config/db.js";
+import { apiRouter } from "./routes/index.js";
 
 
 
@@ -18,7 +19,8 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-
+// Api router
+app.use("/api",apiRouter)
 
 // Default route
 app.get("/", (req, res) => {
