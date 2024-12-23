@@ -5,8 +5,6 @@ const userAuth = async (req, res, next) => {
     // Get token from cookies
     const { userToken } = req.cookies;
 
-    console.log(userToken)
-
     // Check if any token exists
     if (!userToken) {
       return res
