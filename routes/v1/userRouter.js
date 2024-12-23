@@ -1,6 +1,7 @@
 import express from "express";
 import {
   ChangePassword,
+  forgotPassword,
   getAllUsers,
   updateUserProfile,
   userLogin,
@@ -8,6 +9,7 @@ import {
   userProfile,
   userRegistration,
   verifyOtpAndCreateUser,
+  verifyOtpAndResetPassword,
 } from "../../controllers/userController.js"; // Import the userRegistration function
 import { userAuth } from "../../middlewares/usetAuth.js";
 import { upload } from "../../middlewares/multer.js";
@@ -22,5 +24,7 @@ router.post("/user-logout", userLogout) // User logout handler clear the token f
 router.get("/user-profile", userAuth, userProfile) // Get user profile using user id
 router.put("/update-profile", userAuth, upload.single("image"), updateUserProfile) // Update user profile include the profile image
 router.put("/edit-password", ChangePassword) // Change the password check the email and change the passord
+router.post("/forgot-password", forgotPassword) // Forgot password function and send verification otp to the email
+router.post("/verify-reset-otp", verifyOtpAndResetPassword) // Check and verify the otp and change the password
 
 export const userRouter = router;

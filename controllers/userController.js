@@ -318,26 +318,136 @@ const ChangePassword = async (req, res) => {
       return res.status(400).json({ message: "Fields are required" });
     }
 
-    // Find the user once and check existence
-    const user = await User.findOne({ email });
-    if (!user) {
+    // Use findOneAndUpdate for efficiency (avoids an extra query)
+    const hashedPassword = await bcrypt.hash(password, 12); // Use a stronger salt
+
+    const updatedUser = await User.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true, runValidators: true } // Ensure the update is validated
+    );
+
+    if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
-
-    // Hash the new password
-    const hashedPassword = await bcrypt.hash(password, 10); // No need for genSalt here
-
-    // Update the user's password and save
-    user.password = hashedPassword;
-    await user.save();
 
     return res.status(200).json({
       message: "Password has been updated successfully",
     });
   } catch (error) {
-    console.error("Error while updating password:", error.message); // Log the error for debugging
+    console.error("Error while updating password:", error); // Log full error for debugging
     return res.status(500).json({
       message: "Error while updating password",
+      error: error.message,
+    });
+  }
+};
+
+// Forgot password - send OTP
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  try {
+    // Find the user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Generate OTP (6 digits)
+    const otp = Math.floor(100000 + Math.random() * 900000);
+
+    // Set up email transporter and send OTP
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Your OTP for Password Reset",
+      text: `Your OTP is ${otp}. Please verify to reset your password.`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    // Store OTP temporarily
+    const otpExpiresAt = Date.now() + 10 * 60 * 1000; // OTP expires in 10 minutes
+    await TempUser.findOneAndUpdate(
+      { email },
+      { otp, otpExpiresAt },
+      { upsert: true, new: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent to your email. Please verify within 10 minutes.",
+    });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    return res.status(500).json({
+      message: "Failed to send OTP. Please try again later.",
+      error: error.message,
+    });
+  }
+};
+// Verify OTP and reset password
+const verifyOtpAndResetPassword = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  // Check if fields are missing
+  if (!email || !otp || !newPassword) {
+    return res
+      .status(400)
+      .json({ message: "Email, OTP, and new password are required" });
+  }
+
+  try {
+    // Find the temporary user by email
+    const tempUser = await TempUser.findOne({ email });
+
+    // Check if user doesn't exist or OTP is invalid
+    if (!tempUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if OTP is invalid or expired
+    if (tempUser.otp !== otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+    if (tempUser.otpExpiresAt < Date.now()) {
+      return res.status(400).json({ message: "OTP has expired" });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10); // Default salt rounds
+
+    // Update user's password
+    const user = await User.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    // Remove the temporary OTP entry
+    await TempUser.deleteOne({ email });
+
+    return res.status(200).json({
+      success: true,
+      message: "Password has been reset successfully",
+    });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    return res.status(500).json({
+      message: "Failed to reset password. Please try again later.",
       error: error.message,
     });
   }
@@ -353,4 +463,6 @@ export {
   userProfile,
   updateUserProfile,
   ChangePassword,
+  forgotPassword,
+  verifyOtpAndResetPassword,
 };
