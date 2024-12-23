@@ -197,9 +197,35 @@ const getAllUsers = async (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     console.error("Error fetching users:", error);
-    res.status(500).json({ message: "Failed to fetch users. Please try again later." });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch users. Please try again later." });
+  }
+};
+// Logout user clear tocken from cookie
+const userLogout = async (req, res) => {
+  try {
+    res.clearCookie("userToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    return res
+      .status(200)
+      .json({ success: true, message: "User logged out successfully" });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "An error occurred during logout" });
   }
 };
 
 // Export the functions correctly
-export { userRegistration, verifyOtpAndCreateUser, userLogin, getAllUsers };
+export {
+  userRegistration,
+  verifyOtpAndCreateUser,
+  userLogin,
+  getAllUsers,
+  userLogout,
+};
