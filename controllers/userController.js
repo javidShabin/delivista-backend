@@ -452,6 +452,61 @@ const verifyOtpAndResetPassword = async (req, res) => {
     });
   }
 };
+// Delete user
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Ensure the user ID is valid before querying the database
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    // Use findByIdAndDelete to efficiently delete the user
+    const deletedUser = await User.findByIdAndDelete(id);
+
+    // Check if the user exists before deletion
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error); // Detailed error logging
+    return res.status(500).json({
+      success: false,
+      message: "Error deleting user",
+      error: error.message,
+    });
+  }
+};
+
+// Check user authorization
+const checkUser = async (req, res) => {
+  try {
+    const user = req.user; // Assume user is set from a previous auth middleware
+
+    // Check if the user is authorized or not
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "User not authorized" });
+    }
+
+    // If user is authorized
+    return res.status(200).json({ success: true, message: "User authorized" });
+  } catch (error) {
+    console.error("Error checking user:", error); // Detailed error logging
+    return res.status(500).json({
+      success: false,
+      message: "Error checking user authorization",
+      error: error.message,
+    });
+  }
+};
 
 // Export the functions correctly
 export {
@@ -465,4 +520,6 @@ export {
   ChangePassword,
   forgotPassword,
   verifyOtpAndResetPassword,
+  deleteUser,
+  checkUser,
 };

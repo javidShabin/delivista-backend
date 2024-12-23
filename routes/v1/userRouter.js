@@ -1,6 +1,8 @@
 import express from "express";
 import {
   ChangePassword,
+  checkUser,
+  deleteUser,
   forgotPassword,
   getAllUsers,
   updateUserProfile,
@@ -26,5 +28,7 @@ router.put("/update-profile", userAuth, upload.single("image"), updateUserProfil
 router.put("/edit-password", ChangePassword) // Change the password check the email and change the passord
 router.post("/forgot-password", forgotPassword) // Forgot password function and send verification otp to the email
 router.post("/verify-reset-otp", verifyOtpAndResetPassword) // Check and verify the otp and change the password
+router.delete("/delete-user", deleteUser) // Delete the user finding id
+router.get("/check-user", userAuth, checkUser)
 
 export const userRouter = router;
