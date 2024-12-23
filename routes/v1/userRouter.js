@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getAllUsers,
+  updateUserProfile,
   userLogin,
   userLogout,
   userProfile,
@@ -8,6 +9,7 @@ import {
   verifyOtpAndCreateUser,
 } from "../../controllers/userController.js"; // Import the userRegistration function
 import { userAuth } from "../../middlewares/usetAuth.js";
+import { upload } from "../../middlewares/multer.js";
 
 const router = express.Router();
 
@@ -17,5 +19,6 @@ router.post("/login-user", userLogin); // user login handler for post request
 router.get("/user-list", getAllUsers) // Get user list handler get all useres from the database
 router.post("/user-logout", userLogout) // User logout handler clear the token from the cookie
 router.get("/user-profile", userAuth, userProfile) // Get user profile using user id
+router.put("/update-profile", userAuth, upload.single("image"), updateUserProfile) // Update user profile include the profile image
 
 export const userRouter = router;

@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import { TempUser } from "../models/tempUserModel.js";
 import { User } from "../models/userModel.js";
 import { generateUserToken } from "../utils/token.js";
+import { cloudinaryInstance } from "../config/cloudinaryConfig.js";
 
 // User registration
 const userRegistration = async (req, res) => {
@@ -150,7 +151,9 @@ const userLogin = async (req, res) => {
 
     // Validate required fields
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password are required" });
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
     }
 
     // Fetch user with only necessary fields
@@ -197,7 +200,9 @@ const getAllUsers = async (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     console.error("Error fetching users:", error.message);
-    res.status(500).json({ message: "Failed to fetch users. Please try again later." });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch users. Please try again later." });
   }
 };
 // Logout user clear tocken from cookie
@@ -224,7 +229,9 @@ const userProfile = async (req, res) => {
     const { user } = req;
 
     // Fetch user profile, selecting only necessary fields
-    const userData = await User.findById(user.id).select("image name email phone _id");
+    const userData = await User.findById(user.id).select(
+      "image name email phone _id"
+    );
 
     if (!userData) {
       return res.status(404).json({ message: "User not found" });
@@ -238,10 +245,68 @@ const userProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching user profile:", error.message);
-    res.status(500).json({ message: "Failed to fetch user profile. Please try again later." });
+    res.status(500).json({
+      message: "Failed to fetch user profile. Please try again later.",
+    });
   }
 };
+// Uodate the user proile
+const updateUserProfile = async (req, res) => {
+  try {
+    // Get user from request
+    const { user } = req;
 
+    // Get data from req.body
+    const { name, email, phone } = req.body;
+
+    // Store update in a variable
+    const updateData = { name, email, phone };
+
+    // Declare a variable
+    let uploadResult;
+
+    // Add image file and update the image
+    if (req.file) {
+      try {
+        uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);
+
+        // Assign the uploaded image URL to the user's image field
+        updateData.image = uploadResult.secure_url;
+      } catch (uploadError) {
+        return res.status(500).json({
+          success: false,
+          message: "File upload failed",
+          error: uploadError.message,
+        });
+      }
+    }
+
+    // Update user
+    const updatedUser = await User.findByIdAndUpdate(user.id, updateData, {
+      new: true,
+    });
+
+    // Check if the user was updated
+    if (!updatedUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    // Send response
+    res.json({
+      success: true,
+      message: "User profile updated successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      message: "Error updating profile",
+      error: error.message,
+    });
+  }
+};
 
 // Export the functions correctly
 export {
@@ -250,5 +315,6 @@ export {
   userLogin,
   getAllUsers,
   userLogout,
-  userProfile
+  userProfile,
+  updateUserProfile,
 };
