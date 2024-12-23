@@ -307,6 +307,41 @@ const updateUserProfile = async (req, res) => {
     });
   }
 };
+// Forget password
+const ChangePassword = async (req, res) => {
+  try {
+    // Get data from req.body
+    const { email, password } = req.body;
+
+    // Check if the fields are provided
+    if (!email || !password) {
+      return res.status(400).json({ message: "Fields are required" });
+    }
+
+    // Find the user once and check existence
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(password, 10); // No need for genSalt here
+
+    // Update the user's password and save
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({
+      message: "Password has been updated successfully",
+    });
+  } catch (error) {
+    console.error("Error while updating password:", error.message); // Log the error for debugging
+    return res.status(500).json({
+      message: "Error while updating password",
+      error: error.message,
+    });
+  }
+};
 
 // Export the functions correctly
 export {
@@ -317,4 +352,5 @@ export {
   userLogout,
   userProfile,
   updateUserProfile,
+  ChangePassword,
 };
