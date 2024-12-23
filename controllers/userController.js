@@ -183,7 +183,6 @@ const userLogin = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 // Get all user list from database
 const getAllUsers = async (req, res) => {
   try {
@@ -201,7 +200,6 @@ const getAllUsers = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch users. Please try again later." });
   }
 };
-
 // Logout user clear tocken from cookie
 const userLogout = async (req, res) => {
   try {
@@ -220,6 +218,30 @@ const userLogout = async (req, res) => {
       .json({ success: false, message: "An error occurred during logout" });
   }
 };
+// Get user profile using user id
+const userProfile = async (req, res) => {
+  try {
+    const { user } = req;
+
+    // Fetch user profile, selecting only necessary fields
+    const userData = await User.findById(user.id).select("image name email phone _id");
+
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send the user profile details
+    res.json({
+      success: true,
+      message: "User profile fetched successfully",
+      user: userData, // Send user data in a more structured format
+    });
+  } catch (error) {
+    console.error("Error fetching user profile:", error.message);
+    res.status(500).json({ message: "Failed to fetch user profile. Please try again later." });
+  }
+};
+
 
 // Export the functions correctly
 export {
@@ -228,4 +250,5 @@ export {
   userLogin,
   getAllUsers,
   userLogout,
+  userProfile
 };
