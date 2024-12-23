@@ -175,7 +175,7 @@ const userLogin = async (req, res) => {
     res.cookie("userToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Use HTTPS in production
-      sameSite: "strict", // Prevent CSRF attacks
+      sameSite: "none", // Prevent CSRF attacks
       maxAge: 3600000, // 1 hour
     });
 
