@@ -146,62 +146,62 @@ const verifyOtpAndCreateUser = async (req, res) => {
 // Login function for user
 const userLogin = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { email, password } = req.body;
 
     // Validate required fields
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
     }
 
-    // Find the user by email and fetch only the necessary fields
+    // Fetch user with only necessary fields
     const user = await User.findOne({ email }).select("password _id");
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Compare the password asynchronously
+    // Validate password asynchronously
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Unauthorized access" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
     // Generate a secure token
     const token = generateUserToken(user._id);
 
-    // Set token as a secure, HTTP-only cookie
+    // Configure and set secure cookie
     res.cookie("userToken", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 3600000, // 1 hour in milliseconds
+      secure: process.env.NODE_ENV === "production", // Use HTTPS in production
+      sameSite: "strict", // Prevent CSRF attacks
+      maxAge: 3600000, // 1 hour
     });
 
-    // Send success response
-    res.status(200).json({ success: true, message: "User logged in" });
+    // Respond with success
+    res.status(200).json({ success: true, message: "Login successful" });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Failed to login user" });
+    console.error("Login error:", error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 // Get all user list from database
 const getAllUsers = async (req, res) => {
   try {
-    // Fetch all users from the database
-    const users = await User.find();
+    // Fetch all users with only necessary fields to optimize performance
+    const users = await User.find().select("_id name email phone image");
 
-    if (!users) {
-      return res.status(400).json({ message: "Useres not availbale" });
+    if (users.length === 0) {
+      return res.status(404).json({ message: "Users not available" });
     }
 
     // Respond with the list of users
     res.status(200).json(users);
   } catch (error) {
-    console.error("Error fetching users:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to fetch users. Please try again later." });
+    console.error("Error fetching users:", error.message);
+    res.status(500).json({ message: "Failed to fetch users. Please try again later." });
   }
 };
+
 // Logout user clear tocken from cookie
 const userLogout = async (req, res) => {
   try {
