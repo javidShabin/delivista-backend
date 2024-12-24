@@ -149,5 +149,13 @@ const adminProfile = async (req, res) => {
     });
   }
 };
+// Update the admin profile include the cloudinery and multer
+const updateAdminProfile = async (req, res) => {
+    try {
+        
+    } catch (error) {
+        
+    }
+}
 
-export { registerAdmin, loginAdmin, adminLogout, adminProfile };
+export { registerAdmin, loginAdmin, adminLogout, adminProfile, updateAdminProfile };
