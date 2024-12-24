@@ -1,3 +1,4 @@
+import { cloudinaryInstance } from "../config/cloudinaryConfig.js";
 import { Admin } from "../models/adminModel.js";
 import { generateAdminToken } from "../utils/token.js";
 import bcrypt from "bcrypt";
@@ -151,11 +152,61 @@ const adminProfile = async (req, res) => {
 };
 // Update the admin profile include the cloudinery and multer
 const updateAdminProfile = async (req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
-}
+  try {
+    // Get admin from request
+    const { admin } = req;
+    // Get updated data from request body
+    const { name, email, phone } = req.body;
+    // Store update in a variable
+    const updatedDate = { name, email, phone };
 
-export { registerAdmin, loginAdmin, adminLogout, adminProfile, updateAdminProfile };
+    // Declare a variable
+    let uploadResult;
+
+    // Add image file and update the image
+    if (req.file) {
+      try {
+        uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);
+
+        // Assign the uploaded image URL to the user's image field
+        updatedDate.image = uploadResult.secure_url;
+      } catch (uploadError) {
+        return res.status(500).json({
+          success: false,
+          message: "File upload failed",
+          error: uploadError.message,
+        });
+      }
+    }
+    // Update admin
+    const updatedAdmin = await Admin.findByIdAndUpdate(admin.id, updatedDate, {
+      new: true,
+    });
+    // Check if the user was updated
+    if (!updatedAdmin) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Admin not found" });
+    }
+    // Send response
+    res.json({
+      success: true,
+      message: "User profile updated successfully",
+      data: updatedAdmin,
+    });
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      message: "Error updating profile",
+      error: error.message,
+    });
+  }
+};
+
+export {
+  registerAdmin,
+  loginAdmin,
+  adminLogout,
+  adminProfile,
+  updateAdminProfile,
+};
