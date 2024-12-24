@@ -107,6 +107,23 @@ const loginAdmin = async (req, res) => {
     res.status(404).json({ message: "faild to admin login" });
   }
 };
+const adminLogout = async (req, res) => {
+  try {
+    res.clearCookie("adminToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    return res
+      .status(200)
+      .json({ success: true, message: "Admin logged out successfully" });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "An error occurred during logout" });
+  }
+};
 // Get admin profile
 const adminProfile = async (req, res) => {
   try {
@@ -114,17 +131,17 @@ const adminProfile = async (req, res) => {
     const { admin } = req;
     // Fetch admin profile, selecting only necessary field
     const adminData = await Admin.findById(admin.id).select(
-        "image name email phone _id"
-      );
-      if (!adminData) {
-          return res.status(404).json({ message: "Admin not found" });
-      }
-      // Send the user profile details
-      res.json({
-          success: true,
-          message: "Admin profile fetched successfully",
-          admin: adminData, // Send admin data in a more structured format
-        });
+      "image name email phone _id"
+    );
+    if (!adminData) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+    // Send the user profile details
+    res.json({
+      success: true,
+      message: "Admin profile fetched successfully",
+      admin: adminData, // Send admin data in a more structured format
+    });
   } catch (error) {
     console.error("Error fetching admin profile:", error.message);
     res.status(500).json({
@@ -133,4 +150,4 @@ const adminProfile = async (req, res) => {
   }
 };
 
-export { registerAdmin, loginAdmin, adminProfile };
+export { registerAdmin, loginAdmin, adminLogout, adminProfile };
