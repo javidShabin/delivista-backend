@@ -94,7 +94,7 @@ const loginAdmin = async (req, res) => {
       return res
         .status(401)
         .json({ success: false, message: "Password incorrect" });
-    }// Generate token
+    } // Generate token
     const token = generateAdminToken(isAdminExist._id);
     // Pass token as cookie the token will expire in one hour
     res.cookie("adminToken", token, {
@@ -107,5 +107,30 @@ const loginAdmin = async (req, res) => {
     res.status(404).json({ message: "faild to admin login" });
   }
 };
+// Get admin profile
+const adminProfile = async (req, res) => {
+  try {
+    // Get admin from request
+    const { admin } = req;
+    // Fetch admin profile, selecting only necessary field
+    const adminData = await Admin.findById(admin.id).select(
+        "image name email phone _id"
+      );
+      if (!adminData) {
+          return res.status(404).json({ message: "Admin not found" });
+      }
+      // Send the user profile details
+      res.json({
+          success: true,
+          message: "Admin profile fetched successfully",
+          admin: adminData, // Send admin data in a more structured format
+        });
+  } catch (error) {
+    console.error("Error fetching admin profile:", error.message);
+    res.status(500).json({
+      message: "Failed to fetch admin profile. Please try again later.",
+    });
+  }
+};
 
-export { registerAdmin, loginAdmin };
+export { registerAdmin, loginAdmin, adminProfile };
