@@ -5,10 +5,11 @@ import { upload } from "../../middlewares/multer.js";
 
 const router = express.Router();
 
-router.post("/sigup-admin", registerAdmin) // Route for admin registration
-router.post("/login-admin", loginAdmin) // Login the admin check the email and passowrd for login
-router.post("/admin-logout", adminLogout)// Logout the admin, clear the token from the cookie
-router.get("/admin-profile", adminAuth, adminProfile) // Get admin profile , fetch the admin profile data from admin id from adim requst
-router.put("/update-profile", adminAuth, upload.single("image"), updateAdminProfile) // Update admin profile including profile image also using cloudinery and bcrypt
+router.post("/signup-admin", registerAdmin); // Route for admin registration
+router.post("/login-admin", loginAdmin); // Route for admin login, checks email and password for authentication
+router.post("/admin-logout", adminLogout); // Route to log out the admin, clears the token from cookies
+router.get("/admin-profile", adminAuth, adminProfile); // Route to fetch admin profile data using admin ID from the request
+router.put("/update-profile", adminAuth, upload.single("image"), updateAdminProfile); // Route to update admin profile, including profile image using Cloudinary and bcrypt
+
 
 export const adminRouter = router
