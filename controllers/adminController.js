@@ -1,17 +1,18 @@
-import { Admin } from "../models/adminModel";
-import { generateAdminToken } from "../utils/token";
+import { Admin } from "../models/adminModel.js";
+import { generateAdminToken } from "../utils/token.js";
+import bcrypt from "bcrypt"
 
 // Register admin
 const registerAdmin = async (req, res) => {
     try {
       // Extract data from request body
-      const { email, password, confirmPassword, name, phone } = req.body;
+      const { email, password, conformPassword, name, phone } = req.body;
   
       // Basic validation
-      if (!email || !password || !confirmPassword) {
+      if (!email || !password || !conformPassword) {
         return res.status(400).json({ success: false, message: "All fields are required" });
       }
-      if (password !== confirmPassword) {
+      if (password !== conformPassword) {
         return res.status(400).json({ success: false, message: "Passwords do not match" });
       }
       if (password.length < 8) {
