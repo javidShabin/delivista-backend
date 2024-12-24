@@ -202,7 +202,14 @@ const updateAdminProfile = async (req, res) => {
     });
   }
 };
-
+// Change password for admin
+const changePassword = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
 export {
   registerAdmin,
   loginAdmin,
