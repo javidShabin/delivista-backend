@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+
 import { cloudinaryInstance } from "../config/cloudinaryConfig.js";
 import { Admin } from "../models/adminModel.js";
 import { generateAdminToken } from "../utils/token.js";
@@ -246,5 +246,4 @@ export {
   adminProfile,
   updateAdminProfile,
   changePassword,
-  forgotPassword,
 };
