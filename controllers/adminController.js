@@ -243,4 +243,5 @@ export {
   adminLogout,
   adminProfile,
   updateAdminProfile,
+  changePassword,
 };
