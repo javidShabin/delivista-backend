@@ -205,11 +205,38 @@ const updateAdminProfile = async (req, res) => {
 // Change password for admin
 const changePassword = async (req, res) => {
   try {
-    
+    // Get data from req.body
+    const { email, password } = req.body;
+    // Check if the required fields are provided
+    if (!email || !password) {
+      return res.status(400).json({ message: "Fielda are required" });
+    }
+
+    // Hash the new password using bcrypt
+    const hashedPassword = await bcrypt.hash(password, 12);
+    // Use findOneAndUpdate for efficiency
+    const updatedAdmin = await Admin.findByIdAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true, runValidators: true } // Ensure the update is validate
+    );
+
+    // Check hade the updated admin
+    if (!updatedAdmin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    return res.status(200).json({
+      message: "Password has been updated successfully",
+    });
   } catch (error) {
-    
+    console.error("Error while updating password:", error); // Log full error for debugging
+    return res.status(500).json({
+      message: "Error while updating password",
+      error: error.message,
+    });
   }
-}
+};
 export {
   registerAdmin,
   loginAdmin,
