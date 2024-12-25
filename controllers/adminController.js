@@ -1,3 +1,4 @@
+import nodemailer from "nodemailer";
 import { cloudinaryInstance } from "../config/cloudinaryConfig.js";
 import { Admin } from "../models/adminModel.js";
 import { generateAdminToken } from "../utils/token.js";
@@ -237,6 +238,7 @@ const changePassword = async (req, res) => {
     });
   }
 };
+
 export {
   registerAdmin,
   loginAdmin,
@@ -244,4 +246,5 @@ export {
   adminProfile,
   updateAdminProfile,
   changePassword,
+  forgotPassword,
 };
