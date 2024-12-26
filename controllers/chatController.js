@@ -16,3 +16,23 @@ export const storeMessage = async (userId, message, adminId = null) => {
     console.error("Error storing chat message:", error);
   }
 };
+// Controller to handle storing replies from admin
+export const storeReply = async (userId, replyMessage, adminId) => {
+  try {
+    // Find the latest message from this user that hasn't been answered yet
+    const chat = await chatModel.findOne({ userId, status: "pending" }).sort({
+      timestamp: -1,
+    });
+
+    if (chat) {
+      chat.replyMessage = replyMessage;
+      chat.status = "answered"; // Mark as answered
+      await chat.save();
+      console.log("Admin reply stored successfully");
+    } else {
+      console.log("No pending chat found for this user.");
+    }
+  } catch (error) {
+    console.error("Error storing admin reply:", error);
+  }
+};
