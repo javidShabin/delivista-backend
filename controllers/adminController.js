@@ -1,4 +1,3 @@
-
 import { cloudinaryInstance } from "../config/cloudinaryConfig.js";
 import { Admin } from "../models/adminModel.js";
 import { generateAdminToken } from "../utils/token.js";
@@ -238,6 +237,28 @@ const changePassword = async (req, res) => {
     });
   }
 };
+// Check admin authorization
+const checkAdmin = async (req, res) => {
+  try {
+    const admin = req.admin; // Assume admin is set from a previous auth middleware
+
+    // Check if the user is authorized or not
+    if (!admin) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Admin not authorized" });
+    }
+    // If admin is authorized
+    return res.status(200).json({ success: true, message: "Admin authorized" });
+  } catch (error) {
+    console.error("Error checking user:", error); // Detailed error logging
+    return res.status(500).json({
+      success: false,
+      message: "Error checking user authorization",
+      error: error.message,
+    });
+  }
+};
 
 export {
   registerAdmin,
@@ -246,4 +267,5 @@ export {
   adminProfile,
   updateAdminProfile,
   changePassword,
+  checkAdmin,
 };
