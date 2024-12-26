@@ -1,7 +1,10 @@
-import { Chat } from "../models/chatModel";
+import { Chat } from "../models/chatModel.js";
 
 // Controller to handle storing messages from users
 export const storeMessage = async (userId, message, adminId = null) => {
+  if (!userId || !adminId || !message) {
+    return res.send("the fileds is not found")
+  }
   try {
     const chat = new Chat({  // Change 'chatModel' to 'Chat'
       userId,
