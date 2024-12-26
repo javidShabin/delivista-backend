@@ -1,18 +1,18 @@
 import jwt from "jsonwebtoken";
 
-const adminAuth = async (req, res, next) => {
+const sellerAuth = async (req, res, next) => {
   try {
     // Get token from cookies
-    const { adminToken } = req.cookies;
+    const { sellerToken } = req.cookies;
     // Check if any token exists
-    if (!adminToken) {
+    if (!sellerAuth) {
       return res.status(401).json({
         success: false,
-        message: "Admin not authorized: No token provided",
+        message: "Seller not authorized: No token provided",
       });
     }
     // Verify token asynchronously
-    jwt.verify(adminToken, process.env.JWT_SECRET_KEY, (err, decoded) => {
+    jwt.verify(sellerToken, process.env.JWT_SECRET_KEY, (err, decoded) => {
       if (err) {
         return res.status(401).json({
           success: false,
@@ -24,7 +24,7 @@ const adminAuth = async (req, res, next) => {
       }
 
       // Store user information in the request object
-      req.admin = decoded;
+      req.seller = decoded;
       next();
     });
   } catch (error) {
@@ -37,4 +37,4 @@ const adminAuth = async (req, res, next) => {
   }
 };
 
-export { adminAuth };
+export { sellerAuth };
