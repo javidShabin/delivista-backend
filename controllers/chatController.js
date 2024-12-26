@@ -1,22 +1,22 @@
 import { Chat } from "../models/chatModel";
 
-
 // Controller to handle storing messages from users
 export const storeMessage = async (userId, message, adminId = null) => {
   try {
-    const chat = new chatModel({
+    const chat = new Chat({  // Change 'chatModel' to 'Chat'
       userId,
       message,
       adminId,
       status: adminId ? "answered" : "pending", // If admin has replied, set the status as 'answered'
     });
 
-    await Chat.save();
+    await chat.save();
     console.log("Chat message stored successfully");
   } catch (error) {
     console.error("Error storing chat message:", error);
   }
 };
+
 // Controller to handle storing replies from admin
 export const storeReply = async (userId, replyMessage, adminId) => {
   try {
@@ -37,6 +37,7 @@ export const storeReply = async (userId, replyMessage, adminId) => {
     console.error("Error storing admin reply:", error);
   }
 };
+
 // Controller to get all chats for a user (optional)
 export const getUserChats = async (userId) => {
   try {
