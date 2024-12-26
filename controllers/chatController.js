@@ -1,4 +1,5 @@
-import chatModel from "../models/chatModel";
+import { Chat } from "../models/chatModel";
+
 
 // Controller to handle storing messages from users
 export const storeMessage = async (userId, message, adminId = null) => {
@@ -10,7 +11,7 @@ export const storeMessage = async (userId, message, adminId = null) => {
       status: adminId ? "answered" : "pending", // If admin has replied, set the status as 'answered'
     });
 
-    await chat.save();
+    await Chat.save();
     console.log("Chat message stored successfully");
   } catch (error) {
     console.error("Error storing chat message:", error);
@@ -20,7 +21,7 @@ export const storeMessage = async (userId, message, adminId = null) => {
 export const storeReply = async (userId, replyMessage, adminId) => {
   try {
     // Find the latest message from this user that hasn't been answered yet
-    const chat = await chatModel.findOne({ userId, status: "pending" }).sort({
+    const chat = await Chat.findOne({ userId, status: "pending" }).sort({
       timestamp: -1,
     });
 
@@ -39,7 +40,7 @@ export const storeReply = async (userId, replyMessage, adminId) => {
 // Controller to get all chats for a user (optional)
 export const getUserChats = async (userId) => {
   try {
-    const chats = await chatModel.find({ userId }).sort({ timestamp: -1 });
+    const chats = await Chat.find({ userId }).sort({ timestamp: -1 });
     return chats;
   } catch (error) {
     console.error("Error fetching user chats:", error);
