@@ -36,3 +36,13 @@ export const storeReply = async (userId, replyMessage, adminId) => {
     console.error("Error storing admin reply:", error);
   }
 };
+// Controller to get all chats for a user (optional)
+export const getUserChats = async (userId) => {
+  try {
+    const chats = await chatModel.find({ userId }).sort({ timestamp: -1 });
+    return chats;
+  } catch (error) {
+    console.error("Error fetching user chats:", error);
+    return [];
+  }
+};
