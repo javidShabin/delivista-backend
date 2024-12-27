@@ -68,7 +68,41 @@ const registerSeller = async (req, res) => {
 // Login the seller
 const loginSeller = async (req, res) => {
   try {
-  } catch (error) {}
+    // Get values from req.body
+    const { name, email, password } = req.body;
+    // Check if required fields are present
+    if (!name || !email || !password) {
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required" });
+    }
+    // check the seller with email
+    const isSellerExist = await Seller.findOne({ email });
+    // If the seller not exists pass respones as error
+    if (!isSellerExist) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Seller does not exist" });
+    }
+    // Check the passowrd match or not
+    const passwordMatch = bcrypt.compareSync(password, isSellerExist.password);
+    if (!passwordMatch) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Password incorrect" });
+    }
+    // Generate token
+    const token = generateSellerToken(isSellerExist._id);
+    // Pass token as cookie
+    res.cookie("sellerToken", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    res.status(201).json({ success: true, message: "seller logged in" });
+  } catch (error) {
+    res.status(404).json({ message: "faild to admin login" });
+  }
 };
 // Logout the seller, (clear the cookie)
 const logoutSeller = async (req, res) => {

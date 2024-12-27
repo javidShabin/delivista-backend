@@ -95,9 +95,10 @@ const loginAdmin = async (req, res) => {
       return res
         .status(401)
         .json({ success: false, message: "Password incorrect" });
-    } // Generate token
+    } 
+    // Generate token
     const token = generateAdminToken(isAdminExist._id);
-    // Pass token as cookie the token will expire in one hour
+    // Pass token as cookie
     res.cookie("adminToken", token, {
       httpOnly: true,
       secure: true,
