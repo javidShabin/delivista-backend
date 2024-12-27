@@ -125,7 +125,27 @@ const logoutSeller = async (req, res) => {
 // Get seller profile
 const sellerProfile = async (req, res) => {
   try {
-  } catch (error) {}
+    // Get seller from request
+    const { seller } = req;
+    // Fetch seller profile, selecting only necessary field
+    const sellerData = await Seller.findById(seller.id).select(
+      "image name email phone _id"
+    );
+    if (!sellerData) {
+      return res.status(404).json({ message: "Seller not found" });
+    }
+    // Send the seller profile details
+    res.json({
+      success: true,
+      message: "Seller profile fetched successfully",
+      seller: sellerData,
+    });
+  } catch (error) {
+    console.error("Error fetching seller profile:", error.message);
+    res.status(500).json({
+      message: "Failed to fetch seller profile. Please try again later.",
+    });
+  }
 };
 // Update the seller profile include the cloudinery and multer
 const updateSellerProfile = async (req, res) => {

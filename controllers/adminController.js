@@ -138,7 +138,7 @@ const adminProfile = async (req, res) => {
     if (!adminData) {
       return res.status(404).json({ message: "Admin not found" });
     }
-    // Send the user profile details
+    // Send the admin profile details
     res.json({
       success: true,
       message: "Admin profile fetched successfully",
