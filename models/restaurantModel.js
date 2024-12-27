@@ -10,9 +10,9 @@ const restaurantSchema = new Schema(
       required: true,
       trim: true,
     },
-    owner: {
+    seller: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Assuming User model exists for owners
+      ref: "Seller", // Assuming Seller model exists
       required: true,
     },
     description: {
@@ -55,20 +55,20 @@ const restaurantSchema = new Schema(
           ],
           required: true,
         },
-        openingTime: { type: String, required: true }, // e.g., '09:00 AM'
-        closingTime: { type: String, required: true }, // e.g., '10:00 PM'
+        openingTime: { type: String, required: true },
+        closingTime: { type: String, required: true },
       },
     ],
     menu: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Menu", // Assuming Menu model exists
+        ref: "Menu",
       },
     ],
     reviews: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Review", // Assuming Review model exists
+        ref: "Review",
       },
     ],
     averageRating: {
@@ -82,8 +82,8 @@ const restaurantSchema = new Schema(
       default: false,
     },
     images: {
-      coverImage: { type: String, required: true }, // Cover image URL
-      gallery: [String], // Array of gallery image URLs
+      coverImage: { type: String, required: true },
+      gallery: [String],
     },
     createdAt: {
       type: Date,
@@ -99,7 +99,7 @@ const restaurantSchema = new Schema(
     },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
+    timestamps: true,
   }
 );
 
