@@ -41,7 +41,7 @@ const registerAdmin = async (req, res) => {
     const newAdmin = await Admin.create({
       email,
       password: hashedPassword,
-      name: name || null, // Optional fields
+      name: name || null,
       phone: phone || null,
     });
 
