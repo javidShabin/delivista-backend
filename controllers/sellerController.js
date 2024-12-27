@@ -107,7 +107,20 @@ const loginSeller = async (req, res) => {
 // Logout the seller, (clear the cookie)
 const logoutSeller = async (req, res) => {
   try {
-  } catch (error) {}
+    res.clearCookie("sellerToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    return res
+      .status(200)
+      .json({ success: true, message: "Seller logged out successfully" });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "An error occurred during logout" });
+  }
 };
 // Get seller profile
 const sellerProfile = async (req, res) => {
