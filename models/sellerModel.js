@@ -12,7 +12,7 @@ const sellerSchema = new mongoose.Schema({
   },
   role: { type: String, enum: ["customer", "admin", "seller"], default: "seller" },
 });
-
+6
 const Seller = mongoose.model("seller", sellerSchema);
 
 export { Seller };

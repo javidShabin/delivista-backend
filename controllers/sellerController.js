@@ -1,9 +1,9 @@
-import { Seller } from "../models/sellerModel";
+import { Seller } from "../models/sellerModel.js";
 import bcrypt from "bcrypt";
-import { generateSellerToken } from "../utils/token";
+import { generateSellerToken } from "../utils/token.js";
 
 // Register seller
-const registerSeller = async (req, res) => {
+export const registerSeller = async (req, res) => {
   try {
     // Extract data from request body
     const { email, password, conformPassword, name, phone } = req.body;
@@ -66,7 +66,7 @@ const registerSeller = async (req, res) => {
   }
 };
 // Login the seller
-const loginSeller = async (req, res) => {
+export const loginSeller = async (req, res) => {
   try {
     // Get values from req.body
     const { name, email, password } = req.body;
@@ -105,7 +105,7 @@ const loginSeller = async (req, res) => {
   }
 };
 // Logout the seller, (clear the cookie)
-const logoutSeller = async (req, res) => {
+export const logoutSeller = async (req, res) => {
   try {
     res.clearCookie("sellerToken", {
       httpOnly: true,
@@ -123,7 +123,7 @@ const logoutSeller = async (req, res) => {
   }
 };
 // Get seller profile
-const sellerProfile = async (req, res) => {
+export const sellerProfile = async (req, res) => {
   try {
     // Get seller from request
     const { seller } = req;
@@ -148,27 +148,17 @@ const sellerProfile = async (req, res) => {
   }
 };
 // Update the seller profile include the cloudinery and multer
-const updateSellerProfile = async (req, res) => {
+export const updateSellerProfile = async (req, res) => {
   try {
   } catch (error) {}
 };
 // Change the seller password
-const changePassword = async (req, res) => {
+export const changePassword = async (req, res) => {
   try {
   } catch (error) {}
 };
 // Check admin autharization
-const checkSeller = async (req, res) => {
+export const checkSeller = async (req, res) => {
   try {
   } catch (error) {}
-};
-
-export {
-  registerSeller,
-  loginSeller,
-  logoutSeller,
-  sellerProfile,
-  updateSellerProfile,
-  changePassword,
-  checkSeller,
 };
