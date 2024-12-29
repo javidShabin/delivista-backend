@@ -1,3 +1,4 @@
+// Restaurant Model
 import mongoose from "mongoose";
 
 const restaurantSchema = new mongoose.Schema({
@@ -5,14 +6,12 @@ const restaurantSchema = new mongoose.Schema({
   sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "Seller", required: true },
   description: { type: String, trim: true },
   address: { type: String, required: true },
-  categories: [{ type: String, required: true }], // e.g., 'Chinese', 'Fast Food'
-  contact: {
-    phone: { type: String, required: true, match: [/^\d{10}$/, "Phone number must be 10 digits"] },
-    email: { type: String, match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"] },
-  },
+  categories: { type: String, required: true },
+  phone: { type: String, required: true, match: [/^\d{10}$/, "Phone number must be 10 digits"] },
+  email: { type: String, match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"] },
   openHours: {
     type: Map,
-    of: String, // e.g., { Monday: "9:00 AM - 10:00 PM" }
+    of: String,
   },
   isOpen: { type: Boolean, default: false },
   image: {
