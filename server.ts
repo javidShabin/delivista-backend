@@ -1,17 +1,17 @@
 import dotenv from "dotenv";
 dotenv.config();
-import express, { Request, Response } from 'express';
+import express, { Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
-import { connectDb } from './src/configs/connectDb';
+import { connectDb } from "./src/configs/connectDb";
 
 const app = express();
 const PORT = 5000;
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
+  windowMs: 15 * 60 * 1000,
   max: 100,
   message: "Too many requests from this IP, please try again later.",
 });
