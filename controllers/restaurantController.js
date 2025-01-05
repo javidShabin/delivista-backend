@@ -80,3 +80,20 @@ export const createRestaurant = async (req, res) => {
     res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
+
+export const getRestaurantById = async (req, res) => {
+  try {
+    // Get the id from req
+    const restautantId = req.params.id;
+
+    // Find the restaurant details using the id
+    const restaurant = await Restaurant.findById(restautantId);
+    // Check the resstauratn available in the id
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+    res.status(200).json(restaurant);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
