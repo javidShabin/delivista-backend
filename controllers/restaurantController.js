@@ -81,6 +81,18 @@ export const createRestaurant = async (req, res) => {
   }
 };
 
+export const getAllRestaurant = async (req, res) => {
+  try {
+    // Get the all restaratn list from data base
+    const restaurants = await Restaurant.find({});
+    res
+      .status(200)
+      .json({ success: true, message: "Find the resuataurants", restaurants });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const getRestaurantById = async (req, res) => {
   try {
     // Get the id from req
