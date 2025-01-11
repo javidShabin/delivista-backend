@@ -195,24 +195,37 @@ export const getUserProfileById = async (
       return next(new AppError("User not found", 404));
     }
     // Return the user profile
-    res.status(200).json({userProfile})
+    res.status(200).json({ userProfile });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 // Update user profile by user ID
-export const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
+export const updateUserProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     // Get user Id form req.user
-    const id = req.user?.id
-    console.log(req.user)
+    const id = req.user?.id;
+    // Check user Id present or not
     if (!id) {
-      return next(new AppError("Unauthorized access", 401))
+      return next(new AppError("Unauthorized access", 401));
     }
+
+    // Extract updated fields from request body
+    const { name, email, phone, avatar } = req.body;
+    // Prepare the update date
+    const updateUserData = {
+      name,
+      email,
+      phone,
+      avatar
+    }
+
     
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 };
 // Forgot password
 export const forgotPassword = (req: Request, res: Response) => {};
