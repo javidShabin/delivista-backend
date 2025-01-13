@@ -5,6 +5,7 @@ export interface ISeller {
   password: string;
   phone: string;
   role: "seller";
+  coverImage?: string;
   avatar?: {
     public_id: string;
     url: string;
@@ -20,6 +21,7 @@ export interface ITempSeller {
   otp: string;
   otpExpires: Date;
   role: "seller";
+  coverImage?: string;
   avatar?: {
     public_id: string;
     url: string;
