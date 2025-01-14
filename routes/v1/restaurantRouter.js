@@ -17,6 +17,6 @@ router.post(
 );
 router.get("/getAll-restaurants", getAllRestaurant);
 router.get("/getRestaurant-byId/:id", getRestaurantById);
-router.put("/update-restaurnat/:id", updateRestaurant)
+router.put("/update-restaurant/:id", updateRestaurant)
 
 export const restaurantRouter = router;
