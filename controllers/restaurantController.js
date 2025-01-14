@@ -109,3 +109,22 @@ export const getRestaurantById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// Upddate the restaurant 
+export const updateRestaurant = async (req, res) => {
+  // Get the restaurant id from req.params
+  const restaurantId = req.params.id
+  try {
+    if (!restaurantId) {
+      res.status(404).json({message: "The resraurant Id is required"})
+    }
+    // Destructure all needed fields from reql.body
+    const {rating, name, location, cuisine, isOpen} = req.body
+    // Store the updated datas to a variable
+    const updateData = {rating, name, location, cuisine, isOpen}
+
+    console.log(updateData)
+
+  } catch (error) {
+    
+  }
+}
