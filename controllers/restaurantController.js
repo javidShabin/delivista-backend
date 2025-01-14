@@ -109,22 +109,56 @@ export const getRestaurantById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-// Upddate the restaurant 
+// Upddate the restaurant
 export const updateRestaurant = async (req, res) => {
   // Get the restaurant id from req.params
-  const restaurantId = req.params.id
+  const restaurantId = req.params.id;
   try {
     if (!restaurantId) {
-      res.status(404).json({message: "The resraurant Id is required"})
+      res.status(404).json({ message: "The resraurant Id is required" });
     }
     // Destructure all needed fields from reql.body
-    const {rating, name, location, cuisine, isOpen} = req.body
+    const { rating, name, location, cuisine, isOpen } = req.body;
     // Store the updated datas to a variable
-    const updateData = {rating, name, location, cuisine, isOpen}
-
-    console.log(updateData)
-
+    const updateData = { rating, name, location, cuisine, isOpen };
+    // Declare a empty variable for store couldinery value storing
+    let uploadResult;
+    // Add image file and update the image
+    if (req.file) {
+      try {
+        uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);
+        // Assign the uploaded image URL to the restarant image field
+        updateData.image = uploadResult.secure_url;
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          message: "File upload failed",
+          error: uploadError.message,
+        });
+      }
+    }
+    // Update the restaurnt
+    const updateRestaurant = await Restaurant.findByIdAndUpdate(
+      restaurantId,
+      updateData,
+      { new: true }
+    );
+    if (!updateRestaurant) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Restaurant not found" });
+    }
+    // Send the response as a json
+    res.json({
+      success: true,
+      message: "Update restaurant successfully",
+      data: updateRestaurant,
+    });
   } catch (error) {
-    
+    res.status(401).json({
+      success: false,
+      message: "Error updateing profile",
+      error: error.message,
+    });
   }
-}
+};
