@@ -209,3 +209,14 @@ export const getAllAddresses = async (
         next(error);
     }
 };
+
+// Get isDefault address details
+export const getAddressByStatus = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.user?.id
+        const addressId = req.params.addressId
+        
+    } catch (error) {
+console.log(error)
+    }
+}
