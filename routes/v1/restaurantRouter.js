@@ -5,6 +5,7 @@ import {
   createRestaurant,
   getAllRestaurant,
   getRestaurantById,
+  updateRestaurant,
 } from "../../controllers/restaurantController.js";
 const router = express.Router();
 
@@ -16,5 +17,6 @@ router.post(
 );
 router.get("/getAll-restaurants", getAllRestaurant);
 router.get("/getRestaurant-byId/:id", getRestaurantById);
+router.put("/update-restaurnat/:id", updateRestaurant)
 
 export const restaurantRouter = router;
