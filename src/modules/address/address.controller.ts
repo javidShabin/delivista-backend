@@ -210,13 +210,36 @@ export const getAllAddresses = async (
     }
 };
 
-// Get isDefault address details
-export const getAddressByStatus = async (req: Request, res: Response, next: NextFunction) => {
+// Get default address details
+export const getAddressByStatus = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
-        const userId = req.user?.id
-        const addressId = req.params.addressId
-        
+      const customerId = req.user?.id;
+  
+      if (!customerId) {
+        return next(new AppError("Unauthorized: customerId missing", 401));
+      }
+  
+      // Find the default address
+      const defaultAddress = await addressSchema.findOne({
+        customerId,
+        isDefault: true,
+      });
+  
+      if (!defaultAddress) {
+        return next(new AppError("No default address found", 404));
+      }
+  
+      res.status(200).json({
+        success: true,
+        message: "Default address fetched successfully",
+        data: defaultAddress,
+      });
     } catch (error) {
-console.log(error)
+      next(error);
     }
-}
+  };
+  

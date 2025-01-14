@@ -10,6 +10,6 @@ router.put("/update-address/:addressId", authenticate, authorize("customer"), up
 router.delete("/delete-address/:addressId", authenticate,authorize("customer"), deleteAddress)
 router.put("/default-updating/:addressId", authenticate, authorize("customer"), setDefaultAddress)
 router.get("/all-address", authenticate, authorize("customer"), getAllAddresses)
-router.patch("/status-address/:addressId", authenticate, authorize("customer"), getAddressByStatus)
+router.get("/status-address", authenticate, authorize("customer"), getAddressByStatus)
 
 export default router;
