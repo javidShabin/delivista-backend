@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import tempUserSchema from "./user.tempModel";
 import userSchema from "./user.model";
-import { hashPassword, sendOtpEmail } from "./user.service";
+import { comparePassword, hashPassword, sendOtpEmail } from "./user.service";
 import { AppError } from "../../utils/appError";
 import {
   validateSignupUser,
@@ -130,6 +130,9 @@ export const loginUser = async (
     if (!isUserExist) {
       return next(new AppError("User does not exist", 401));
     }
+    // Compare the user password
+    const isPasswordCorrect = comparePassword(password, isUserExist.password)
+    
   } catch (error) {}
 };
 // Get users list

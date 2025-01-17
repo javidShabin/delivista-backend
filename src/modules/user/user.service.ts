@@ -6,6 +6,11 @@ export const hashPassword = async (password: string) => {
   return bcrypt.hash(password, 10);
 };
 
+// Compare the user password using bcrypt
+export const comparePassword = async (password: string, userPassword: string) => {
+  return bcrypt.compareSync(password, userPassword)
+}
+
 // Sends an OTP email to the specified address
 export const sendOtpEmail = async (
   email: string,
