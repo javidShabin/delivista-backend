@@ -3,7 +3,11 @@ import tempUserSchema from "./user.tempModel";
 import userSchema from "./user.model";
 import { hashPassword, sendOtpEmail } from "./user.service";
 import { AppError } from "../../utils/appError";
-import { validateSignupUser, validateUserOTP } from "./user.validation";
+import {
+  validateSignupUser,
+  validateUserLogin,
+  validateUserOTP,
+} from "./user.validation";
 import { generateToken } from "../../utils/generateToken";
 
 // Generate and send OTP to user email
@@ -111,12 +115,22 @@ export const verifyOtpAndCreateUser = async (
 };
 
 // Log in the user
-export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+export const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-  
-  } catch (error) {
-    
-  }
+    // Validate the user login details
+    validateUserLogin(req.body);
+    // Get the email and password from req.body
+    const { email, password } = req.body;
+    // Check the user is exist
+    const isUserExist = await userSchema.findOne({ email });
+    if (!isUserExist) {
+      return next(new AppError("User does not exist", 401));
+    }
+  } catch (error) {}
 };
 // Get users list
 export const getAllUsers = (req: Request, res: Response) => {};
