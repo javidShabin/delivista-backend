@@ -131,9 +131,32 @@ export const loginUser = async (
       return next(new AppError("User does not exist", 401));
     }
     // Compare the user password
-    const isPasswordCorrect = comparePassword(password, isUserExist.password)
-    
-  } catch (error) {}
+    const isPasswordCorrect = await comparePassword(
+      password,
+      isUserExist.password
+    );
+    if (!isPasswordCorrect) {
+      return next(new AppError("Invalid credentials", 401));
+    }
+    // Generate a token for the user
+    const token = generateToken({
+      id: isUserExist._id.toString(),
+      email: isUserExist.email,
+      role: isUserExist.role,
+    });
+    // Set the user token to cookie
+    res.cookie("userToken", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+    res.status(201).json({
+      success: true,
+      message: "User logged in successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 // Get users list
 export const getAllUsers = (req: Request, res: Response) => {};
