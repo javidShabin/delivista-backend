@@ -55,3 +55,5 @@ const tempSellerSchema: Schema<ITempSellerModel> = new Schema(
     timestamps: true,
   }
 );
+
+export default mongoose.model<ITempSeller>("TempSeller", tempSellerSchema);
