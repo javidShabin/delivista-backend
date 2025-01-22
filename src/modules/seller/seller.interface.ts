@@ -41,3 +41,8 @@ export interface IsellerOTPverifying {
   email: string;
   otp: string;
 }
+// Seller login interface
+export interface IsellerLogin {
+  email: string;
+  password: string;
+}
