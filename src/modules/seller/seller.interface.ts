@@ -36,4 +36,8 @@ export interface IsellerCreation {
   confirmPassword: string;
   phone: string;
 }
-
+// Seller otp verifying interface
+export interface IsellerOTPverifying {
+  email: string;
+  otp: string;
+}
