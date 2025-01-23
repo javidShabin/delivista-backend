@@ -4,16 +4,86 @@ import { handleAvatarUpload } from "./rest.service";
 import { AppError } from "../../utils/appError";
 import { validateRestaurantCreation } from "./rest.validation";
 
-// Get all restaurants
-// Get verified restaurants
-// Verification restaurant for admin
-// Get restaurant by ID
-// Get top reated restaurant
-// Filter location based
-// Get restaurant statitics
-// Ge restarant by seller ID
-// Filter restaurant by menu
-// Toggle restaurant status for seller
 // Create restaurant
+export const createRestaurant = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+
+// Get all restaurants
+export const getAllRestaurants = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+
+// Get verified restaurants
+export const getVerifiedRestaurants = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+
+// Verification restaurant for admin
+export const adminVerifyingRestaurant = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+
+// Get restaurant by ID
+export const getRestaurant = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+
+// Filter location based
+export const getRestaurantBylocation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+
+// Get restaurant statistics for admin and seller
+export const getStatistics = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+
+// Get restarant by seller ID for seller
+export const getRestaurantBySeller = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+
+// Filter restaurant by menu
+export const getRestaurantByMenu = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+
+// Toggle restaurant status for seller (open or close)
+export const toggleRestaurantStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+
 // Update restaurant
-// Delete restaurant
+export const updateRestaurant = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+
+// Delete restaurant (forAdmin)
+export const deleteRestaurant = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
