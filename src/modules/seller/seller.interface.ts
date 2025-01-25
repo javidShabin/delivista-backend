@@ -28,3 +28,12 @@ export interface ITempSeller {
   };
   createdAt: Date;
 }
+// Seller signup interface
+export interface IsellerCreation {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  phone: string;
+}
+
