@@ -163,3 +163,22 @@ export const loginUser = async (
     next(error);
   }
 };
+
+// Logout the user , clear cookie
+export const logoutUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Clear the token from cookie
+    res.clearCookie("userToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+    res.status(200).json({ message: "User logged out successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
