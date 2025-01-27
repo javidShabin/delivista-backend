@@ -9,6 +9,7 @@ import {
 } from "./auth.validation";
 import { generateOTP, hashPassword } from "./auth.service";
 import { sendOtpEmail } from "../../shared/email/send.mail";
+import { generateToken } from "../../utils/generateToken";
 
 // Generate and send OTP to user email
 // Send OTP using node mailer to user email
@@ -74,10 +75,8 @@ export const verifyOtpandCreateUser = async (
     validateUserOTPandEmail(req.body);
     // Destructer OTP and email from request body
     const { otp, email } = req.body;
-    // Check if the otp and emial is present ot not
-    if (!email || !otp) {
-      throw new AppError("Email or OTP is missing or invalid", 400);
-    }
+    console.log(otp);
+
     // Check if the user exists as a temporary user
     const tempUser = await tempAuthSchema.findOne({ email });
     if (!tempUser) {
@@ -102,5 +101,23 @@ export const verifyOtpandCreateUser = async (
       avatar: tempUser.avatar,
     });
     await newUser.save();
-  } catch (error) {}
+    //Token creation
+    const token = generateToken({
+      id: newUser.id,
+      email: newUser.email,
+      role: newUser.role,
+    });
+    res.cookie("userToken", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+    await tempAuthSchema.deleteOne({ email });
+    res.status(201).json({
+      success: true,
+      message: "User created successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
 };

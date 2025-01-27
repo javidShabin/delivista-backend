@@ -26,14 +26,6 @@ const tempUserSchema: Schema<ITempUserModel> = new Schema(
       type: String,
       required: true,
     },
-    otp: {
-      type: String,
-      required: true,
-    },
-    otpExpires: {
-      type: Date,
-      required: true,
-    },
     role: {
       type: String,
       enum: ["customer", "admin", "seller"],
