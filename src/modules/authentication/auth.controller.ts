@@ -7,7 +7,7 @@ import {
   validateUserLogin,
   validateUserOTPandEmail,
 } from "./auth.validation";
-import { generateOTP, hashPassword } from "./auth.service";
+import { comparePassword, generateOTP, hashPassword } from "./auth.service";
 import { sendOtpEmail } from "../../shared/email/send.mail";
 import { generateToken } from "../../utils/generateToken";
 
@@ -117,6 +117,48 @@ export const verifyOtpandCreateUser = async (
       success: true,
       message: "User created successfully",
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Login user , compare hashed password
+export const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Validate the user details
+    validateUserLogin(req.body);
+    // Destructer email and password
+    const { email, password } = req.body;
+    // FInd the user by email
+    const isUser = await authSchema.findOne({ email });
+    if (!isUser) {
+      throw new AppError("User does not exist with this email", 400);
+    }
+    // Compare password
+    const isMatch = await comparePassword(password, isUser.password);
+
+    // If password does not match, throw an error
+    if (!isMatch) {
+      throw new AppError("Invalid password", 401);
+    }
+
+    // Token creation
+    const token = generateToken({
+      id: isUser.id,
+      email: isUser.email,
+      role: isUser.role,
+    });
+    // Send the token to cookie
+    res.cookie("userToken", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+    res.status(200).json({ message: "User logged in successfully" });
   } catch (error) {
     next(error);
   }
