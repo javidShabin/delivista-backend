@@ -111,8 +111,76 @@ export const updateCart = async (
   next: NextFunction
 ) => {
   try {
-  } catch (error) {}
+    // Get user id from authentication
+    const userId = req.user?.id;
+    if (!userId) {
+      return next(new AppError("Unauthorized", 401));
+    }
+
+    // Get the menu id and action from request body
+    const { menuId, action } = req.body;
+    
+    // Check if menu id and action are present
+    if (!menuId) {
+      return next(new AppError("Menu ID is required", 400));
+    }
+    
+    if (!action || !['increment', 'decrement'].includes(action)) {
+      return next(new AppError("Action must be 'increment' or 'decrement'", 400));
+    }
+
+    // Find the user's cart
+    const cart = await cartSchema.findOne({ customerId: userId });
+    if (!cart) {
+      return next(new AppError("Cart not found", 404));
+    }
+
+    // Check if the item exists in the cart
+    const itemIndex = cart.items.findIndex(
+      (item: any) => item.menuId.toString() === menuId.toString()
+    );
+
+    if (itemIndex === -1) {
+      return next(new AppError("Menu item not found in cart", 404));
+    }
+
+    const item = cart.items[itemIndex];
+    const oldTotal = item.price * item.quantity;
+
+    // Update quantity based on action
+    if (action === 'increment') {
+      item.quantity += 1;
+    } else if (action === 'decrement') {
+      if (item.quantity <= 1) {
+        return next(new AppError("Quantity cannot be less than 1", 400));
+      }
+      item.quantity -= 1;
+    }
+
+    // Calculate new total for this item
+    const newTotal = item.price * item.quantity;
+    
+    // Update cart total price
+    cart.totalPrice = cart.totalPrice - oldTotal + newTotal;
+
+    // Ensure totalPrice doesn't go negative
+    if (cart.totalPrice < 0) {
+      cart.totalPrice = 0;
+    }
+
+    // Save updated cart
+    const updatedCart = await cart.save();
+
+    res.status(200).json({
+      message: `Item quantity ${action === 'increment' ? 'increased' : 'decreased'} successfully`,
+      cart: updatedCart,
+    });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
 };
+
 
 // Delete item from the cart
 export const deleteFromCart = async (
