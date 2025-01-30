@@ -1,5 +1,7 @@
 import { mailTransporter } from "./../../configs/transportMail";
+import cloudinary from "../../configs/cloudinary";
 import bcrypt from "bcrypt";
+import { AppError } from "../../utils/appError";
 
 // Hashes a plain text password with a salt round of 10
 export const hashPassword = async (password: string) => {
@@ -7,9 +9,12 @@ export const hashPassword = async (password: string) => {
 };
 
 // Compare the user password using bcrypt
-export const comparePassword = async (password: string, userPassword: string) => {
-  return bcrypt.compareSync(password, userPassword)
-}
+export const comparePassword = async (
+  password: string,
+  userPassword: string
+) => {
+  return bcrypt.compareSync(password, userPassword);
+};
 
 // Sends an OTP email to the specified address
 export const sendOtpEmail = async (
@@ -23,4 +28,15 @@ export const sendOtpEmail = async (
     text: `Your OTP is ${otp}. It expires in 10 minutes.`,
   };
   await mailTransporter.sendMail(mailOptions); // Send the email using the configured transporter
+};
+
+// Handles the avatar upload process using Cloudinary
+export const handleAvatarUpload = async (file: any) => {
+  try {
+    const uploadResult = await cloudinary.uploader.upload(file.path);
+    // Store the image url to update user data
+    return uploadResult.secure_url;
+  } catch (error) {
+    throw new AppError("Failed to upload avatar image", 500);
+  }
 };

@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import tempAdminSchema from "./admin.tempModel";
 import adminSchema from "./admin.model";
-import { comparePassword, hashPassword, sendOtpEmail } from "./admin.service";
+import {
+  comparePassword,
+  handleAvatarUpload,
+  hashPassword,
+  sendOtpEmail,
+} from "./admin.service";
 import { AppError } from "../../utils/appError";
 import { generateToken } from "../../utils/generateToken";
 import cloudinary from "../../configs/cloudinary";
@@ -186,4 +191,30 @@ export const getAdminProfile = async (
   } catch (error) {
     next(error);
   }
+};
+
+// Update the admin profile
+export const updateAdminProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Get user Id form req.user
+    const id = req.user?.id;
+    // Check user Id present or not
+    if (!id) {
+      return next(new AppError("Unauthorized access", 401));
+    }
+    // Extract the admin details from request body
+    const { name, email, phone, avatar } = req.body;
+    // Prepare the update object
+    const updateData: any = { name, email, phone, avatar };
+    // Check if an avatar file is uploaded
+    if (req.file) {
+      let adminAvatar = await handleAvatarUpload(req.file); // Handler from admin.service.ts
+      // Update the avatar URL in the update object
+      updateData.avatar = adminAvatar;
+    }
+  } catch (error) {}
 };

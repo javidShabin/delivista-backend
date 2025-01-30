@@ -6,6 +6,7 @@ import {
   getAdminProfile,
   loginAdmin,
   signupAdmin,
+  updateAdminProfile,
   verifyAdminOTP,
 } from "./admin.controller";
 const router = express.Router();
@@ -18,5 +19,13 @@ router.post("/verify-admin-otp", verifyAdminOTP);
 router.post("/admin-login", loginAdmin);
 // Admin profile using authentication and authorization
 router.get("/admin-profile", authenticate, authorize("admin"), getAdminProfile);
+// Admin profile update and upload profile image
+router.patch(
+  "/admin-profile-update",
+  authenticate,
+  authorize("admin"),
+  upload.single("avatar"),
+  updateAdminProfile
+);
 
 export default router;
