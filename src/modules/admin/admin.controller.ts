@@ -156,3 +156,24 @@ export const loginAdmin = async (
     next(error);
   }
 };
+
+// Get the admin profile
+export const getAdminProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Get the admin ID from authenticated user
+    const adminId = req.user?.id;
+    // Check if the admin ID is provided
+    if (!adminId) {
+      return next(new AppError("Admin ID is required", 400));
+    }
+    // Find the admin by ID
+    const admin = await adminSchema.findById(adminId).select("-password");
+    console.log(admin)
+  } catch (error) {
+    
+  }
+}
