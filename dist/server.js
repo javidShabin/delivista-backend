@@ -9,17 +9,17 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
+// import rateLimit from "express-rate-limit";
 const connectDb_1 = require("./src/configs/connectDb");
 const app_1 = __importDefault(require("./src/app"));
 const server = (0, express_1.default)();
 const PORT = 5000; // Server listening port
 // Rate limiter configuration
-const limiter = (0, express_rate_limit_1.default)({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100,
-    message: "Too many requests from this IP, please try again later.",
-});
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100,
+//   message: "Too many requests from this IP, please try again later.",
+// });
 // Enable CORS for deployed frontend
 server.use((0, cors_1.default)({
     origin: ["https://delivista-customer-page.vercel.app", true], // Your Vercel frontend
@@ -31,7 +31,7 @@ server.use((0, cors_1.default)({
 server.use((0, cookie_parser_1.default)());
 server.use((0, helmet_1.default)());
 server.use(express_1.default.json());
-server.use(limiter);
+// server.use(limiter);
 // Use app routes under /app
 server.use("/app", app_1.default);
 // Root route

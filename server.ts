@@ -5,7 +5,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
-import rateLimit from "express-rate-limit";
+// import rateLimit from "express-rate-limit";
 import { connectDb } from "./src/configs/connectDb";
 import app from "./src/app";
 
@@ -13,11 +13,11 @@ const server = express();
 const PORT = 5000; // Server listening port
 
 // Rate limiter configuration
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
-  message: "Too many requests from this IP, please try again later.",
-});
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100,
+//   message: "Too many requests from this IP, please try again later.",
+// });
 
 
 // Enable CORS for deployed frontend
@@ -34,7 +34,7 @@ server.use(
 server.use(cookieParser());
 server.use(helmet());
 server.use(express.json());
-server.use(limiter);
+// server.use(limiter);
 // Use app routes under /app
 server.use("/app", app);
 
