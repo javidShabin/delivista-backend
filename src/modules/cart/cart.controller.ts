@@ -276,21 +276,27 @@ export const getCartBySellerId = async (
 
 // ********************* Remove cart ***************************
 // remove the cart
+// remove the cart
 export const deleteCart = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const userId = req.user?.id
-    const isCart = await cartSchema.findById(userId)
+    const customerId = req.user?.id; // comes from auth middleware
 
-    if (!isCart) {
-      next(new AppError("Cart not found", 404))
+    if (!customerId) {
+      return next(new AppError("Unauthorized", 401));
     }
 
-    res.status(200).json({message: "Remove cart successful", data: isCart})
+    const isCart = await cartSchema.findOneAndDelete({ customerId });
+
+    if (!isCart) {
+      return next(new AppError("Cart not found", 404));
+    }
+
+    res.status(200).json({ message: "Remove cart successful" });
   } catch (error) {
-console.log(error)
+    next(error);
   }
-}
+};

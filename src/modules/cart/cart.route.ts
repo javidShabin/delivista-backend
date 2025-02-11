@@ -1,7 +1,7 @@
 import express from "express";
 import { authenticate } from "../../middlewares/auth.middleware";
 import { authorize } from "../../middlewares/authorize";
-import { addToCart, deleteFromCart, getCartByUserId, updateCart } from "./cart.controller";
+import { addToCart, deleteCart, deleteFromCart, getCartByUserId, updateCart } from "./cart.controller";
 
 const router = express.Router();
 
@@ -14,5 +14,6 @@ router.delete(
   authorize("customer"),
   deleteFromCart
 );
+router.delete("/remove-cart", authenticate, authorize("customer"), deleteCart)
 
 export default router;
