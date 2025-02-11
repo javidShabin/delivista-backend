@@ -119,12 +119,12 @@ export const updateCart = async (
 
     // Get the menu id and action from request body
     const { menuId, action } = req.body;
-    
+
     // Check if menu id and action are present
     if (!menuId) {
       return next(new AppError("Menu ID is required", 400));
     }
-    
+
     if (!action || !['increment', 'decrement'].includes(action)) {
       return next(new AppError("Action must be 'increment' or 'decrement'", 400));
     }
@@ -159,7 +159,7 @@ export const updateCart = async (
 
     // Calculate new total for this item
     const newTotal = item.price * item.quantity;
-    
+
     // Update cart total price
     cart.totalPrice = cart.totalPrice - oldTotal + newTotal;
 
@@ -249,7 +249,7 @@ export const getCartByUserId = async (
     if (!userId) {
       return next(new AppError("Unauthorized", 401));
     }
-    
+
     // Find the cart by customer id
     const cart = await cartSchema.findOne({ customerId: userId });
 
@@ -271,5 +271,26 @@ export const getCartBySellerId = async (
   next: NextFunction
 ) => {
   try {
-  } catch (error) {}
+  } catch (error) { }
 };
+
+// ********************* Remove cart ***************************
+// remove the cart
+export const deleteCart = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.user?.id
+    const isCart = await cartSchema.findById(userId)
+
+    if (!isCart) {
+      next(new AppError("Cart not found", 404))
+    }
+
+    res.status(200).json({message: "Remove cart successful", data: isCart})
+  } catch (error) {
+console.log(error)
+  }
+}
