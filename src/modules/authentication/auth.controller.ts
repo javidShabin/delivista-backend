@@ -289,6 +289,7 @@ export const checkUser = async (
       message: "User is authorized",
       user: {
         id: user.id,
+        name: isUser?.name,
         email: user.email,
         role: user.role,
         profile: isUser?.avatar,
