@@ -1,18 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
+import {IUser}  from "./user.interface";
 
-export interface IUser extends Document {
-  name: string;
-  email: string;
-  password: string;
-  role: "user" | "admin" | "seller";
-  avatar?: {
-    public_id: string;
-    url: string;
-  };
-  createdAt: Date;
-}
+export interface IuserModel extends IUser, Document {}
 
-const userSchema: Schema<IUser> = new Schema(
+const userSchema: Schema<IuserModel> = new Schema(
   {
     name: {
       type: String,
