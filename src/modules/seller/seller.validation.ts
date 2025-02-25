@@ -1,5 +1,5 @@
 import { AppError } from "../../utils/appError";
-import { IsellerCreation } from "./seller.interface";
+import { IsellerCreation, IsellerOTPverifying } from "./seller.interface";
 
 // Validation for seller signup
 export const validateSignupSeller = (data: IsellerCreation) => {
@@ -20,5 +20,19 @@ export const validateSignupSeller = (data: IsellerCreation) => {
   // Validate password length
   if (password.length < 6) {
     throw new AppError("Password must be at least 6 characters", 400);
+  }
+};
+
+// Validation for seller OTP verification
+export const validateSellerOTP = (data: IsellerOTPverifying) => {
+  // Destructer the seller email and otp
+  const { email, otp } = data;
+  // Check the otp and email is present or not
+  if (!email || !otp) {
+    throw new AppError("OTP and email is required", 400);
+  }
+  // Validate email format
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    throw new AppError("Invalid email format", 400);
   }
 };
