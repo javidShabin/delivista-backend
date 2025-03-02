@@ -8,6 +8,7 @@ interface Variant {
 export interface IMenu {
   productName: string;
   restaurantId: Types.ObjectId;
+  sellerId: Types.ObjectId;
   description: string;
   category: string;
   price: number;
