@@ -1,9 +1,5 @@
 import { Types } from "mongoose";
-// Veriane interface
-interface Variant {
-  name: string;
-  price: number;
-}
+
 // Menu schema interface
 export interface IMenu {
   productName: string;
@@ -12,7 +8,7 @@ export interface IMenu {
   description: string;
   category: string;
   price: number;
-  variants?: Variant[];
+  variants?: { name: string; price: number }[];
   image: string;
   isAvailable: boolean;
   isVeg: boolean;
