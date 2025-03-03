@@ -12,18 +12,24 @@ export const addToCart = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    // Ensure customerId comes from the authenticated user
+    const userId = req.user?.id;
+    if (!userId) {
+      return next(new AppError("Unauthorized", 401));
+    }
+    // Force the customerId to match the authenticated user to keep cart retrieval consistent
+    req.body.customerId = userId as any;
+
     // Validate the data from request body
     validateCartCreation(req.body);
 
     // Destructure data from request body
     const { sellerId, customerId, restaurantId, items } = req.body;
 
-    console.log(sellerId);
-
     // Validate all items contain menuId
     for (const item of items) {
       if (!item.menuId) {
-        throw new AppError("Each item must include a valid menuId", 400);
+        return next(new AppError("Each item must include a valid menuId", 400));
       }
     }
 
@@ -53,6 +59,7 @@ export const addToCart = async (
           status: "error",
           message: "One or more menu items already exist in the cart",
         });
+        return;
       }
 
       // No duplicates — add new items
@@ -81,7 +88,7 @@ export const addToCart = async (
 
     const newCart = await cartSchema.create({
       sellerId,
-      customerId,
+      customerId: userId,
       restaurantId,
       totalPrice,
       items,
@@ -92,7 +99,8 @@ export const addToCart = async (
       cart: newCart,
     });
   } catch (error) {
-    next(error);
+    console.log(error);
+    return next(error);
   }
 };
 
@@ -170,12 +178,13 @@ export const getCartByUserId = async (
   try {
     // Get customer id from user authentication
     const userId = req.user?.id;
-
     if (!userId) {
       return next(new AppError("Unauthorized", 401));
     }
+    
     // Find the cart by customer id
     const cart = await cartSchema.findOne({ customerId: userId });
+
     // If not find the cart return error
     if (!cart) {
       throw new AppError("Cart not found", 404);
