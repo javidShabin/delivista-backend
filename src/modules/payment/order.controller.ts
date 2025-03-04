@@ -6,7 +6,7 @@ export const orderListByCustomer = async (req: Request, res: Response, next: Nex
     try {
         // Get customer id from authentication
         const customerId = req.user?.id;
-       
+
         if (!customerId) {
             return next(new AppError("Customer not authenticated", 401));
         }
@@ -28,6 +28,30 @@ export const orderListByCustomer = async (req: Request, res: Response, next: Nex
         next(error);
     }
 }
+// Get the single order by id
+export const singleOrder = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { orderId } = req.params;
+
+        if (!orderId) {
+            return next(new AppError("Order ID is required", 400));
+        }
+
+        const order = await orderSchema.findById(orderId);
+
+        if (!order) {
+            return next(new AppError("Order not found", 404));
+        }
+
+        res.status(200).json({
+            message: "Fetched single order",
+            data: order,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // Cancel the order
 export const orderCancel = async (req: Request, res: Response, next: NextFunction) => {
     try {
