@@ -1,7 +1,8 @@
+import mongoose, {Types } from "mongoose";
 // Restaurant main schema interface
 export interface IRestaurant {
   name: string;
-  seller: string; // Use string instead of ObjectId
+  seller: Types.ObjectId; // Use string instead of ObjectId
   email: string;
   phone: string;
   address: string;
