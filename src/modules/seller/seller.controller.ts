@@ -136,5 +136,24 @@ export const loginSeller = async (
     if (!isPasswordMatch) {
       return next(new AppError("Invalid email or password", 400));
     }
-  } catch (error) {}
+    // Generate a JWT token for the seller
+    const token = generateToken({
+      id: isSeller._id.toString(),
+      email: isSeller.email,
+      role: isSeller.role,
+    });
+    // Set the token in a cookie
+    res.cookie("userToken", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+    // Respond with success message
+    res.status(200).json({
+      status: "success",
+      message: "Seller logged in successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
