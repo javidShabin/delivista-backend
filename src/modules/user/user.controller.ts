@@ -271,7 +271,28 @@ export const generateFogotPassOtp = async (
     if (!email) {
       return next(new AppError("Email is required", 400));
     }
-  } catch (error) {}
+    // Find the user by email Id
+    const isUser = await userSchema.findOne({ email });
+    if (!isUser) {
+      return next(new AppError("User not found", 404));
+    }
+
+    // Generate 6-digit OTP for password reset
+    const otp = Math.floor(1000 + Math.random() * 900000).toString();
+    await tempUserSchema.findByIdAndUpdate(
+      { email },
+      {
+        otp,
+        otpExpires: Date.now() + 10 * 60 * 1000,
+      },
+      { upsert: true, new: true }
+    );
+    // Set up email message details
+    await sendOtpEmail(email, otp);
+    res.status(200).json({ message: "OTP sent to email" });
+  } catch (error) {
+    next(error);
+  }
 };
 // Verify the OTP and resent password
 export const verifyForgotPasswordOtp = async (
