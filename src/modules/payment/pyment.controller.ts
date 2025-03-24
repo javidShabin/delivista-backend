@@ -68,7 +68,6 @@ export const makePayment = async (req: Request, res: Response) => {
 export const verifyPayment = async (req: Request, res: Response) => {
     try {
         const { session_id } = req.query;
-
         if (!session_id) {
            res.status(400).json({ success: false, message: "Session ID missing" });
         }
