@@ -4,6 +4,7 @@ const mongoose_1 = require("mongoose");
 // Order schema
 const orderSchema = new mongoose_1.Schema({
     customerId: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
+    sellerId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Seller", required: true },
     sessionId: { type: String, required: true },
     // Address
     addressId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Address", required: true },

@@ -20,7 +20,7 @@ const makePayment = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     var _a;
     try {
         const customerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-        const { addressId, items, totalAmount, } = req.body;
+        const { addressId, items, totalAmount, sellerId } = req.body;
         // Find the user details from db
         const isAddress = yield address_model_1.default.findById(addressId);
         // 1. Create Stripe Checkout Session
@@ -38,12 +38,13 @@ const makePayment = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 quantity: item.quantity,
             })),
             mode: "payment",
-            success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.CLIENT_URL}/payment-failed`,
+            success_url: `${process.env.CLIENT_URL}/user/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.CLIENT_URL}/user/payment-failed`,
         });
         // 2. Save pending order
         const order = yield order_model_1.default.create({
             customerId,
+            sellerId,
             sessionId: session.id,
             addressId,
             fullName: isAddress === null || isAddress === void 0 ? void 0 : isAddress.fullName,
@@ -72,7 +73,7 @@ const verifyPayment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const { session_id } = req.query;
         if (!session_id) {
-            return res.status(400).json({ success: false, message: "Session ID missing" });
+            res.status(400).json({ success: false, message: "Session ID missing" });
         }
         // 1. Retrieve session details from Stripe
         const session = yield stripe_1.stripe.checkout.sessions.retrieve(session_id);

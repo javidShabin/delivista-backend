@@ -8,4 +8,6 @@ const stripe_1 = __importDefault(require("stripe"));
 if (!process.env.STRIPE_SECRET_KEY) {
     throw new Error("Stripe secret key is missing! Add STRIPE_SECRET_KEY to environment variables.");
 }
-exports.stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY);
+exports.stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2025-07-30.basil",
+});
