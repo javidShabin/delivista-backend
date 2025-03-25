@@ -6,7 +6,9 @@ import {
   generateFogotPassOtp,
   getAdminProfile,
   loginAdmin,
+  logoutAdmin,
   signupAdmin,
+  updateAdminPassword,
   updateAdminProfile,
   verifyAdminOTP,
   verifyForgotPasswordOtp,
@@ -33,5 +35,9 @@ router.put(
 router.post("/admin-forgot-password-otp", generateFogotPassOtp);
 // Admin forgot password OTP verification
 router.post("/admin-forgot-password-verify-otp", verifyForgotPasswordOtp);
+// Update admin password
+router.patch("/admin-update-password", updateAdminPassword);
+// Admin logout
+router.delete("/admin-logout", logoutAdmin);
 
 export default router;
