@@ -3,6 +3,7 @@ import { authenticate } from "../../middlewares/auth.middleware";
 import { authorize } from "../../middlewares/authorize";
 import { upload } from "../../middlewares/multer";
 import {
+  checkAdmin,
   generateFogotPassOtp,
   getAdminProfile,
   loginAdmin,
@@ -39,5 +40,7 @@ router.post("/admin-forgot-password-verify-otp", verifyForgotPasswordOtp);
 router.patch("/admin-update-password", updateAdminPassword);
 // Admin logout
 router.delete("/admin-logout", logoutAdmin);
+// Check admin authentication
+router.get("/check-admin", authenticate, authorize("admin"), checkAdmin)
 
 export default router;
