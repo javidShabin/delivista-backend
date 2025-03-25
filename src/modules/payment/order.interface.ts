@@ -33,7 +33,4 @@ export interface IOrder {
     transactionId?: string;
     orderStatus: "placed" | "confirmed" | "shipped" | "delivered" | "cancelled";
 
-    // Metadata
-    createdAt?: Date;
-    updatedAt?: Date;
 }
