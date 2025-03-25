@@ -30,7 +30,6 @@ export interface IOrder {
 
     // Payment & order status
     paymentStatus: "pending" | "success" | "failed";
-    paymentMethod?: "card" | "upi" | "netbanking" | "cod";
     transactionId?: string;
     orderStatus: "placed" | "confirmed" | "shipped" | "delivered" | "cancelled";
 
