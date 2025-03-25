@@ -369,3 +369,25 @@ export const logoutAdmin = async (
     next(error);
   }
 };
+
+// Check admin controller
+export const checkAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const isAdmin = req.user;
+    // Check if the user is an admin
+    if (!isAdmin) {
+      return next(new AppError("Unauthorized access", 401));
+    }
+    // Respond with success response
+    res.json({
+      success: true,
+      message: "Admin is authenticated",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
