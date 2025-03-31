@@ -13,6 +13,7 @@ import cloudinary from "../../configs/cloudinary";
 import {
   validateAdminLogin,
   validateAdminOTP,
+  validateAdminPassword,
   validateAdminSignup,
 } from "./admin.validation";
 
@@ -305,6 +306,19 @@ export const verifyForgotPasswordOtp = async (
       success: true,
       message: "OTP verified successfully",
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Update the admin password
+export const updateAdminPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    
   } catch (error) {
     next(error);
   }
