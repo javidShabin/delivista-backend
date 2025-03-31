@@ -3,6 +3,7 @@ import { authenticate } from "../../middlewares/auth.middleware";
 import { authorize } from "../../middlewares/authorize";
 import { upload } from "../../middlewares/multer";
 import {
+  generateFogotPassOtp,
   getAdminProfile,
   loginAdmin,
   signupAdmin,
@@ -27,5 +28,7 @@ router.put(
   upload.single("avatar"),
   updateAdminProfile
 );
+// Admin forgot password OTP generation
+router.post("/admin-forgot-password-otp", generateFogotPassOtp);
 
 export default router;
