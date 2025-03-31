@@ -279,3 +279,33 @@ export const generateFogotPassOtp = async (
     next(error);
   }
 };
+
+// Veqrify the forgot password OTP
+export const verifyForgotPasswordOtp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    validateAdminOTP(req.body);
+    // Destructure the email and OTP from request body
+    const { email, otp } = req.body;
+    // Find the temporary admin document by email
+    const tempAdmin = await tempAdminSchema.findOne({ email });
+    // Check if the temporary admin exists and the OTP is valid
+    if (!tempAdmin || tempAdmin.otp !== otp) {
+      return next(new AppError("Invalid OTP or email", 400));
+    }
+    // Check if the OTP has expired
+    if (tempAdmin.otpExpires < new Date()) {
+      return next(new AppError("OTP has expired", 400));
+    }
+    // Respond with success response
+    res.status(200).json({
+      success: true,
+      message: "OTP verified successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};

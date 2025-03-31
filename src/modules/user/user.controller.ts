@@ -294,7 +294,7 @@ export const generateFogotPassOtp = async (
   }
 };
 
-// Verify the OTP and resent password
+// Verify the OTP and reset password
 export const verifyForgotPasswordOtp = async (
   req: Request,
   res: Response,
