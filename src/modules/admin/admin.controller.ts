@@ -217,9 +217,13 @@ export const updateAdminProfile = async (
       updateAdminData.avatar = adminAvatar;
     }
     // Find the admin by ID and update the profile
-    const updatedAdmin = await adminSchema.findByIdAndUpdate(id, updateAdminData, {
-      new: true,
-    });
+    const updatedAdmin = await adminSchema.findByIdAndUpdate(
+      id,
+      updateAdminData,
+      {
+        new: true,
+      }
+    );
     // Check if the admin exists
     if (!updatedAdmin) {
       return next(new AppError("Admin not found", 404));
@@ -229,6 +233,47 @@ export const updateAdminProfile = async (
       success: true,
       message: "Admin profile updated successfully",
       updatedAdmin,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Generate forgot password OTP
+export const generateFogotPassOtp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Validate the email from request body
+    const { email } = req.body;
+    if (!email) {
+      return next(new AppError("Email is required", 400));
+    }
+    // Find the admin by email
+    const admin = await adminSchema.findOne({ email });
+    // Check if the admin exists
+    if (!admin) {
+      return next(new AppError("Admin not found", 404));
+    }
+    // Generate the 6 digit OTP using math function
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // Update the tembAdmin with the OTP and its expiration time
+    await tempAdminSchema.findOneAndUpdate(
+      { email },
+      {
+        otp,
+        otpExpires: new Date(Date.now() + 10 * 60 * 1000), // OTP expires in 10 minutes
+      },
+      { upsert: true, new: true }
+    );
+    // Send the OTP to the admin's email
+    await sendOtpEmail(email, otp);
+    // Respond with success response
+    res.status(200).json({
+      success: true,
+      message: "OTP sent to your email",
     });
   } catch (error) {
     next(error);
