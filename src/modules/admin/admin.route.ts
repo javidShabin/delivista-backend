@@ -9,6 +9,7 @@ import {
   signupAdmin,
   updateAdminProfile,
   verifyAdminOTP,
+  verifyForgotPasswordOtp,
 } from "./admin.controller";
 const router = express.Router();
 
@@ -30,5 +31,7 @@ router.put(
 );
 // Admin forgot password OTP generation
 router.post("/admin-forgot-password-otp", generateFogotPassOtp);
+// Admin forgot password OTP verification
+router.post("/admin-forgot-password-verify-otp", verifyForgotPasswordOtp);
 
 export default router;
