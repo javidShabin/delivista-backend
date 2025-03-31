@@ -318,7 +318,30 @@ export const updateAdminPassword = async (
   next: NextFunction
 ) => {
   try {
-    
+    validateAdminPassword(req.body);
+    // Destructer the email, password and verify password
+    const { email, password } = req.body;
+    // Find the temAdmin by email
+    const isTempAdmin = await tempAdminSchema.findOne({ email });
+    // Check if the admin exists
+    if (!isTempAdmin) {
+      return next(new AppError("Admin not found", 404));
+    }
+    // Hash the new password
+    const hashedPassword = await hashPassword(password);
+    // Update the admin password in the admin schema
+    await adminSchema.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    );
+    // Delete the temporary admin document
+    await tempAdminSchema.deleteOne({ email });
+    // Respond with success response
+    res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+    });
   } catch (error) {
     next(error);
   }
