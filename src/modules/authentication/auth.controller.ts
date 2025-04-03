@@ -47,5 +47,5 @@ if (isUserExist) {
       otpExpires: new Date(Date.now() + 10 * 60 * 1000), // OTP expires in 10 minutes
     }
   );
-  
+  // 
 };
