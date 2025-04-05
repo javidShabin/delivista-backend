@@ -181,11 +181,11 @@ export const getRestaurantBySeller = async (
 };
 
 // Filter restaurant by menu
-export const getRestaurantByMenu = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {};
+// export const getRestaurantByMenu = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {};
 
 // Toggle restaurant status for seller (open or close)
 export const toggleRestaurantStatus = async (
