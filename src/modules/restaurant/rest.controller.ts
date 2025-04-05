@@ -296,4 +296,26 @@ export const deleteRestaurant = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  try {
+    // Get restaurant id from request params
+    const { restaurantId } = req.params;
+    // Check the restaurant id is present or not
+    if (!restaurantId) {
+      return next(new AppError("Restaurant ID is required", 400));
+    }
+    // Find and delete the restaurant by restaurant id
+    const deletedRestaurant = await restSchema.findByIdAndDelete(restaurantId);
+
+    if (!deletedRestaurant) {
+      return next(new AppError("Restaurant not found", 404));
+    }
+    // Send the delete response
+    res.status(200).json({
+      success: true,
+      message: "Restaurant deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
