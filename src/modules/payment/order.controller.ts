@@ -1,15 +1,33 @@
 import { Request, Response, NextFunction } from "express";
 import orderSchema from "./order.model"
+import { AppError } from "../../utils/appError";
 
-// Get all orders for customer
 export const orderListByCustomer = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // Get customer id from authentication
+        const customerId = req.user?.id;
+       
+        if (!customerId) {
+            return next(new AppError("Customer not authenticated", 401));
+        }
 
-    } catch (error) {
+        // Find all orders by customer
+        const orderList = await orderSchema.find({ customerId });
 
+        if (!orderList || orderList.length === 0) {
+            return next(new AppError("No orders found", 404));
+        }
+
+        // Send response
+        res.status(200).json({
+            message: "Fetched all orders for the customer",
+            data: orderList
+        });
+
+    } catch (error: any) {
+        next(error);
     }
 }
-
 // Cancel the order
 export const orderCancel = async (req: Request, res: Response, next: NextFunction) => {
     try {
