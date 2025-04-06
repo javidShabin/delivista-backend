@@ -184,24 +184,38 @@ export const getRestaurantByMenu = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
-  try {
-    // Get seller from seller authentication
-    const sellerId = req.user?.id
-    // Find the restaurant by seller id
-    const isRestaurant = await restSchema.findOne({sellerId})
-    console.log(isRestaurant)
-  } catch (error) {
-    
-  }
-};
+) => {};
 
 // Toggle restaurant status for seller (open or close)
 export const toggleRestaurantStatus = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  try {
+    // Get seller from seller authentication
+    const sellerId = req.user?.id;
+    // Find the restaurant by seller id
+    const isRestaurant = await restSchema.findOne({ sellerId });
+    // If not get restaurant with same seller id return error
+    if (!isRestaurant) {
+      throw next(new AppError("Restaurant not found", 404));
+    }
+    // The toggled restaurant open and close
+    // Toggle open/close status
+    isRestaurant.isOpen = !isRestaurant.isOpen;
+    // Save the updated status
+    await isRestaurant.save();
+    // Send response
+    res.status(200).json({
+      success: true,
+      message: `Restaurant is now ${isRestaurant.isOpen ? "Open" : "Closed"}`,
+      data: { isOpen: isRestaurant.isOpen },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Update restaurant
 export const updateRestaurant = async (
