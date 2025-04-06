@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import restSchema from "./rest.model";
-import { handleAvatarUpload } from "./rest.service";
+import { handleImageUpload } from "./rest.service";
 import { AppError } from "../../utils/appError";
 import { validateRestaurantCreation } from "./rest.validation";
 
@@ -222,7 +222,64 @@ export const updateRestaurant = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  try {
+    // Get restaurant ID from request params
+    const { restaurantId } = req.params;
+    // Check if ID exists
+    if (!restaurantId) {
+      return next(new AppError("Restaurant ID is required", 400));
+    }
+    // Extract updated fields from request body
+    const {
+      name,
+      phone,
+      address,
+      cuisine,
+      pinCode,
+      image,
+      openTime,
+      closeTime,
+    } = req.body;
+    // Prepare the updated data
+    const updateRestaurant: any = {
+      name,
+      phone,
+      address,
+      cuisine,
+      pinCode,
+      image,
+      openTime,
+      closeTime,
+    };
+    // Check if an image file is uploaded
+    if (req.file) {
+      let restaurantImage = await handleImageUpload(req.file);
+      // Update the restaurant image URL in the updated object
+      updateRestaurant.image = restaurantImage;
+    }
+    // Find and update restaurant
+    const updatedRestaurant = await restSchema.findByIdAndUpdate(
+      restaurantId,
+      updateRestaurant,
+      {
+        new: true, // return updated document
+      }
+    );
+    // If not found
+    if (!updatedRestaurant) {
+      return next(new AppError("Restaurant not found", 404));
+    }
+    // Send success response
+    res.status(200).json({
+      success: true,
+      message: "Restaurant updated successfully",
+      updatedRestaurant
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Delete restaurant (forAdmin)
 export const deleteRestaurant = async (
