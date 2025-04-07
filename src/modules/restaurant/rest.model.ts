@@ -6,10 +6,10 @@ export interface IRestaurantModel extends IRestaurant, Document {}
 
 const restaurantSchema: Schema<IRestaurantModel> = new Schema(
   {
-    name: { 
-        type: String, 
-        required: true ,
-        trim: true
+    name: {
+      type: String,
+      required: true,
+      trim: true,
     },
     seller: {
       type: mongoose.Schema.Types.ObjectId,
@@ -30,7 +30,4 @@ const restaurantSchema: Schema<IRestaurantModel> = new Schema(
   }
 );
 
-export const Restaurant = mongoose.model<IRestaurantModel>(
-  "Restaurant",
-  restaurantSchema
-);
+export default mongoose.model<IRestaurantModel>("Restaurant", restaurantSchema);
