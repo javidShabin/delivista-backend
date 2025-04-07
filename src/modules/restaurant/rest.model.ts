@@ -6,13 +6,16 @@ export interface IRestaurantModel extends IRestaurant, Document {}
 
 const restaurantSchema: Schema<IRestaurantModel> = new Schema(
   {
-    name: { type: String, required: true },
+    name: { 
+        type: String, 
+        required: true ,
+        trim: true
+    },
     seller: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Seller",
       required: true,
     },
-    email: { type: String, required: true },
     phone: { type: String, required: true },
     address: { type: String, required: true },
     cuisine: [{ type: String, required: true }],
