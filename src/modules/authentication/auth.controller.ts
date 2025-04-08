@@ -5,7 +5,7 @@ import { AppError } from "../../utils/appError";
 import {
   validateSignupUser,
   validateUserLogin,
-  validateUserOTP,
+  validateUserOTPandEmail,
 } from "./auth.validation";
 import { generateOTP, hashPassword } from "./auth.service";
 import { sendOtpEmail } from "../../shared/email/send.mail";
@@ -53,7 +53,6 @@ export const singupUser = async (
     // Send the OTP to the user's emial
     await sendOtpEmail(email, otp);
     let user = tempAuthSchema.find({ email });
-    console.log(user);
     // Respond with a success message
     res.status(200).json({
       status: "success",
@@ -72,5 +71,26 @@ export const verifyOtpandCreateUser = async (
 ) => {
   try {
     // Validate OTP and email
+    validateUserOTPandEmail(req.body);
+    // Destructer OTP and email from request body
+    const { otp, email } = req.body;
+    // Check if the otp and emial is present ot not
+    if (!email || !otp) {
+      throw new AppError("Email or OTP is missing or invalid", 400);
+    }
+    // Check if the user exists as a temporary user
+    const tempUser = await tempAuthSchema.findOne({ email });
+    if (!tempUser) {
+      throw new AppError("User not found", 400);
+    }
+
+    // Compare the OTP with tmepuser OTP
+    if (tempUser.otp !== otp) {
+      throw new AppError("Invalid OTP", 400);
+    }
+    // Check the OTP is expire or not
+    if (tempUser.otpExpires.getTime() < Date.now()) {
+      throw new AppError("OTP has expired", 400);
+    }
   } catch (error) {}
 };

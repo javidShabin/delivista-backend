@@ -1,5 +1,9 @@
 import { AppError } from "../../utils/appError";
-import { IuserCreaction, IuserLogin, IuserOTPverifying } from "./auth.interface";
+import {
+  IuserCreaction,
+  IuserLogin,
+  IuserOTPverifying,
+} from "./auth.interface";
 
 // Validation for user signupn
 export const validateSignupUser = (data: IuserCreaction) => {
@@ -23,7 +27,7 @@ export const validateSignupUser = (data: IuserCreaction) => {
 };
 
 // Validation for user OTP verification
-export const validateUserOTP = (data: IuserOTPverifying) => {
+export const validateUserOTPandEmail = (data: IuserOTPverifying) => {
   // Destructer the user email and otp
   const { email, otp } = data;
   // Check the otp and email is present or not
@@ -32,6 +36,9 @@ export const validateUserOTP = (data: IuserOTPverifying) => {
   }
   if (!/^\S+@\S+\.\S+$/.test(email)) {
     throw new AppError("Invalid email format", 400);
+  }
+  if (otp.length < 6) {
+    throw new AppError("OTP must have 6 number", 400);
   }
 };
 
