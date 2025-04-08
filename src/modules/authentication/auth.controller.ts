@@ -92,5 +92,15 @@ export const verifyOtpandCreateUser = async (
     if (tempUser.otpExpires.getTime() < Date.now()) {
       throw new AppError("OTP has expired", 400);
     }
+    // Create the new user and save database
+    const newUser = new authSchema({
+      name: tempUser.name,
+      email: tempUser.email,
+      password: tempUser.password,
+      phone: tempUser.phone,
+      role: tempUser.role,
+      avatar: tempUser.avatar,
+    });
+    await newUser.save();
   } catch (error) {}
 };
