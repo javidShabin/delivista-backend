@@ -70,6 +70,7 @@ export const addToCart = async (
         message: "Items added to existing cart",
         cart: updatedCart,
       });
+      return;
     }
 
     // No existing cart — create new
@@ -125,7 +126,23 @@ export const getCartByUserId = async (
   next: NextFunction
 ) => {
   try {
-  } catch (error) {}
+    // Get customer id from user authentication
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return next(new AppError("Unauthorized", 401));
+    }
+    // Find the cart by customer id
+    const cart = await cartSchema.findOne({ customerId: userId });
+    // If not find the cart return error
+    if (!cart) {
+      throw new AppError("Cart not found", 404);
+    }
+    // Send as a response
+    res.status(200).json(cart);
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Get the cart by seller id
