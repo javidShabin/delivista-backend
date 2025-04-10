@@ -157,3 +157,23 @@ export const loginSeller = async (
     next(error);
   }
 };
+
+// Get the all seller list
+export const getAllSellers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Fetch all sellers from the database
+    const sellers = await sellerSchema.find({}).select("-password");
+    // Check if there are no sellers
+    if (!sellers) {
+      return next(new AppError("No sellers found", 404));
+    }
+    // Respond with the list of sellers
+    res.status(200).json({ sellers });
+  } catch (error) {
+    next(error);
+  }
+};
