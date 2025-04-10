@@ -114,3 +114,27 @@ export const verifySellerOTP = async (
     next(error);
   }
 };
+
+// Seller login
+export const loginSeller = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Validate the seller login data
+    validateSellerLogin(req.body);
+    const { email, password } = req.body;
+    // Find the seller by email
+    const isSeller = await sellerSchema.findOne({ email });
+    if (!isSeller) {
+      throw new AppError("Invalid email or password", 401);
+    }
+    // Compare the password with the hashed password
+    const isPasswordMatch = await comparePassword(password, isSeller.password);
+    // Check if the password matches
+    if (!isPasswordMatch) {
+      return next(new AppError("Invalid email or password", 400));
+    }
+  } catch (error) {}
+};
