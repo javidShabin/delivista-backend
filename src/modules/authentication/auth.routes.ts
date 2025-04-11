@@ -5,6 +5,7 @@ import {
   checkUser,
   loginUser,
   logoutUser,
+  sendForgotPasswordOtp,
   singupUser,
   verifyOtpandCreateUser,
 } from "./auth.controller";
@@ -25,5 +26,7 @@ router.get(
 );
 
 router.delete("/user-logout", logoutUser);
+
+router.post("/forgot-password", sendForgotPasswordOtp);
 
 export default router;
