@@ -238,8 +238,16 @@ export const verifyOtpAndUpdatePassword = async (
     if (!tempUser) {
       throw new AppError("User not found", 400);
     }
+    // Compare the OTP with tmepuser OTP
+    if (tempUser.otp !== otp) {
+      throw new AppError("Invalid OTP", 400);
+    }
+    // Check the OTP is expire or not
+    if (tempUser.otpExpires.getTime() < Date.now()) {
+      throw new AppError("OTP has expired", 400);
+    }
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
