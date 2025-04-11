@@ -59,7 +59,7 @@ export const singupUser = async (
     res.status(200).json({
       status: "success",
       message: "OTP sent to your email. Please verify to complete signup.",
-      otp
+      otp,
     });
   } catch (error) {
     next(error);
@@ -77,7 +77,6 @@ export const verifyOtpandCreateUser = async (
     validateUserOTPandEmail(req.body);
     // Destructer OTP and email from request body
     const { otp, email } = req.body;
-
 
     // Check if the user exists as a temporary user
     const tempUser = await tempAuthSchema.findOne({ email });
@@ -185,6 +184,16 @@ export const logoutUser = async (
   }
 };
 
+// Send OTP for reset the user password
+export const sendForgotPasswordOtp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+  } catch (error) {}
+};
+
 // Verifying the user is authonticaed or not
 export const checkUser = async (
   req: Request,
@@ -199,7 +208,7 @@ export const checkUser = async (
       return next(new AppError("User not authorized", 401));
     }
 
-    const isUser = await authSchema.findOne({email: user.email})
+    const isUser = await authSchema.findOne({ email: user.email });
 
     // If find the user by authentication send as a reaponxe
     res.status(200).json({
@@ -209,7 +218,7 @@ export const checkUser = async (
         id: user.id,
         email: user.email,
         role: user.role,
-        profile: isUser?.avatar
+        profile: isUser?.avatar,
       },
     });
   } catch (error) {
