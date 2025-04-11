@@ -191,6 +191,16 @@ export const sendForgotPasswordOtp = async (
   next: NextFunction
 ) => {
   try {
+    // Destructer the user email from request body
+    const { email } = req.body;
+    if (!email) {
+      throw new AppError("Email is required", 400);
+    }
+    // Find the user by email
+    const isUser = await authSchema.findOne({ email });
+    if (!isUser) {
+      throw new AppError("User not found", 404);
+    }
   } catch (error) {}
 };
 
