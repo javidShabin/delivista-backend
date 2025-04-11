@@ -200,8 +200,25 @@ export const sendForgotPasswordOtp = async (
     const isUser = await authSchema.findOne({ email });
     if (!isUser) {
       throw new AppError("User not found", 404);
-    }
-  } catch (error) {}
+    } // Generate 6 digit OTP using otpGenerating function
+    const otp = generateOTP();
+    await tempAuthSchema.findOneAndUpdate(
+      { email },
+      {
+        otp,
+        otpExpires: new Date(Date.now() + 10 * 60 * 1000),
+      },
+      { upsert: true, new: true }
+    );
+    // Send the OTP to the user's emial
+    await sendOtpEmail(email, otp);
+    res.status(200).json({
+      status: "success",
+      message: "OTP sent to your email. Please verify to complete signup.",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Verifying the user is authonticaed or not
