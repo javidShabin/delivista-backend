@@ -246,6 +246,20 @@ export const verifyOtpAndUpdatePassword = async (
     if (tempUser.otpExpires.getTime() < Date.now()) {
       throw new AppError("OTP has expired", 400);
     }
+    // Hash new passowrd using bcrypt
+    const hashedPassword = await hashPassword(password);
+    // Update the user password
+    await authSchema.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    );
+    // Delete the temporary user
+    await tempAuthSchema.deleteOne({ email });
+    res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+    });
   } catch (error) {
     next(error);
   }
