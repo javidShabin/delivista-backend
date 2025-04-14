@@ -323,6 +323,7 @@ export const verifyForgotPasswordOtp = async (
     next(error);
   }
 };
+
 // Update the user password
 export const updateUserPassword = async (
   req: Request,
@@ -353,8 +354,13 @@ export const updateUserPassword = async (
     next(error);
   }
 };
+
 // Log out user
-export const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
+export const logoutUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     // Clear the token from cookie
     res.clearCookie("userToken", {
@@ -363,6 +369,23 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
       sameSite: "strict",
     });
     res.status(200).json({ message: "User logged out successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Check user controller
+export const checkUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const isUser = req.user;
+    if (!isUser) {
+      return next(new AppError("User not autherised", 401));
+    }
+    res.json({ success: true, message: "user autherised" });
   } catch (error) {
     next(error);
   }

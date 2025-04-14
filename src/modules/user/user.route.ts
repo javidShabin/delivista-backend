@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  checkUser,
   generateFogotPassOtp,
   getAllUsers,
   getUserProfileById,
@@ -41,4 +42,6 @@ router.post("/verify-pass-otp", verifyForgotPasswordOtp);
 router.patch("/update-password", updateUserPassword)
 // Logout the user , (clear the toker from cookie)
 router.delete("/user-logout", logoutUser)
+// Check user router
+router.get("/user-check",authenticate, authorize("customer"), checkUser)
 export default router;
