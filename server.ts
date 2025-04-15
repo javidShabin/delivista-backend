@@ -32,17 +32,6 @@ server.use(
   })
 );
 
-// Handle preflight requests explicitly
-server.options("*", cors({
-  origin: allowedOrigins,
-  credentials: true,
-}));
-
-server.use((req, res, next) => {
-  res.header("Access-Control-Allow-Credentials", "true");
-  next();
-});
-
 server.use(cookieParser()); // Parse cookies attached to client requests
 server.use(helmet()); // Secure HTTP headers to protect against common vulnerabilities
 server.use(express.json()); // Parse incoming JSON payloads into JavaScript objects
