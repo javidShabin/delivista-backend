@@ -4,6 +4,7 @@ import {
   getAllUsers,
   getUserProfileById,
   loginUser,
+  logoutUser,
   signupUser,
   updateUserPassword,
   updateUserProfile,
@@ -38,4 +39,6 @@ router.post("/forgot-password", generateFogotPassOtp);
 router.post("/verify-pass-otp", verifyForgotPasswordOtp);
 // Update the user password
 router.patch("/update-password", updateUserPassword)
+// Logout the user , (clear the toker from cookie)
+router.delete("/user-logout", logoutUser)
 export default router;

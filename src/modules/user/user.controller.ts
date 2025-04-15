@@ -330,7 +330,7 @@ export const updateUserPassword = async (
   next: NextFunction
 ) => {
   try {
-    validateUserPassword(req.body)
+    validateUserPassword(req.body);
     // Destructer the email, password and verify password
     const { email, password } = req.body;
     // Find the tempUser using email
@@ -347,11 +347,23 @@ export const updateUserPassword = async (
       { new: true }
     );
     // Clear the tempUser
-    await tempUserSchema.deleteOne({email})
-    res.status(200).json({message: "Password changed successfully"})
+    await tempUserSchema.deleteOne({ email });
+    res.status(200).json({ message: "Password changed successfully" });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 // Log out user
-export const logoutUser = (req: Request, res: Response) => {};
+export const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // Clear the token from cookie
+    res.clearCookie("userToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+    res.status(200).json({ message: "User logged out successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
