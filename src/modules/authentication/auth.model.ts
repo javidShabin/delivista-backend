@@ -50,4 +50,4 @@ const tempUserSchema: Schema<ITempUserModel> = new Schema(
   }
 );
 
-export default mongoose.model<ITempUser>("TempUser", tempUserSchema);
+export default mongoose.model<ITempUser>("User", tempUserSchema);
