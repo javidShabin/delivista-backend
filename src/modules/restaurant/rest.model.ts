@@ -30,6 +30,10 @@ const restaurantSchema: Schema<IRestaurantModel> = new Schema(
         required: true,
       },
     ],
+    pinCode: {
+      type: String,
+      required: true,
+    },
     image: {
       type: String,
       default: "",
@@ -48,7 +52,7 @@ const restaurantSchema: Schema<IRestaurantModel> = new Schema(
     },
     isVerified: {
       type: Boolean,
-      default: false
+      default: false,
     },
     totalReviews: {
       type: Number,

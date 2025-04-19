@@ -1,4 +1,4 @@
-import {Types } from "mongoose";
+import { Types } from "mongoose";
 // Restaurant main schema interface
 export interface IRestaurant {
   name: string;
@@ -6,6 +6,7 @@ export interface IRestaurant {
   phone: string;
   address: string;
   cuisine: string[];
+  pinCode: string;
   image: string;
   isOpen: boolean;
   openTime: string;
@@ -21,6 +22,7 @@ export interface IRestaurantCreation {
   phone: string;
   address: string;
   cuisine: string[];
+  pinCode: string;
   image: string;
   isOpen?: boolean;
   openTime?: string;

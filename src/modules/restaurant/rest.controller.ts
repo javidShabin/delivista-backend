@@ -19,7 +19,7 @@ export const createRestaurant = async (
     // Validate first restaurant datials
     validateRestaurantCreation(req.body, req.file);
     // Destructer all fields from request body
-    const { name, phone, address, cuisine, image } = req.body;
+    const { name, phone, address, cuisine, image, pinCode } = req.body;
     // Check have any restaurant with same name
     const existRestaurant = await restSchema.findOne({ name });
     if (existRestaurant) {
@@ -39,6 +39,7 @@ export const createRestaurant = async (
       phone,
       address,
       cuisine,
+      pinCode,
       image: uploadImage,
       sellerId
     });
