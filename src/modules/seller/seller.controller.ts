@@ -205,3 +205,12 @@ export const getSellerProfile = async (
     next(error);
   }
 };
+
+// Update seller profile
+export const updateSellerProfile = async () => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
