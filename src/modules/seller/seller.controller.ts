@@ -185,8 +185,23 @@ export const getSellerProfile = async (
   next: NextFunction
 ) => {
   try {
-    // Get the seller ID from the
+    // Get the seller ID from then authenticated user
+    const sellerId = req.user?.id;
+    // Check if the seller ID is provided
+    if (!sellerId) {
+      return next(new AppError("Seller ID is required", 400));
+    }
+    // Find the seller by ID
+    const sellerProfile = await sellerSchema
+      .findById(sellerId)
+      .select("-password");
+    // Check if the seller exists
+    if (!sellerProfile) {
+      return next(new AppError("Seller not found", 404));
+    }
+    // Respond with the seller profile
+    res.status(200).json({ sellerProfile });
   } catch (error) {
-    
+    next(error);
   }
-}
+};
