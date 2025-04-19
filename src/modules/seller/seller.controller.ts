@@ -178,3 +178,15 @@ export const getAllSellers = async (
   }
 };
 
+// Get seller profile
+export const getSellerProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Get the seller ID from the
+  } catch (error) {
+    
+  }
+}
