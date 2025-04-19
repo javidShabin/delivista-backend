@@ -11,7 +11,7 @@ const restaurantSchema: Schema<IRestaurantModel> = new Schema(
       required: true,
       trim: true,
     },
-    seller: {
+    sellerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Seller",
       required: true,

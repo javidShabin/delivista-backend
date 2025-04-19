@@ -9,7 +9,45 @@ export const createRestaurant = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  try {
+    // Get seller Id from seller authentication
+    const sellerId = req.user?.id;
+    if (!sellerId) {
+      throw next(new AppError("Unauthorised access", 404));
+    }
+    // Validate first restaurant datials
+    validateRestaurantCreation(req.body, req.file);
+    // Destructer all fields from request body
+    const { name, phone, address, cuisine, image } = req.body;
+    // Check have any restaurant with same name
+    const existRestaurant = await restSchema.findOne({ name });
+    if (existRestaurant) {
+      throw next(new AppError("Restaurant already exist with same name", 404));
+    }
+
+    let uploadImage;
+
+    // If an image file is uploaded
+    if (req.file) {
+      // Handle the image upload and get the file path
+      uploadImage = await handleAvatarUpload(req.file);
+    }
+    // Save restaurant data to database
+    const restaurant = new restSchema({
+      name,
+      phone,
+      address,
+      cuisine,
+      image: uploadImage,
+      sellerId
+    });
+    const saveRestaurant = await restaurant.save();
+    res.status(201).json(saveRestaurant);
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Get all restaurants
 export const getAllRestaurants = async (

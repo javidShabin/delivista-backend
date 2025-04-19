@@ -8,6 +8,7 @@ import {
 
 // Validation for seller signup
 export const validateSignupSeller = (data: IsellerCreation) => {
+
   // Destructer the seller details as data from interface
   const { name, email, password, confirmPassword, phone } = data;
   // Check the required fields are present or not

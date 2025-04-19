@@ -1,13 +1,18 @@
 import { AppError } from "../../utils/appError";
 import { IRestaurantCreation } from "./rest.interface";
 
-// Validation for restaurant creating
-export const validateRestaurantCreation = (data: IRestaurantCreation) => {
-  // Destructer the restaurant details as data from interface
-  const { name, seller, phone, address, cuisine } = data;
-  // Check the required fields are present or not
-  if (!name || !seller || !phone || !address || !cuisine) {
+// Validation for restaurant creation
+export const validateRestaurantCreation = (data: IRestaurantCreation, file?: Express.Multer.File) => {
+  // Destructer all fileds from data
+  const { name, phone, address, cuisine } = data;
+
+  // Check all fields are present or not
+  if (!name || !phone || !address || !cuisine) {
     throw new AppError("All fields are required", 400);
+  }
+
+  if (!file) {
+    throw new AppError("Image file is required", 400);
   }
 
 };
