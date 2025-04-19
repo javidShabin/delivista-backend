@@ -207,9 +207,37 @@ export const getSellerProfile = async (
 };
 
 // Update seller profile
-export const updateSellerProfile = async () => {
+export const updateSellerProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
+    // Get the seller ID from the authenticated user
+    const sellerId = req.user?.id;
+    // Check if the seller ID is provided
+    if (!sellerId) {
+      return next(new AppError("Seller ID is required", 400));
+    }
     
+    // Extract the updated data from the request body
+    const { name, email, phone, avatar } = req.body;
+    // Prepare the update date
+    const updateData: any = {
+      name,
+      email,
+      phone,
+      avatar
+    };
+
+    // Check if an avatar file is uploaded
+    if (req.file) {
+      // Handle the avatar upload and get the file path
+      const avatarPath = await handleAvatarUpload(req.file);
+      // Update the avatar path in the update data
+      updateData.avatar = avatarPath;
+    }
+
   } catch (error) {
     
   }
