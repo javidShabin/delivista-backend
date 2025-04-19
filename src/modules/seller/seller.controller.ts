@@ -219,7 +219,7 @@ export const updateSellerProfile = async (
     if (!sellerId) {
       return next(new AppError("Seller ID is required", 400));
     }
-    
+
     // Extract the updated data from the request body
     const { name, email, phone, avatar } = req.body;
     // Prepare the update date
@@ -227,7 +227,7 @@ export const updateSellerProfile = async (
       name,
       email,
       phone,
-      avatar
+      avatar,
     };
 
     // Check if an avatar file is uploaded
@@ -237,8 +237,25 @@ export const updateSellerProfile = async (
       // Update the avatar path in the update data
       updateData.avatar = avatarPath;
     }
-
+    // Update the seller profile in the database
+    const updatedSeller = await sellerSchema.findByIdAndUpdate(
+      sellerId,
+      updateData,
+      {
+        new: true,
+      }
+    );
+    // Handle the case where the seller is not found
+    if (!updatedSeller) {
+      return next(new AppError("Seller not found", 404));
+    }
+    // Respond with the updated seller profile
+    res.status(200).json({
+      status: "success",
+      message: "Seller profile updated successfully",
+      updatedSeller,
+    });
   } catch (error) {
-    
+    next(error);
   }
-}
+};
