@@ -40,4 +40,5 @@ const adminSchema: Schema<IadminModel> = new Schema(
     timestamps: true,
   }
 );
+
 export default mongoose.model<IAdmin>("Admin", adminSchema);
