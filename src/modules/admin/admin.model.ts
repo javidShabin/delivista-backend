@@ -27,7 +27,7 @@ const adminSchema: Schema<IadminModel> = new Schema(
     },
     role: {
       type: String,
-      enum: ["customer", "admin", "seller"],
+      enum: ["admin"],
       default: "admin",
     },
     avatar: {
