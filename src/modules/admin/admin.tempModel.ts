@@ -48,3 +48,5 @@ const tempAdminSchema: Schema<ITempAdminModel> = new Schema(
     timestamps: true,
   }
 );
+
+export default mongoose.model<ITempAdmin>("TempAdmin", tempAdminSchema);
