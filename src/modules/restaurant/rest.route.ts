@@ -10,6 +10,7 @@ import {
   getRestaurantBySeller,
   getVerifiedRestaurants,
   toggleRestaurantStatus,
+  updateRestaurant,
 } from "./rest.controller";
 
 const router = express.Router();
@@ -58,5 +59,12 @@ router.patch(
   authenticate,
   authorize("seller"),
   toggleRestaurantStatus
+);
+router.put(
+  "/update-restaurant/:restaurantId",
+  authenticate,
+  authorize("seller"),
+  upload.single("image"),
+  updateRestaurant
 );
 export default router;

@@ -4,6 +4,7 @@ import { handleImageUpload } from "./rest.service";
 import { AppError } from "../../utils/appError";
 import { validateRestaurantCreation } from "./rest.validation";
 
+
 // Create restaurant
 export const createRestaurant = async (
   req: Request,
@@ -31,7 +32,7 @@ export const createRestaurant = async (
     // If an image file is uploaded
     if (req.file) {
       // Handle the image upload and get the file path
-      uploadImage = await handleAvatarUpload(req.file);
+      uploadImage = await handleImageUpload(req.file);
     }
     // Save restaurant data to database
     const restaurant = new restSchema({
@@ -224,12 +225,12 @@ export const updateRestaurant = async (
   next: NextFunction
 ) => {
   try {
-    // Get restaurant ID from request params
     const { restaurantId } = req.params;
-    // Check if ID exists
+
     if (!restaurantId) {
       return next(new AppError("Restaurant ID is required", 400));
     }
+
     // Extract updated fields from request body
     const {
       name,
@@ -241,8 +242,9 @@ export const updateRestaurant = async (
       openTime,
       closeTime,
     } = req.body;
-    // Prepare the updated data
-    const updateRestaurant: any = {
+
+    // Prepare update object
+    const updateData: any = {
       name,
       phone,
       address,
@@ -252,34 +254,42 @@ export const updateRestaurant = async (
       openTime,
       closeTime,
     };
-    // Check if an image file is uploaded
+
+    // If image file is uploaded, handle it
     if (req.file) {
-      let restaurantImage = await handleImageUpload(req.file);
-      // Update the restaurant image URL in the updated object
-      updateRestaurant.image = restaurantImage;
+      const restaurantImage = await handleImageUpload(req.file);
+      updateData.image = restaurantImage;
     }
-    // Find and update restaurant
+
+    // Remove undefined fields to avoid overwriting with undefined
+    Object.keys(updateData).forEach((key) => {
+      if (updateData[key] === undefined) delete updateData[key];
+    });
+
+    // Update the restaurant
     const updatedRestaurant = await restSchema.findByIdAndUpdate(
       restaurantId,
-      updateRestaurant,
+      updateData,
       {
-        new: true, // return updated document
+        new: true,
+        runValidators: true,
       }
     );
-    // If not found
+
     if (!updatedRestaurant) {
       return next(new AppError("Restaurant not found", 404));
     }
-    // Send success response
+
     res.status(200).json({
       success: true,
       message: "Restaurant updated successfully",
-      updatedRestaurant
+      data: updatedRestaurant,
     });
   } catch (error) {
     next(error);
   }
 };
+
 
 // Delete restaurant (forAdmin)
 export const deleteRestaurant = async (
