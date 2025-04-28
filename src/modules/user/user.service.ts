@@ -9,9 +9,12 @@ export const hashPassword = async (password: string) => {
 };
 
 // Compare the user password using bcrypt
-export const comparePassword = async (password: string, userPassword: string) => {
-  return bcrypt.compareSync(password, userPassword)
-}
+export const comparePassword = async (
+  password: string,
+  userPassword: string
+) => {
+  return bcrypt.compareSync(password, userPassword);
+};
 
 // Sends an OTP email to the specified address
 export const sendOtpEmail = async (

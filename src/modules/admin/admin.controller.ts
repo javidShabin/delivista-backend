@@ -9,7 +9,7 @@ import {
 } from "./admin.service";
 import { AppError } from "../../utils/appError";
 import { generateToken } from "../../utils/generateToken";
-import cloudinary from "../../configs/cloudinary";
+
 import {
   validateAdminLogin,
   validateAdminOTP,

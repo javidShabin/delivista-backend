@@ -15,7 +15,6 @@ import {
   validateUserPassword,
 } from "./user.validation";
 import { generateToken } from "../../utils/generateToken";
-import cloudinary from "../../configs/cloudinary";
 
 // Generate and send OTP to user email
 // Send OTP using node mailer to user email

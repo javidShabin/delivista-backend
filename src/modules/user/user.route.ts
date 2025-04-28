@@ -23,7 +23,12 @@ router.post("/verify-otp", verifyOtpAndCreateUser);
 // User login
 router.post("/user-login", loginUser);
 // Get all useres
-router.get("/users-list", authenticate, authorize( "admin", "seller"), getAllUsers);
+router.get(
+  "/users-list",
+  authenticate,
+  authorize("admin", "seller"),
+  getAllUsers
+);
 // Get user profile
 router.get(
   "/user-profile",

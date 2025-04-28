@@ -6,10 +6,10 @@ import * as tempAdminModel from "./admin.tempModel";
 import * as adminInterfaces from "./admin.interface";
 
 export {
-    adminRouter,
-    adminController,
-    adminService,
-    adminModel,
-    tempAdminModel,
-    adminInterfaces,
-}
+  adminRouter,
+  adminController,
+  adminService,
+  adminModel,
+  tempAdminModel,
+  adminInterfaces,
+};

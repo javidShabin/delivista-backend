@@ -41,6 +41,6 @@ router.patch("/admin-update-password", updateAdminPassword);
 // Admin logout
 router.delete("/admin-logout", logoutAdmin);
 // Check admin authentication
-router.get("/check-admin", authenticate, authorize("admin"), checkAdmin)
+router.get("/check-admin", authenticate, authorize("admin"), checkAdmin);
 
 export default router;
