@@ -361,3 +361,26 @@ export const updateSellerPassword = async (
     next(error);
   }
 };
+
+// Logout seller
+export const logoutAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Clear the userToken cookie
+    res.clearCookie("userToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+    // Respond with success response
+    res.status(200).json({
+      success: true,
+      message: "Seller logged out successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
