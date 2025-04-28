@@ -370,7 +370,7 @@ export const logoutAdmin = async (
   }
 };
 
-// Check admin controller function
+// Check admin is athourized or not
 export const checkAdmin = async (
   req: Request,
   res: Response,

@@ -372,7 +372,7 @@ export const logoutUser = async (
   }
 };
 
-// Check user controller
+// Check user is athourized or not
 export const checkUser = async (
   req: Request,
   res: Response,

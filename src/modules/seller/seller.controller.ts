@@ -384,3 +384,25 @@ export const logoutSeller = async (
     next(error);
   }
 };
+
+// Check seller is athourized or not
+export const checkAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const isSeller = req.user;
+    // Check if the user is an seller
+    if (!isSeller) {
+      return next(new AppError("Unauthorized access", 401));
+    }
+    // Respond with success response
+    res.json({
+      success: true,
+      message: "Seller is authenticated",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
