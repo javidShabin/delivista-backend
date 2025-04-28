@@ -7,6 +7,7 @@ import {
   getAllSellers,
   getSellerProfile,
   loginSeller,
+  logoutSeller,
   signupSeller,
   updateSellerPassword,
   updateSellerProfile,
@@ -45,5 +46,6 @@ router.post("/seller-forgot-password", generateFogotPassOtp);
 router.post("/seller-forgot-password-verify-otp", verifyForgotPasswordOtp);
 // Update seller password
 router.patch("/seller-password-update", updateSellerPassword);
-
+// Forgot the seller
+router.delete("/seller-logout", logoutSeller)
 export default router;
