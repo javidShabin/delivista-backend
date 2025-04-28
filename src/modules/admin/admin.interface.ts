@@ -39,3 +39,8 @@ export interface IadminOTPverifying {
   email: string;
   otp: string;
 }
+// Admin login interface
+export interface IadminLogin {
+  email: string;
+  password: string;
+}
