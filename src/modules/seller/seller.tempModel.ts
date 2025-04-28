@@ -38,11 +38,6 @@ const tempSellerSchema: Schema<ITempSellerModel> = new Schema(
       enum: ["seller"],
       default: "seller",
     },
-    coverImage: {
-      type: String,
-      default:
-        "https://media.istockphoto.com/id/2041572395/vector/blank-avatar-photo-placeholder-icon-vector-illustration.jpg?s=612x612&w=0&k=20&c=wSuiu-si33m-eiwGhXiX_5DvKQDHNS--CBLcyuy68n0=",
-    },
     avatar: {
       type: String,
       default:
