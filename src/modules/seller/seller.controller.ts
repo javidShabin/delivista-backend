@@ -363,7 +363,7 @@ export const updateSellerPassword = async (
 };
 
 // Logout seller
-export const logoutAdmin = async (
+export const logoutSeller = async (
   req: Request,
   res: Response,
   next: NextFunction
