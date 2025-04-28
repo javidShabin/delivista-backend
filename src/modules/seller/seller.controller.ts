@@ -386,7 +386,7 @@ export const logoutSeller = async (
 };
 
 // Check seller is athourized or not
-export const checkAdmin = async (
+export const checkSeller = async (
   req: Request,
   res: Response,
   next: NextFunction
