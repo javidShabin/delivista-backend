@@ -259,3 +259,39 @@ export const updateSellerProfile = async (
     next(error);
   }
 };
+
+// Seller forgot password generating
+export const generateFogotPassOtp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Destructer email from request body
+    const { email } = req.body;
+    // CHeck email present or not
+    if (!email) {
+      return next(new AppError("Email is required", 400));
+    }
+    // Find the seller by email
+    const isSeller = await sellerSchema.findOne({ email });
+    if (!isSeller) {
+      return next(new AppError("Seller not found", 404));
+    }
+    // Generate 6-digit OTP for password reset
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    await tempSellerSchema.findOneAndUpdate(
+      { email },
+      {
+        otp,
+        otpExpires: Date.now() + 10 * 60 * 1000,
+      },
+      { upsert: true, new: true }
+    );
+    // Set up email message details
+    await sendOtpEmail(email, otp);
+    res.status(200).json({ message: "OTP sent to email" });
+  } catch (error) {
+    next(error)
+  }
+};
