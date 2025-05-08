@@ -3,6 +3,7 @@ import { authenticate } from "../../middlewares/auth.middleware";
 import { authorize } from "../../middlewares/authorize";
 import { upload } from "../../middlewares/multer";
 import {
+    generateFogotPassOtp,
   getAllSellers,
   getSellerProfile,
   loginSeller,
@@ -36,4 +37,6 @@ router.put(
   upload.single("avatar"),
   updateSellerProfile
 );
+// Forgot password OTP generating
+router.post("/forgot-password", generateFogotPassOtp)
 export default router;
