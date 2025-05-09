@@ -68,16 +68,68 @@ export const createMenu = async (
   }
 };
 
-// updateMenu
+// Update menu
 export const updateMenu = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-  } catch (error) {}
-};
+    const { id } = req.params;
 
+    // Destructure fields from request body
+    const {
+      productName,
+      description,
+      category,
+      price,
+      isVeg,
+      isAvailable,
+      isRecommended,
+      tags,
+    } = req.body;
+
+    // Check if the menu item exists
+    const existingMenu = await menuSchema.findById(id);
+    if (!existingMenu) {
+      return next(new AppError("Menu item not found", 404));
+    }
+
+    // Handle image update if a file is uploaded
+    let updatedImage = existingMenu.image;
+    if (req.file) {
+      const uploadResult = await handleImageUpload(req.file);
+      updatedImage = uploadResult;
+    }
+
+    // Prepare updated data
+    const updatedData = {
+      productName,
+      description,
+      category,
+      price,
+      isVeg,
+      isAvailable,
+      isRecommended,
+      tags,
+      image: updatedImage,
+    };
+
+    // Update menu
+    const updatedMenu = await menuSchema.findByIdAndUpdate(id, updatedData, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Menu item updated successfully",
+      data: updatedMenu,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 // deleteMenu
 export const deleteMenu = async (
   req: Request,
