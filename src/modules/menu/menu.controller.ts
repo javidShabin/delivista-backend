@@ -130,14 +130,35 @@ export const updateMenu = async (
     next(error);
   }
 };
-// deleteMenu
+
+// Delete a menu item by its id
 export const deleteMenu = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-  } catch (error) {}
+    // Get menu id from request parameters
+    const { id } = req.params;
+
+    // Check if the menu item exists in the database
+    const menuItem = await menuSchema.findById(id);
+    if (!menuItem) {
+      return next(new AppError("Menu item not found", 404));
+    }
+
+    // If found, delete the menu item
+    await menuSchema.findByIdAndDelete(id);
+
+    // Send success response
+    res.status(200).json({
+      success: true,
+      message: "Menu item deleted successfully",
+    });
+  } catch (error) {
+    // Forward error to global error handler
+    next(error);
+  }
 };
 
 // ************Get menus by association**********************
