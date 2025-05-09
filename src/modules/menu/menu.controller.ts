@@ -197,16 +197,6 @@ export const getMenusByRestaurant = async (
   }
 };
 
-// getMenusBySeller
-export const getMenusBySeller = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-  } catch (error) {}
-};
-
 // ************Filtering functions for menus**********************
 // getMenusByCategory
 export const getMenusByCategory = async (
@@ -260,15 +250,6 @@ export const getMenusByCategory = async (
   }
 };
 
-// getMenusByPriceRange
-export const getMenusByPriceRange = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-  } catch (error) {}
-};
 
 // getMenusByTag
 export const getMenusByTag = async (
