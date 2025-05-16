@@ -18,6 +18,7 @@ export interface ICart {
   restaurantId: Types.ObjectId;
   items: ICartItem[];
   totalPrice: number;
+  orderStatus: "pending" | "in-progress" | "completed";
   createdAt: Date;
   updatedAt: Date;
 }

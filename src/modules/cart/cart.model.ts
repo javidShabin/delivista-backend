@@ -66,6 +66,11 @@ const cartSchema = new Schema<ICartModel>(
       type: Number,
       default: 0,
     },
+    orderStatus: {
+      type: String,
+      enum: ["pending", "in-progress", "completed"],
+      default: "pending",
+    },
   },
   {
     timestamps: true,
