@@ -3,7 +3,8 @@ export interface IAdmin {
     name: string;
     email: string;
     password: string;
-    role: "customer";
+    phone: string;
+    role: "admin";
     avatar?:{
         public_id: string;
         url: string;
