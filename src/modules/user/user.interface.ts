@@ -4,7 +4,7 @@ export interface IUser {
   email: string;
   password: string;
   phone: string;
-  role: "customer" | "admin" | "seller";
+  role: "customer";
   avatar?: {
     public_id: string;
     url: string;
