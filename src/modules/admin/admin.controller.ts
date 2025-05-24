@@ -5,7 +5,7 @@ import { comparePassword, hashPassword, sendOtpEmail } from "./admin.service";
 import { AppError } from "../../utils/appError";
 import { generateToken } from "../../utils/generateToken";
 import cloudinary from "../../configs/cloudinary";
-import { validateAdminSignup } from "./admin.validation";
+import { validateAdminOTP, validateAdminSignup } from "./admin.validation";
 
 // Generate and send OTP to admin email
 // Send OTP using node mailer to admin email
@@ -48,4 +48,39 @@ export const signupAdmin = async (
   } catch (error) {
     next(error);
   }
+};
+
+// Verify the OTP and create an admin account
+export const verifyAdminOTP = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Validate the OTP and email
+    validateAdminOTP(req.body);
+    // Destructure the email and OTP from request body
+    const { email, otp } = req.body;
+    // Find the temporary admin document by email
+    const tempAdmin = await tempAdminSchema.findOne({ email });
+    // Check if the temporary admin exists and the OTP is valid
+    if (!tempAdmin || tempAdmin.otp !== otp) {
+      return next(new AppError("Invalid OTP or email", 400));
+    }
+    // Check if the OTP has expired
+    if (tempAdmin.otpExpires < new Date()) {
+      return next(new AppError("OTP has expired", 400));
+    }
+    // Create and save the new admin
+    const newAdmin = await adminSchema.create({
+      name: tempAdmin.name,
+      email: tempAdmin.email,
+      password: tempAdmin.password,
+      phone: tempAdmin.phone,
+      role: "admin",
+    });
+    await newAdmin.save();
+
+   
+  } catch (error) {}
 };
