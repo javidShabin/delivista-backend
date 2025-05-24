@@ -1,5 +1,5 @@
 import { AppError } from "../../utils/appError";
-import { IuserCreaction } from "./auth.interface";
+import { IuserCreaction, IuserOTPverifying } from "./auth.interface";
 
 // Validation for user signupn
 export const validateSignupUser = (data: IuserCreaction) => {
@@ -19,5 +19,18 @@ export const validateSignupUser = (data: IuserCreaction) => {
 
   if (password.length < 6) {
     throw new AppError("Password must be at least 6 characters", 400);
+  }
+};
+
+// Validation for user OTP verification
+export const validateUserOTP = (data: IuserOTPverifying) => {
+  // Destructer the user email and otp
+  const { email, otp } = data;
+  // Check the otp and email is present or not
+  if (!email || !otp) {
+    throw new AppError("OTP and email is required", 400);
+  }
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    throw new AppError("Invalid email format", 400);
   }
 };
