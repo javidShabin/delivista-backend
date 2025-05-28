@@ -321,6 +321,43 @@ export const verifyForgotPasswordOtp = async (
       message: "OTP verified successfully. You can now change your password.",
     });
   } catch (error) {
-    next(error)
+    next(error);
+  }
+};
+
+// Update the seller password
+export const updateSellerPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Validate the password
+    validateSellerPassword(req.body);
+    // Destructer the email , password and verify the password
+    const { email, password } = req.body;
+    // Find the tempSeller by email
+    const isTempSeller = await tempSellerSchema.findOne({ email });
+    // Check if the admin exists
+    if (!isTempSeller) {
+      return next(new AppError("Seller not found", 404));
+    }
+    // Hash the new password
+    const hashedPassword = await hashPassword(password);
+    // Update the seller password in the seller schema
+    await sellerSchema.findOneAndUpdate(
+      { email },
+      { password: hashPassword },
+      { new: true }
+    );
+    // Delete the temporary seller document
+    await tempSellerSchema.deleteOne({ email });
+    // Respond with success response
+    res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    next(error);
   }
 };
