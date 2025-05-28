@@ -9,6 +9,7 @@ import {
   loginSeller,
   signupSeller,
   updateSellerProfile,
+  verifyForgotPasswordOtp,
   verifySellerOTP,
 } from "./seller.controller";
 
@@ -38,5 +39,7 @@ router.put(
   updateSellerProfile
 );
 // Forgot password OTP generating
-router.post("/forgot-password", generateFogotPassOtp)
+router.post("/seller-forgot-password", generateFogotPassOtp)
+// Verify password OTP
+router.patch("/seller-forgot-password-verify-otp", verifyForgotPasswordOtp)
 export default router;
