@@ -8,6 +8,7 @@ import {
   getSellerProfile,
   loginSeller,
   signupSeller,
+  updateSellerPassword,
   updateSellerProfile,
   verifyForgotPasswordOtp,
   verifySellerOTP,
@@ -41,5 +42,7 @@ router.put(
 // Forgot password OTP generating
 router.post("/seller-forgot-password", generateFogotPassOtp)
 // Verify password OTP
-router.patch("/seller-forgot-password-verify-otp", verifyForgotPasswordOtp)
+router.post("/seller-forgot-password-verify-otp", verifyForgotPasswordOtp)
+// Update seller password
+router.patch("/seller-password-update", updateSellerPassword)
 export default router;

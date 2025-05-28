@@ -347,7 +347,7 @@ export const updateSellerPassword = async (
     // Update the seller password in the seller schema
     await sellerSchema.findOneAndUpdate(
       { email },
-      { password: hashPassword },
+      { password: hashedPassword },
       { new: true }
     );
     // Delete the temporary seller document
