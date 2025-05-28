@@ -292,6 +292,35 @@ export const generateFogotPassOtp = async (
     await sendOtpEmail(email, otp);
     res.status(200).json({ message: "OTP sent to email" });
   } catch (error) {
+    next(error);
+  }
+};
+
+// Verify the OTP and reset password
+export const verifyForgotPasswordOtp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Validate the email and otp
+    validateSellerOTP(req.body);
+    // Destructer the email and OTP from request body
+    const { email, otp } = req.body;
+    // Find the temp seller by email, and check the seller is present
+    const tempSeller = await tempSellerSchema.findOne({ email });
+    if (!tempSeller) {
+      return next(new AppError("Seller not found", 404));
+    }
+    // Compare the OTP
+    if (tempSeller.otp !== otp) {
+      return next(new AppError("Invalid OTP", 400));
+    }
+    // Send success respone
+    res.status(200).json({
+      message: "OTP verified successfully. You can now change your password.",
+    });
+  } catch (error) {
     next(error)
   }
 };
