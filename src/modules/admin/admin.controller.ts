@@ -370,7 +370,7 @@ export const logoutAdmin = async (
   }
 };
 
-// Check admin controller
+// Check admin controller function
 export const checkAdmin = async (
   req: Request,
   res: Response,
