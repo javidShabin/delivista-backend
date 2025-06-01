@@ -2,8 +2,8 @@ import { mailTransporter } from "./../../configs/transportMail";
 import bcrypt from "bcrypt";
 
 export const hashPassword = async (password: string) => {
-    return bcrypt.hash(password, 10)
-}
+  return bcrypt.hash(password, 10);
+};
 
 export const sendOtpEmail = async (
   email: string,
