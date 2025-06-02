@@ -4,6 +4,7 @@ import userSchema from "./user.model";
 import { hashPassword, sendOtpEmail } from "./user.service";
 import { AppError } from "../../utils/appError";
 import { validateSignupUser, validateUserOTP } from "./user.validation";
+import { generateToken } from "../../utils/generateToken";
 
 // Generate and send OTP to user email
 export const signupUser = async (
@@ -49,33 +50,62 @@ export const verifyOtpAndCreateUser = async (
   next: NextFunction
 ) => {
   try {
-    // Validate the OTP and user email in validator function
+    // Validate the OTP and email
     validateUserOTP(req.body);
-    // Destructer the emial and otp from request body
+
     const { email, otp } = req.body;
-    // Find the temporary user usigng email
-    const tempUser = await tempUserSchema.findOne({email})
+
+    // Check if the temp user exists
+    const tempUser = await tempUserSchema.findOne({ email });
     if (!tempUser) {
-      return next(new AppError("User already exists", 400))
+      return next(new AppError("User does not exist or OTP expired", 404));
     }
-    // Compare the OTP 
+
+    // Check if OTP matches
     if (tempUser.otp !== otp) {
-      return next(new AppError("invalid OTP", 400))
+      return next(new AppError("Invalid OTP", 400));
     }
-    // Check the OTP expire or not
+
+    // Check if OTP is expired
     if (tempUser.otpExpires.getTime() < Date.now()) {
-      return next(new AppError("OTP has expired", 400))
+      return next(new AppError("OTP has expired", 400));
     }
-    // Create and save new user
+
+    // Create and save the new user
     const newUser = new userSchema({
       name: tempUser.name,
       email: tempUser.email,
       password: tempUser.password,
-      avatar: tempUser.avatar
-    })
-    await newUser.save()
+      phone: tempUser.phone,
+      role: tempUser.role,
+      avatar: tempUser.avatar,
+    });
 
-  } catch (error) {}
+    await newUser.save();
+
+    // Generate JWT token
+    const token = generateToken({
+      id: newUser._id.toString(),
+      email: newUser.email,
+      role: newUser.role,
+    });
+    // Set the token to cookie
+    res.cookie("userToken", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+    // Delete the tempUser after signup
+    await tempUser.deleteOne({ email });
+
+    // Respond with success and token
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 // Log in the user
 export const loginUser = (req: Request, res: Response) => {};
