@@ -1,3 +1,7 @@
+import tempUserSchema from "./user.tempModel"
+import userSchema from "./user.model"
+import {hashPassword, sendOtpEmail} from "./user.service"
+
 
 // Generate and send OTP to user email
 export const generateOtp = (req: Request, res: Response) => {};

@@ -1,20 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
+import {ITempUser} from "./user.interface"
 
-export interface ITempUser extends Document {
-  name: string;
-  email: string;
-  password: string;
-  otp: string;
-  otpExpires: Date;
-  role: "user" | "admin" | "seller";
-  avatar?: {
-    public_id: string;
-    url: string;
-  };
-  createdAt: Date;
-}
+export interface ITempUserModel extends ITempUser, Document {}
 
-const tempUserSchema: Schema<ITempUser> = new Schema(
+const tempUserSchema: Schema<ITempUserModel> = new Schema(
   {
     name: {
       type: String,
