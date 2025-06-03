@@ -269,9 +269,21 @@ export const generateFogotPassOtp = async (
     const { email } = req.body;
     // Check email present or not
     if (!email) {
-      return next(new AppError("Email is required", 400))
+      return next(new AppError("Email is required", 400));
     }
   } catch (error) {}
 };
+// Verify the OTP and resent password
+export const verifyForgotPasswordOtp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+// Update the user password
+export const updateUserPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
 // Log out user
 export const logoutUser = (req: Request, res: Response) => {};
