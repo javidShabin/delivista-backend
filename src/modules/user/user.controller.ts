@@ -9,6 +9,7 @@ import {
   validateUserOTP,
 } from "./user.validation";
 import { generateToken } from "../../utils/generateToken";
+import cloudinary from "../../configs/cloudinary";
 
 // Generate and send OTP to user email
 // Send OTP using node mailer to user email
@@ -200,6 +201,7 @@ export const getUserProfileById = async (
     next(error);
   }
 };
+
 // Update user profile by user ID
 export const updateUserProfile = async (
   req: Request,
@@ -224,6 +226,17 @@ export const updateUserProfile = async (
       avatar
     }
 
+    // If file is provide from request body, upload it to Cloudinary
+    if (req.file) {
+      try {
+        const uploadResult = await cloudinary.uploader.upload(
+          req.file.path
+        )
+        console.log(uploadResult)
+      } catch (error) {
+        
+      }
+    }
     
   } catch (error) {}
 };
