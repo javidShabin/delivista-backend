@@ -254,10 +254,24 @@ export const updateUserProfile = async (
       updatedUser,
     });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
-// Forgot password
-export const forgotPassword = (req: Request, res: Response) => {};
+
+// Forgot password OTP generation
+export const generateFogotPassOtp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Destructer email from request body
+    const { email } = req.body;
+    // Check email present or not
+    if (!email) {
+      return next(new AppError("Email is required", 400))
+    }
+  } catch (error) {}
+};
 // Log out user
 export const logoutUser = (req: Request, res: Response) => {};
