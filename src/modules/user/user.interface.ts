@@ -4,7 +4,7 @@ export interface IUser {
   email: string;
   password: string;
   phone: string;
-  role: "user" | "admin" | "seller";
+  role: "customer" | "admin" | "seller";
   avatar?: {
     public_id: string;
     url: string;
@@ -19,7 +19,7 @@ export interface ITempUser {
   phone: string;
   otp: string;
   otpExpires: Date;
-  role: "user" | "admin" | "seller";
+  role: "customer" | "admin" | "seller";
   avatar?: {
     public_id: string;
     url: string;

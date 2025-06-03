@@ -201,7 +201,13 @@ export const getUserProfileById = async (
   }
 };
 // Update user profile by user ID
-export const updateUserProfile = (req: Request, res: Response) => {};
+export const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+  
+  } catch (error) {
+    
+  }
+};
 // Forgot password
 export const forgotPassword = (req: Request, res: Response) => {};
 // Log out user
