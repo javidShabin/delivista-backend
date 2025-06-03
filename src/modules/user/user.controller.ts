@@ -241,13 +241,21 @@ export const updateUserProfile = async (
 
     // Update user data in the database
     const updatedUser = await userSchema.findByIdAndUpdate(id, updateUserData, {
-      new: true
-    })
+      new: true,
+    });
     // Handle case when user is not found
     if (!updatedUser) {
-      return next(new AppError("User not found", 404))
+      return next(new AppError("User not found", 404));
     }
-  } catch (error) {}
+    // Send the updated user as a response
+    res.json({
+      success: true,
+      message: "Your profile updated successfully",
+      updatedUser,
+    });
+  } catch (error) {
+    next(error)
+  }
 };
 // Forgot password
 export const forgotPassword = (req: Request, res: Response) => {};
