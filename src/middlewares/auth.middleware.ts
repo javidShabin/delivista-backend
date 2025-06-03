@@ -30,6 +30,7 @@ export const authenticate = (
       ? authHeader.split(" ")[1]
       : req.cookies?.userToken;
 
+      
   if (!token) {
     return next(new AppError("Authentication token missing or invalid", 401));
   }

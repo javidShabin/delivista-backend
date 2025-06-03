@@ -203,8 +203,12 @@ export const getUserProfileById = async (
 // Update user profile by user ID
 export const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    
+    // Get user Id form req.user
     const id = req.user?.id
+    console.log(req.user)
+    if (!id) {
+      return next(new AppError("Unauthorized access", 401))
+    }
     
   } catch (error) {
     
