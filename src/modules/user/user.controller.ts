@@ -178,10 +178,28 @@ export const getAllUsers = async (
     next(error);
   }
 };
-// Get user by user ID
-export const getUserById = (req: Request, res: Response) => {};
+
 // Get user profile using user ID
-export const getUserProfileById = (req: Request, res: Response) => {};
+export const getUserProfileById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Get the user Id from the request parameter
+    const { userId } = req.params;
+    // Find the user by Id from database
+    const userProfile = await userSchema.findById(userId).select("-password");
+    // Check if the user exists
+    if (!userProfile) {
+      return next(new AppError("User not found", 404));
+    }
+    // Return the user profile
+    res.status(200).json({userProfile})
+  } catch (error) {
+    next(error)
+  }
+};
 // Update user profile by user ID
 export const updateUserProfile = (req: Request, res: Response) => {};
 // Forgot password

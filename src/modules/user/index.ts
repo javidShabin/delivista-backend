@@ -1,5 +1,5 @@
 import express from "express";
-import {  getAllUsers, loginUser, signupUser, verifyOtpAndCreateUser } from "./user.controller";
+import {  getAllUsers, getUserProfileById, loginUser, signupUser, verifyOtpAndCreateUser } from "./user.controller";
 const api = express();
 
 // User signup
@@ -10,6 +10,8 @@ api.post("/verify-token", verifyOtpAndCreateUser)
 api.post("/user-login", loginUser)
 // Get all useres
 api.get("/users-list", getAllUsers)
+// Get user profile
+api.get("/user-profile/:userId", getUserProfileById)
 
 
 export default api;
