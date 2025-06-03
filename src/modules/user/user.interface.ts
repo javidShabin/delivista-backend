@@ -39,3 +39,8 @@ export interface IuserOTPverifying {
   email: string;
   otp: string;
 }
+// User login interface
+export interface IuserLogin {
+  email: string;
+  password: string;
+}

@@ -7,6 +7,7 @@ import { validateSignupUser, validateUserOTP } from "./user.validation";
 import { generateToken } from "../../utils/generateToken";
 
 // Generate and send OTP to user email
+// Send OTP using node mailer to user email
 export const signupUser = async (
   req: Request,
   res: Response,
@@ -43,6 +44,7 @@ export const signupUser = async (
     next(error);
   }
 };
+
 // Verify the OTP and create a new user
 export const verifyOtpAndCreateUser = async (
   req: Request,
@@ -107,8 +109,15 @@ export const verifyOtpAndCreateUser = async (
     next(error);
   }
 };
+
 // Log in the user
-export const loginUser = (req: Request, res: Response) => {};
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+  
+  } catch (error) {
+    
+  }
+};
 // Get users list
 export const getAllUsers = (req: Request, res: Response) => {};
 // Get user by user ID
