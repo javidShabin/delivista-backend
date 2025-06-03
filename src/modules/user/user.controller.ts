@@ -158,8 +158,26 @@ export const loginUser = async (
     next(error);
   }
 };
+
 // Get users list
-export const getAllUsers = (req: Request, res: Response) => {};
+export const getAllUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Get all user from the database
+    const user = await userSchema.find({}).select("-password");
+    // Check if there are any user
+    if (!user) {
+      return next(new AppError("No useres found", 401));
+    }
+    // Return the users
+    res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
+};
 // Get user by user ID
 export const getUserById = (req: Request, res: Response) => {};
 // Get user profile using user ID
