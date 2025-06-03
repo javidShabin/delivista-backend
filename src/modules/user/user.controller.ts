@@ -203,7 +203,9 @@ export const getUserProfileById = async (
 // Update user profile by user ID
 export const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
-  
+    
+    const id = req.user?.id
+    
   } catch (error) {
     
   }
