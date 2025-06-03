@@ -223,21 +223,30 @@ export const updateUserProfile = async (
       name,
       email,
       phone,
-      avatar
-    }
+      avatar,
+    };
 
     // If file is provide from request body, upload it to Cloudinary
     if (req.file) {
       try {
-        const uploadResult = await cloudinary.uploader.upload(
-          req.file.path
-        )
-        console.log(uploadResult)
-      } catch (error) {
-        
+        const uploadResult = await cloudinary.uploader.upload(req.file.path);
+        // Store the image url to update user data
+        updateUserData.avatar = uploadResult.secure_url;
+      } catch (uploadError: any) {
+        return next(
+          new AppError("File upload failed" + uploadError.message, 500)
+        );
       }
     }
-    
+
+    // Update user data in the database
+    const updatedUser = await userSchema.findByIdAndUpdate(id, updateUserData, {
+      new: true
+    })
+    // Handle case when user is not found
+    if (!updatedUser) {
+      return next(new AppError("User not found", 404))
+    }
   } catch (error) {}
 };
 // Forgot password
