@@ -278,8 +278,8 @@ export const generateFogotPassOtp = async (
     }
 
     // Generate 6-digit OTP for password reset
-    const otp = Math.floor(1000 + Math.random() * 900000).toString();
-    await tempUserSchema.findByIdAndUpdate(
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    await tempUserSchema.findOneAndUpdate(
       { email },
       {
         otp,

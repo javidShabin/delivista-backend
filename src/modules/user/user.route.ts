@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  generateFogotPassOtp,
   getAllUsers,
   getUserProfileById,
   loginUser,
@@ -29,5 +30,5 @@ router.put(
   upload.single("avatar"),
   updateUserProfile
 );
-
+router.post("/forgot-password", generateFogotPassOtp)
 export default router;
