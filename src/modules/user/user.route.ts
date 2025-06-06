@@ -25,7 +25,12 @@ router.post("/user-login", loginUser);
 // Get all useres
 router.get("/users-list", getAllUsers);
 // Get user profile
-router.get("/user-profile/:userId", getUserProfileById);
+router.get(
+  "/user-profile",
+  authenticate,
+  authorize("customer", "admin"),
+  getUserProfileById
+);
 // Update user profile
 router.put(
   "/user-profile-update",
@@ -39,9 +44,9 @@ router.post("/forgot-password", generateFogotPassOtp);
 // Forgot password OTP verifying
 router.post("/verify-pass-otp", verifyForgotPasswordOtp);
 // Update the user password
-router.patch("/update-password", updateUserPassword)
+router.patch("/update-password", updateUserPassword);
 // Logout the user , (clear the toker from cookie)
-router.delete("/user-logout", logoutUser)
+router.delete("/user-logout", logoutUser);
 // Check user router
-router.get("/user-check",authenticate, authorize("customer"), checkUser)
+router.get("/user-check", authenticate, authorize("customer"), checkUser);
 export default router;

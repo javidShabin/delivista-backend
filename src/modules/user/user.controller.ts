@@ -188,8 +188,7 @@ export const getUserProfileById = async (
   next: NextFunction
 ) => {
   try {
-    // Get the user Id from the request parameter
-    const { userId } = req.params;
+    const userId = req.user?.id
     // Find the user by Id from database
     const userProfile = await userSchema.findById(userId).select("-password");
     // Check if the user exists
