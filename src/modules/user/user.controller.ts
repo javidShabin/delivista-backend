@@ -45,7 +45,7 @@ export const signupUser = async (
       { upsert: true, new: true }
     );
     await sendOtpEmail(email, otp);
-    res.status(200).json({ message: "OTP sent to email" });
+    res.status(200).json({ status: "success", message: "OTP sent to email" });
   } catch (error) {
     next(error);
   }
@@ -188,7 +188,7 @@ export const getUserProfileById = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.user?.id
+    const userId = req.user?.id;
     // Find the user by Id from database
     const userProfile = await userSchema.findById(userId).select("-password");
     // Check if the user exists

@@ -35,3 +35,6 @@ export interface IadminCreation {
   confirmPassword: string;
   phone: string;
 }
+
+
+
