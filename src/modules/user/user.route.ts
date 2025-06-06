@@ -31,6 +31,8 @@ router.put(
   upload.single("avatar"),
   updateUserProfile
 );
+// Forgot password OTP generating
 router.post("/forgot-password", generateFogotPassOtp);
+// Forgot password OTP verifying
 router.post("/verify-pass-otp", verifyForgotPasswordOtp);
 export default router;
