@@ -26,3 +26,12 @@ export interface ITempAdmin {
     };
     createdAt: Date;
 }
+
+// Admin signup interface
+export interface IadminCreation {
+    name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  phone: string;
+}
