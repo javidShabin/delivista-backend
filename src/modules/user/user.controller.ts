@@ -106,7 +106,7 @@ export const verifyOtpAndCreateUser = async (
     // Delete the tempUser after signup
     await tempUser.deleteOne({ email });
 
-    // Respond with success and token
+    // Respond with success response
     res.status(201).json({
       success: true,
       message: "User registered successfully",

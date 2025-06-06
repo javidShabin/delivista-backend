@@ -81,6 +81,26 @@ export const verifyAdminOTP = async (
     });
     await newAdmin.save();
 
-   
-  } catch (error) {}
+    // Generate a JWT token
+    const token = generateToken({
+      id: newAdmin._id.toString(),
+      email: newAdmin.email,
+      role: newAdmin.role,
+    });
+    // Set the token in a cookie
+    res.cookie("userToken", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+    // Delete the temporary admin document
+    await tempAdminSchema.deleteOne({ email });
+    // Respond with success response
+    res.status(201).json({
+      success: true,
+      message: "Admin registered successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
