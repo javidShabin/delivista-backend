@@ -1,5 +1,5 @@
 import { AppError } from "../../utils/appError";
-import { IadminCreation } from "./admin.interface";
+import { IadminCreation, IadminOTPverifying } from "./admin.interface";
 
 // Validation for admin signup
 export const validateAdminSignup = (data: IadminCreation) => {
@@ -20,5 +20,18 @@ export const validateAdminSignup = (data: IadminCreation) => {
   // Validate password length
   if (password.length < 6) {
     throw new AppError("Password must be at least 6 characters", 400);
+  }
+};
+
+// Validation for admin OTP verification
+export const validateAdminOTP = (data: IadminOTPverifying) => {
+  // Destructer the admin email and otp
+  const { email, otp } = data;
+  // Check the otp and email is present or not
+  if (!email || !otp) {
+    throw new AppError("OTP and email is required", 400);
+  }
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    throw new AppError("Invalid email format", 400);
   }
 };
