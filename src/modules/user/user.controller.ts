@@ -302,7 +302,7 @@ export const verifyForgotPasswordOtp = async (
   next: NextFunction
 ) => {
   try {
-    validateUserOTP(req.body)
+    validateUserOTP(req.body);
     // Destructer the emial and otp from request body
     const { email, otp } = req.body;
     // Find the temp user using email, and check the user is present
@@ -328,7 +328,28 @@ export const updateUserPassword = async (
   res: Response,
   next: NextFunction
 ) => {
-  
+  try {
+    // Destructer the email, password and verify password
+    const { email, password, confirmPassword } = req.body;
+    // Find the tempUser using email
+    const isTempUser = tempUserSchema.findOne({ email });
+    if (!isTempUser) {
+      return next(new AppError("User not found", 404));
+    }
+    // Hash the users new password
+    const hashedPassword = await hashPassword(password);
+    // Upda the the new password
+    const user = await userSchema.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    );
+    // Clear the tempUser
+    await tempUserSchema.deleteOne({email})
+    return res.status(200).json({message: "Password changed successfully"})
+  } catch (error) {
+    next(error)
+  }
 };
 // Log out user
 export const logoutUser = (req: Request, res: Response) => {};
