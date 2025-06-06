@@ -5,6 +5,7 @@ import {
   getUserProfileById,
   loginUser,
   signupUser,
+  updateUserPassword,
   updateUserProfile,
   verifyForgotPasswordOtp,
   verifyOtpAndCreateUser,
@@ -35,4 +36,6 @@ router.put(
 router.post("/forgot-password", generateFogotPassOtp);
 // Forgot password OTP verifying
 router.post("/verify-pass-otp", verifyForgotPasswordOtp);
+// Update the user password
+router.patch("/update-password", updateUserPassword)
 export default router;

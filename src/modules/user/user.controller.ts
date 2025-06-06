@@ -346,7 +346,7 @@ export const updateUserPassword = async (
     );
     // Clear the tempUser
     await tempUserSchema.deleteOne({email})
-    return res.status(200).json({message: "Password changed successfully"})
+    res.status(200).json({message: "Password changed successfully"})
   } catch (error) {
     next(error)
   }
