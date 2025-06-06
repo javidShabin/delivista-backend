@@ -7,6 +7,7 @@ import {
   validateSignupUser,
   validateUserLogin,
   validateUserOTP,
+  validateUserPassword,
 } from "./user.validation";
 import { generateToken } from "../../utils/generateToken";
 import cloudinary from "../../configs/cloudinary";
@@ -329,8 +330,9 @@ export const updateUserPassword = async (
   next: NextFunction
 ) => {
   try {
+    validateUserPassword(req.body)
     // Destructer the email, password and verify password
-    const { email, password, confirmPassword } = req.body;
+    const { email, password } = req.body;
     // Find the tempUser using email
     const isTempUser = tempUserSchema.findOne({ email });
     if (!isTempUser) {
