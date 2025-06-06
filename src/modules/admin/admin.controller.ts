@@ -5,7 +5,11 @@ import { comparePassword, hashPassword, sendOtpEmail } from "./admin.service";
 import { AppError } from "../../utils/appError";
 import { generateToken } from "../../utils/generateToken";
 import cloudinary from "../../configs/cloudinary";
-import { validateAdminOTP, validateAdminSignup } from "./admin.validation";
+import {
+  validateAdminLogin,
+  validateAdminOTP,
+  validateAdminSignup,
+} from "./admin.validation";
 
 // Generate and send OTP to admin email
 // Send OTP using node mailer to admin email
@@ -99,6 +103,54 @@ export const verifyAdminOTP = async (
     res.status(201).json({
       success: true,
       message: "Admin registered successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Admin login
+export const loginAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Validate the user login details
+    validateAdminLogin(req.body);
+    // Destructure the email and password from request body
+    const { email, password } = req.body;
+    // Find the admin by email
+    const isAdminExist = await adminSchema.findOne({ email });
+    // Check if the admin exists
+    if (!isAdminExist) {
+      return next(new AppError("Invalid email or password", 400));
+    }
+    // Compare the password with the hashed password
+    const isPasswordMatch = await comparePassword(
+      password,
+      isAdminExist.password
+    );
+    // Check if the password matches
+    if (!isPasswordMatch) {
+      return next(new AppError("Invalid email or password", 400));
+    }
+    // Generate a JWT token
+    const token = generateToken({
+      id: isAdminExist._id.toString(),
+      email: isAdminExist.email,
+      role: isAdminExist.role,
+    });
+    // Set the token in a cookie
+    res.cookie("userToken", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+    // Respond with success response
+    res.status(200).json({
+      success: true,
+      message: "Admin logged in successfully",
     });
   } catch (error) {
     next(error);
