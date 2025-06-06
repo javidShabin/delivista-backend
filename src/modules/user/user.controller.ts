@@ -299,7 +299,22 @@ export const verifyForgotPasswordOtp = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  try {
+    // Destructer the emial and otp from request body
+    const { email, otp } = req.body;
+    // Check the email and otp is present
+    if (!email || !otp) {
+      return next(new AppError("Email and OTP are required", 404));
+    }
+     // Find the temp user using email, and check the user is present
+     const tempUser = await tempUserSchema.findOne({email})
+     if (!tempUser) {
+      return next(new AppError("User not found", 404))
+     }
+     
+  } catch (error) {}
+};
 // Update the user password
 export const updateUserPassword = async (
   req: Request,
