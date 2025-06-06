@@ -6,6 +6,7 @@ import {
   loginUser,
   signupUser,
   updateUserProfile,
+  verifyForgotPasswordOtp,
   verifyOtpAndCreateUser,
 } from "./user.controller";
 import { authenticate } from "../../middlewares/auth.middleware";
@@ -15,7 +16,7 @@ const router = express.Router();
 // User signup
 router.post("/user-signup", signupUser);
 // User OTP verification
-router.post("/verify-token", verifyOtpAndCreateUser);
+router.post("/verify-otp", verifyOtpAndCreateUser);
 // User login
 router.post("/user-login", loginUser);
 // Get all useres
@@ -30,5 +31,6 @@ router.put(
   upload.single("avatar"),
   updateUserProfile
 );
-router.post("/forgot-password", generateFogotPassOtp)
+router.post("/forgot-password", generateFogotPassOtp);
+router.post("/verify-pass-otp", verifyForgotPasswordOtp);
 export default router;

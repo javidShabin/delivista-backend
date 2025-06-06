@@ -294,26 +294,36 @@ export const generateFogotPassOtp = async (
     next(error);
   }
 };
+
 // Verify the OTP and resent password
 export const verifyForgotPasswordOtp = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
     // Destructer the emial and otp from request body
     const { email, otp } = req.body;
     // Check the email and otp is present
     if (!email || !otp) {
-      return next(new AppError("Email and OTP are required", 404));
+      return next(new AppError("Email and OTP are required", 400));
     }
-     // Find the temp user using email, and check the user is present
-     const tempUser = await tempUserSchema.findOne({email})
-     if (!tempUser) {
-      return next(new AppError("User not found", 404))
-     }
-     
-  } catch (error) {}
+    // Find the temp user using email, and check the user is present
+    const tempUser = await tempUserSchema.findOne({ email });
+    if (!tempUser) {
+      return next(new AppError("User not found", 404));
+    }
+    //Compare the OTP
+    if (tempUser.otp !== otp) {
+      return next(new AppError("Invalid OTP", 400));
+    }
+    // OTP is valid
+    res.status(200).json({
+      message: "OTP verified successfully. You can now change your password.",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 // Update the user password
 export const updateUserPassword = async (
