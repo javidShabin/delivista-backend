@@ -327,6 +327,8 @@ export const updateUserPassword = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  
+};
 // Log out user
 export const logoutUser = (req: Request, res: Response) => {};
