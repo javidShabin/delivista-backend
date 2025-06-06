@@ -1,4 +1,5 @@
 import {
+  IupdatePassword,
   IuserCreaction,
   IuserLogin,
   IuserOTPverifying,
@@ -51,6 +52,23 @@ export const validateUserLogin = (data: IuserLogin) => {
     throw new AppError("Invalid email format", 400);
   }
 
+  if (password.length < 6) {
+    throw new AppError("Password must be at least 6 characters", 400);
+  }
+};
+
+// Validation for update password
+export const validateUserPassword = (data: IupdatePassword) => {
+  // Destructer the email, password and verify password
+  const { email, password, confirmPassword } = data;
+  // Check required fields are present or not
+  if (!email || !password || !confirmPassword) {
+    throw new AppError("All fields are required", 400);
+  }
+  // Compare password and confom password
+  if (password !== confirmPassword) {
+    throw new AppError("Passwords do not match", 400);
+  }
   if (password.length < 6) {
     throw new AppError("Password must be at least 6 characters", 400);
   }
