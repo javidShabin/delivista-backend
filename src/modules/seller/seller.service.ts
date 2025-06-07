@@ -3,6 +3,11 @@ import { AppError } from "../../utils/appError";
 import { mailTransporter } from "./../../configs/transportMail";
 import bcrypt from "bcrypt";
 
+// Hashes a plain text password with a salt round of 10
+export const hashPassword = async (password: string) => {
+  return bcrypt.hash(password, 10);
+};
+
 // Compare the seller password using bcrypt
 export const comparePassword = async (
   password: string,
