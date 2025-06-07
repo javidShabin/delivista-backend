@@ -74,8 +74,13 @@ export const verifySellerOTP = async (
     const { email, otp } = req.body;
     // Find the temporary seller record
     const tempSeller = await tempSellerSchema.findOne({ email });
+    // Check if the temporary seller exists and the OTP is valid
     if (!tempSeller || tempSeller.otp !== otp) {
       throw new AppError("Invalid OTP or email", 400);
+    }
+    // Check if the OTP has expired
+    if (tempSeller.otpExpires < new Date()) {
+      throw new AppError("OTP has expired", 400);
     }
   } catch (error) {}
 };
