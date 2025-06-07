@@ -82,5 +82,13 @@ export const verifySellerOTP = async (
     if (tempSeller.otpExpires < new Date()) {
       throw new AppError("OTP has expired", 400);
     }
+    // Create the seller account with the verified details
+    const newSeller = await sellerSchema.create({
+      name: tempSeller.name,
+      email: tempSeller.email,
+      password: tempSeller.password,
+      phone: tempSeller.phone,
+      role: "seller",
+    });
   } catch (error) {}
 };
