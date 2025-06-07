@@ -90,5 +90,18 @@ export const verifySellerOTP = async (
       phone: tempSeller.phone,
       role: "seller",
     });
+    await newSeller.save();
+    // Generate a JWT token for the seller
+    const token = generateToken({
+      id: newSeller._id.toString(),
+      email: newSeller.email,
+      role: newSeller.role,
+    });
+    // Set the token in a cookie
+    res.cookie("userToken", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
   } catch (error) {}
 };
