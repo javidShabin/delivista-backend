@@ -20,7 +20,7 @@ router.post("/admin-login", loginAdmin);
 // Admin profile using authentication and authorization
 router.get("/admin-profile", authenticate, authorize("admin"), getAdminProfile);
 // Admin profile update and upload profile image
-router.patch(
+router.put(
   "/admin-profile-update",
   authenticate,
   authorize("admin"),

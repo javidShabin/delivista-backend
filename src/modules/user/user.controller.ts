@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import tempUserSchema from "./user.tempModel";
 import userSchema from "./user.model";
-import { comparePassword, hashPassword, sendOtpEmail } from "./user.service";
+import {
+  comparePassword,
+  handleAvatarUpload,
+  hashPassword,
+  sendOtpEmail,
+} from "./user.service";
 import { AppError } from "../../utils/appError";
 import {
   validateSignupUser,
@@ -226,17 +231,11 @@ export const updateUserProfile = async (
       avatar,
     };
 
-    // If file is provide from request body, upload it to Cloudinary
+    // Check if an avatar file is uploaded
     if (req.file) {
-      try {
-        const uploadResult = await cloudinary.uploader.upload(req.file.path);
-        // Store the image url to update user data
-        updateUserData.avatar = uploadResult.secure_url;
-      } catch (uploadError: any) {
-        return next(
-          new AppError("File upload failed" + uploadError.message, 500)
-        );
-      }
+      let userAvatar = await handleAvatarUpload(req.file); // Handler from admin.service.ts
+      // Update the avatar URL in the update object
+      updateUserData.avatar = userAvatar;
     }
 
     // Update user data in the database

@@ -209,15 +209,15 @@ export const updateAdminProfile = async (
     // Extract the admin details from request body
     const { name, email, phone, avatar } = req.body;
     // Prepare the update object
-    const updateData: any = { name, email, phone, avatar };
+    const updateAdminData: any = { name, email, phone, avatar };
     // Check if an avatar file is uploaded
     if (req.file) {
       let adminAvatar = await handleAvatarUpload(req.file); // Handler from admin.service.ts
       // Update the avatar URL in the update object
-      updateData.avatar = adminAvatar;
+      updateAdminData.avatar = adminAvatar;
     }
     // Find the admin by ID and update the profile
-    const updatedAdmin = await adminSchema.findByIdAndUpdate(id, updateData, {
+    const updatedAdmin = await adminSchema.findByIdAndUpdate(id, updateAdminData, {
       new: true,
     });
     // Check if the admin exists
