@@ -224,7 +224,7 @@ export const updateUserProfile = async (
     // Extract updated fields from request body
     const { name, email, phone, avatar } = req.body;
     // Prepare the update date
-    const updateUserData = {
+    const updateUserData: any = {
       name,
       email,
       phone,
