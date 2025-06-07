@@ -103,5 +103,14 @@ export const verifySellerOTP = async (
       secure: false,
       sameSite: "strict",
     });
-  } catch (error) {}
+    // Delete the temporary seller record
+    await tempSellerSchema.deleteOne({ email });
+    // Respond with the new seller details and token
+    res.status(201).json({
+      status: "success",
+      message: "Seller account created successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
