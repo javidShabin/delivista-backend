@@ -216,5 +216,21 @@ export const updateAdminProfile = async (
       // Update the avatar URL in the update object
       updateData.avatar = adminAvatar;
     }
-  } catch (error) {}
+    // Find the admin by ID and update the profile
+    const updatedAdmin = await adminSchema.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+    // Check if the admin exists
+    if (!updatedAdmin) {
+      return next(new AppError("Admin not found", 404));
+    }
+    // Respond with the updated admin profile
+    res.status(200).json({
+      success: true,
+      message: "Admin profile updated successfully",
+      updatedAdmin,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
