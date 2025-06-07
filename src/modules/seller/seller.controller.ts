@@ -16,7 +16,7 @@ import {
   validateSellerPassword,
 } from "./seller.validation";
 
-// Generate OTP for seller signup 
+// Generate OTP for seller signup
 // Send the OTP to the seller's email
 export const signupSeller = async (
   req: Request,
@@ -26,7 +26,7 @@ export const signupSeller = async (
   try {
     // Validate the seller signup data
     validateSignupSeller(req.body);
-    
+
     const { name, email, password, phone } = req.body;
     // Check if the seller already exists
     const existingSeller = await sellerSchema.findOne({ email });
@@ -40,16 +40,23 @@ export const signupSeller = async (
     // Create a temporary seller record with the OTP
     const tempSeller = await sellerTempSchema.findOneAndUpdate(
       { email },
-        {
-            name,
-            email,
-            password: hashedPassword,
-            phone,
-            otp,
-            otpExpires: new Date(Date.now() + 10 * 60 * 1000), // OTP expires in 10 minutes
-        },
-        { upsert: true, new: true }
-    )
+      {
+        name,
+        email,
+        password: hashedPassword,
+        phone,
+        otp,
+        otpExpires: new Date(Date.now() + 10 * 60 * 1000), // OTP expires in 10 minutes
+      },
+      { upsert: true, new: true }
+    );
+    // Send the OTP to the seller's email
+    await sendOtpEmail(email, otp);
+    // Respond with a success message
+    res.status(200).json({
+      status: "success",
+      message: "OTP sent to your email. Please verify to complete signup.",
+    });
   } catch (error) {
     next(error);
   }
