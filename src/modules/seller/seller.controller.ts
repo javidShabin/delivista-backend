@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import sellerTempSchema from "./seller.tempModel";
+import tempSellerSchema from "./seller.tempModel";
 import sellerSchema from "./seller.model";
 import {
   comparePassword,
@@ -38,7 +38,7 @@ export const signupSeller = async (
     // Generate a random 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     // Create a temporary seller record with the OTP
-    const tempSeller = await sellerTempSchema.findOneAndUpdate(
+    const tempSeller = await tempSellerSchema.findOneAndUpdate(
       { email },
       {
         name,
@@ -60,4 +60,22 @@ export const signupSeller = async (
   } catch (error) {
     next(error);
   }
+};
+
+// Verify the OTP and create an seller account
+export const verifySellerOTP = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Validate the OTP and email
+    validateSellerOTP(req.body);
+    const { email, otp } = req.body;
+    // Find the temporary seller record
+    const tempSeller = await tempSellerSchema.findOne({ email });
+    if (!tempSeller || tempSeller.otp !== otp) {
+      throw new AppError("Invalid OTP or email", 400);
+    }
+  } catch (error) {}
 };
