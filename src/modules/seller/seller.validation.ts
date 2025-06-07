@@ -3,6 +3,7 @@ import {
   IsellerCreation,
   IsellerLogin,
   IsellerOTPverifying,
+  IupdateSellerPassword,
 } from "./seller.interface";
 
 // Validation for seller signup
@@ -54,6 +55,24 @@ export const validateSellerLogin = (data: IsellerLogin) => {
     throw new AppError("Invalid email format", 400);
   }
   // Validate password length
+  if (password.length < 6) {
+    throw new AppError("Password must be at least 6 characters", 400);
+  }
+};
+
+// Validation for update seller password
+export const validateSellerPassword = (data: IupdateSellerPassword) => {
+  // Destructer the email, password and verify password
+  const { email, password, confirmPassword } = data;
+  // Check required fields are present or not
+  if (!email || !password || !confirmPassword) {
+    throw new AppError("All fields are required", 400);
+  }
+  // Compare password and confom password
+  if (password !== confirmPassword) {
+    throw new AppError("Passwords do not match", 400);
+  }
+  // Validate email format
   if (password.length < 6) {
     throw new AppError("Password must be at least 6 characters", 400);
   }
