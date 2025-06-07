@@ -171,9 +171,19 @@ export const getAdminProfile = async (
       return next(new AppError("Admin ID is required", 400));
     }
     // Find the admin by ID
-    const admin = await adminSchema.findById(adminId).select("-password");
-    console.log(admin)
+    const adminProfile = await adminSchema
+      .findById(adminId)
+      .select("-password");
+    // Check if the admin exists
+    if (!adminProfile) {
+      return next(new AppError("Admin not found", 404));
+    }
+    // Respond with the admin profile
+    res.status(200).json({
+      success: true,
+      adminProfile,
+    });
   } catch (error) {
-    
+    next(error);
   }
-}
+};
