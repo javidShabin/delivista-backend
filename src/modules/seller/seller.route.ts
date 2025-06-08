@@ -48,8 +48,8 @@ router.post("/seller-forgot-password-verify-otp", verifyForgotPasswordOtp);
 // Update seller password
 router.patch("/seller-password-update", updateSellerPassword);
 // Forgot the seller
-router.delete("/seller-logout", logoutSeller)
+router.delete("/seller-logout", logoutSeller);
 // Check seller authentication
-router.get("/check-seller", authenticate, authorize("seller"), checkSeller)
+router.get("/check-seller", authenticate, authorize("seller"), checkSeller);
 
 export default router;
