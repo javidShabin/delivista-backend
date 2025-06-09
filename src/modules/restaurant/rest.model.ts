@@ -16,14 +16,44 @@ const restaurantSchema: Schema<IRestaurantModel> = new Schema(
       ref: "Seller",
       required: true,
     },
-    phone: { type: String, required: true },
-    address: { type: String, required: true },
-    cuisine: [{ type: String, required: true }],
-    image: { type: String, default: "" },
-    isOpen: { type: Boolean, default: true },
-    openTime: { type: String, default: "09:00" },
-    closeTime: { type: String, default: "23:00" },
-    totalReviews: { type: Number, default: 0 },
+    phone: {
+      type: String,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    cuisine: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+    image: {
+      type: String,
+      default: "",
+    },
+    isOpen: {
+      type: Boolean,
+      default: true,
+    },
+    openTime: {
+      type: String,
+      default: "09:00",
+    },
+    closeTime: {
+      type: String,
+      default: "23:00",
+    },
+    isVerified: {
+      type: Boolean,
+      default: false
+    },
+    totalReviews: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

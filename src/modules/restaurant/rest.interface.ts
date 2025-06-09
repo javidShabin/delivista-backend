@@ -11,6 +11,7 @@ export interface IRestaurant {
   openTime: string;
   closeTime: string;
   totalReviews: number;
+  isVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,5 +26,6 @@ export interface IRestaurantCreation {
   image?: string;
   isOpen?: boolean;
   openTime?: string;
+  isVerified?: boolean;
   closeTime?: string;
 }
