@@ -4,6 +4,7 @@ import * as adminService from "./admin.service";
 import * as adminModel from "./admin.model";
 import * as tempAdminModel from "./admin.tempModel";
 import * as adminInterfaces from "./admin.interface";
+import * as adminValidation from "./admin.validation"
 
 export {
   adminRouter,
@@ -12,4 +13,5 @@ export {
   adminModel,
   tempAdminModel,
   adminInterfaces,
+  adminValidation
 };
