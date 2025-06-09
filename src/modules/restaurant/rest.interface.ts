@@ -19,7 +19,6 @@ export interface IRestaurant {
 export interface IRestaurantCreation {
   name: string;
   seller: string;
-  email: string;
   phone: string;
   address: string;
   cuisine: string[];
