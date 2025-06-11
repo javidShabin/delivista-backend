@@ -6,6 +6,7 @@ import {
   adminVerifyingRestaurant,
   createRestaurant,
   getAllRestaurants,
+  getRestaurant,
   getVerifiedRestaurants,
 } from "./rest.controller";
 
@@ -34,6 +35,13 @@ router.patch(
   authenticate,
   authorize("admin"),
   adminVerifyingRestaurant
+);
+// Get restaurant by id
+router.get(
+  "/restaurant-byId/:restaurantId",
+  authenticate,
+  authorize("admin", "customer", "seller"),
+  getRestaurant
 );
 
 export default router;
