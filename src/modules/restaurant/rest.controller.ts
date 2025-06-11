@@ -119,7 +119,7 @@ export const adminVerifyingRestaurant = async (
 
     // Update the verification restaurant
     isRestaurant.isVerified = true;
-    await isRestaurant.save();// Save that in database
+    await isRestaurant.save(); // Save that in database
     // Send restaurant as a response
     res.status(200).json({
       success: true,
@@ -136,7 +136,26 @@ export const getRestaurant = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  try {
+    // Get restaurant id from request params
+    const restaurantId = req.params?.restaurantId;
+    // Check the restuarant id present or not
+    if (!restaurantId) {
+      return next(new AppError("Restaurant id is required", 404));
+    }
+    // Find restaurant by id
+    const isRestaurant = await restSchema.findById(restaurantId);
+    // Check the restaurant is present
+    if (!isRestaurant) {
+      return next(new AppError("Restaurant not found", 404));
+    }
+    // Send the restaurant details as a response
+    res.status(200).json(isRestaurant);
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Filter location based
 export const getRestaurantBylocation = async (
