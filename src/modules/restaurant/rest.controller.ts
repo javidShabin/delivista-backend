@@ -78,7 +78,24 @@ export const getVerifiedRestaurants = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  try {
+    // Get admin verifyed restaurant list for customers and admin
+    const verifiedRestaurants = await restSchema.find({ isVerified: true });
+    // If not haver any verified restaurants
+    if (verifiedRestaurants.length === 0) {
+      throw next(new AppError("Not have any verified restaurants", 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Admin verified restaurants",
+      verifiedRestaurants,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Verification restaurant for admin
 export const adminVerifyingRestaurant = async (
