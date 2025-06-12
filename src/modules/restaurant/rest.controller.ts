@@ -157,26 +157,27 @@ export const getRestaurant = async (
   }
 };
 
-// Filter location based
-export const getRestaurantBylocation = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {};
-
-// Get restaurant statistics for admin and seller
-export const getStatistics = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {};
-
 // Get restarant by seller ID for seller
 export const getRestaurantBySeller = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  try {
+    // Get seller Id from seller authentication
+    const sellerId = req.user?.id;
+    // Find the restaurant by seller id
+    const isRestaurant = await restSchema.findOne({ sellerId });
+    // If not have any restaurant under the seller return a error
+    if (!isRestaurant) {
+      throw next(new AppError("Restaurant not found", 404));
+    }
+    // Send as a response
+    res.status(200).json(isRestaurant);
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Filter restaurant by menu
 export const getRestaurantByMenu = async (

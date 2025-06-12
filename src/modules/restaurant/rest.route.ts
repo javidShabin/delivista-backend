@@ -7,6 +7,7 @@ import {
   createRestaurant,
   getAllRestaurants,
   getRestaurant,
+  getRestaurantBySeller,
   getVerifiedRestaurants,
 } from "./rest.controller";
 
@@ -43,5 +44,11 @@ router.get(
   authorize("admin", "customer", "seller"),
   getRestaurant
 );
-
+// Get restaurant by seller
+router.get(
+  "/get-restaurant-sellerId",
+  authenticate,
+  authorize("seller"),
+  getRestaurantBySeller
+);
 export default router;
