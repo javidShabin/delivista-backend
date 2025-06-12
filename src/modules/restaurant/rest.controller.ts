@@ -102,7 +102,17 @@ export const adminVerifyingRestaurant = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  // Get restaurant id from request params
+  const restarantId = req.params?.Id;
+  // Check restaurant id is present
+  if (!restarantId) {
+    throw next(new AppError("Restaurant id is required", 404));
+  }
+  // Find restaurant by id
+  const isRestaurant = await restSchema.findById({ restarantId });
+  console.log(isRestaurant)
+};
 
 // Get restaurant by ID
 export const getRestaurant = async (
