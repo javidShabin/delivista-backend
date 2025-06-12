@@ -103,15 +103,31 @@ export const adminVerifyingRestaurant = async (
   res: Response,
   next: NextFunction
 ) => {
-  // Get restaurant id from request params
-  const restarantId = req.params?.Id;
-  // Check restaurant id is present
-  if (!restarantId) {
-    throw next(new AppError("Restaurant id is required", 404));
+  try {
+    const restaurantId = req.params?.restaurantId;
+
+    if (!restaurantId) {
+      return next(new AppError("Restaurant id is required", 404));
+    }
+
+    const isRestaurant = await restSchema.findById(restaurantId);
+
+    if (!isRestaurant) {
+      return next(new AppError("Restaurant not found", 404));
+    }
+
+    // Example update (you can modify as per your schema)
+    isRestaurant.isVerified = true;
+    await isRestaurant.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Restaurant verified successfully",
+      data: isRestaurant,
+    });
+  } catch (error) {
+    next(error);
   }
-  // Find restaurant by id
-  const isRestaurant = await restSchema.findById({ restarantId });
-  console.log(isRestaurant)
 };
 
 // Get restaurant by ID

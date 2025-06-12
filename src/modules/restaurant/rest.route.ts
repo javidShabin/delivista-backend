@@ -3,6 +3,7 @@ import { authenticate } from "../../middlewares/auth.middleware";
 import { authorize } from "../../middlewares/authorize";
 import { upload } from "../../middlewares/multer";
 import {
+  adminVerifyingRestaurant,
   createRestaurant,
   getAllRestaurants,
   getVerifiedRestaurants,
@@ -26,6 +27,13 @@ router.get(
   authenticate,
   authorize("customer", "admin"),
   getVerifiedRestaurants
+);
+// Admin restaurant verification
+router.patch(
+  "/verification-restaurant/:restaurantId",
+  authenticate,
+  authorize("admin"),
+  adminVerifyingRestaurant
 );
 
 export default router;
