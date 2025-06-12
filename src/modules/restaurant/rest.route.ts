@@ -2,7 +2,7 @@ import express from "express";
 import { authenticate } from "../../middlewares/auth.middleware";
 import { authorize } from "../../middlewares/authorize";
 import { upload } from "../../middlewares/multer";
-import { createRestaurant } from "./rest.controller";
+import { createRestaurant, getAllRestaurants } from "./rest.controller";
 
 const router = express.Router();
 
@@ -14,5 +14,7 @@ router.post(
   upload.single("image"),
   createRestaurant
 );
+// Get all restaurant list
+router.get("/get-all-restaurants", getAllRestaurants)
 
 export default router;
