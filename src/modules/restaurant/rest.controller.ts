@@ -41,7 +41,7 @@ export const createRestaurant = async (
       cuisine,
       pinCode,
       image: uploadImage,
-      sellerId
+      sellerId,
     });
     const saveRestaurant = await restaurant.save();
     res.status(201).json(saveRestaurant);
@@ -55,7 +55,23 @@ export const getAllRestaurants = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  try {
+    // Find the all restaurants
+    const restaurants = await restSchema.find({});
+    // If not have any restaurants return a error
+    if (restaurants.length === 0) {
+      throw next(new AppError("Not found restaurants", 404));
+    }
+    res.status(200).json({
+      success: true,
+      message: "Find the resuataurants",
+      restaurants,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Get verified restaurants
 export const getVerifiedRestaurants = async (
