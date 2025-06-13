@@ -5,6 +5,7 @@ import { upload } from "../../middlewares/multer";
 import {
   adminVerifyingRestaurant,
   createRestaurant,
+  deleteRestaurant,
   getAllRestaurants,
   getRestaurant,
   getRestaurantBySeller,
@@ -60,6 +61,7 @@ router.patch(
   authorize("seller"),
   toggleRestaurantStatus
 );
+// Update restaurant by id
 router.put(
   "/update-restaurant/:restaurantId",
   authenticate,
@@ -67,4 +69,7 @@ router.put(
   upload.single("image"),
   updateRestaurant
 );
+// Remove restauratn
+router.delete("/remove-restaurant/:restaurantId", deleteRestaurant);
+
 export default router;
