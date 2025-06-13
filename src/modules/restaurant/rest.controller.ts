@@ -184,7 +184,17 @@ export const getRestaurantByMenu = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  try {
+    // Get seller from seller authentication
+    const sellerId = req.user?.id
+    // Find the restaurant by seller id
+    const isRestaurant = await restSchema.findOne({sellerId})
+    console.log(isRestaurant)
+  } catch (error) {
+    
+  }
+};
 
 // Toggle restaurant status for seller (open or close)
 export const toggleRestaurantStatus = async (

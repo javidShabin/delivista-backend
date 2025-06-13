@@ -9,6 +9,7 @@ import {
   getRestaurant,
   getRestaurantBySeller,
   getVerifiedRestaurants,
+  toggleRestaurantStatus,
 } from "./rest.controller";
 
 const router = express.Router();
@@ -50,5 +51,12 @@ router.get(
   authenticate,
   authorize("seller"),
   getRestaurantBySeller
+);
+// Toggle restaurant status (Open and Close)
+router.patch(
+  "/restaurant-toggle",
+  authenticate,
+  authorize("seller"),
+  toggleRestaurantStatus
 );
 export default router;
