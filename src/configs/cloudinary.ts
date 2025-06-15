@@ -8,7 +8,6 @@ const cloudinaryConfig: ConfigOptions = {
   api_key: process.env.CLOUD_API_KEY || "",
   api_secret: process.env.CLOUD_API_SECRET || "",
 };
-
 cloudinary.config(cloudinaryConfig);
 
 export default cloudinary;
