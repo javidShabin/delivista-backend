@@ -24,12 +24,7 @@ export interface IMenu {
 // Create menu interface
 export interface IMenuCreation {
   productName: string;
-  restaurantId: Types.ObjectId;
-  sellerId: Types.ObjectId;
-   description: string;
+  description: string;
   category: string;
   price: number;
-  variants?: { name: string; price: number }[];
-  image: string;
-  isVeg: boolean;
 }
