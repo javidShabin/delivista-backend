@@ -6,6 +6,7 @@ import * as tempAuthModel from "./auth.tempModel";
 import * as authInterface from "./auth.interface";
 import * as authValidation from "./auth.validation";
 
+
 export {
   authRouter,
   authController,
