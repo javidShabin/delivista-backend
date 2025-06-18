@@ -27,3 +27,24 @@ export interface ITempUser {
   };
   createdAt: Date;
 }
+
+// User signup interface
+export interface IuserCreaction {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  phone: string;
+}
+
+// User otp verifying interface
+export interface IuserOTPverifying {
+  email: string;
+  otp: string;
+}
+
+// User login interface
+export interface IuserLogin {
+  email: string;
+  password: string;
+}
