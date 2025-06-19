@@ -6,6 +6,11 @@ import { getAllCustomer } from "./user.controller";
 
 const router = express.Router();
 
-router.get("/users-list", getAllCustomer)
+router.get(
+  "/users-list",
+  authenticate,
+  authorize("admin", "seller"),
+  getAllCustomer
+);
 
 export default router;
