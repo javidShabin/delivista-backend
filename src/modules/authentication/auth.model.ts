@@ -1,10 +1,11 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { ITempUser } from "./auth.interface";
+import { IUser } from "./auth.interface";
 
 
-export interface ITempUserModel extends ITempUser, Document {}
 
-const tempUserSchema: Schema<ITempUserModel> = new Schema(
+export interface IUserModel extends IUser, Document {}
+
+const UserSchema: Schema<IUserModel> = new Schema(
   {
     name: {
       type: String,
@@ -42,4 +43,4 @@ const tempUserSchema: Schema<ITempUserModel> = new Schema(
   }
 );
 
-export default mongoose.model<ITempUser>("User", tempUserSchema);
+export default mongoose.model<IUserModel>("User", UserSchema);
