@@ -3,12 +3,13 @@ import { globalErrorHandler } from "./middlewares/errorHandler";
 
 import { restRouter } from "./modules/restaurant";
 import { authRouter } from "./modules/authentication";
+import { userRouter } from "./modules/user";
 
 const app = express();
 
-app.use("/authentication", authRouter)
-
-app.use("/restaurant", restRouter)
+app.use("/authentication", authRouter);
+app.use("/user", userRouter);
+app.use("/restaurant", restRouter);
 
 // Global error handler
 app.use(globalErrorHandler);
