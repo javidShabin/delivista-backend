@@ -23,7 +23,8 @@ server.use(limiter); // Apply rate limiting middleware globally
 // Enable CORS for specific origins and restrict allowed HTTP methods
 server.use(
   cors({
-    origin: true, // Only allow requests from this origin
+    origin:["http://192.168.1.4:3000"], // Only allow requests from this origin
+    credentials: true,// Enable cookies & credentials
     methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
   })
 );
@@ -36,7 +37,7 @@ server.use("/app", app)
 
 // Root route for server health check
 server.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to Zippyzag!");
+  res.send("Welcome to Delivista!");
 });
 
 // Connect to MongoDB, then start the Express server
