@@ -183,3 +183,32 @@ export const logoutUser = async (
     next(error);
   }
 };
+
+// Verifying the user is authonticaed or not
+export const checkUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Get the user first from user authontication
+    // And chekc is the user is authonticate or not
+    const user = req.user;
+    if (!user) {
+      return next(new AppError("User not authorized", 401));
+    }
+
+    // If find the user by authentication send as a reaponxe
+    res.status(200).json({
+      success: true,
+      message: "User is authorized",
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
