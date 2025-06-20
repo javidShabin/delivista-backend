@@ -2,12 +2,12 @@
   "name": "delivista",
   "version": "1.0.0",
   "description": "Food ordering website inspire zomato swiggy",
-  "main": "index.js",
- "scripts": {
-  "dev": "ts-node-dev --respawn --transpile-only server.ts",
-  "build": "tsc",
-  "start": "node dist/server.js"
-},
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
   "author": "javid shabin",
   "license": "ISC",
   "dependencies": {
