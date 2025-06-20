@@ -47,3 +47,13 @@ export const getAllCustomer = async (
     next(error);
   }
 };
+
+// Get customer profile using id from user authentication
+export const getCustomerProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // Get customer id from user authentication
+  const userId = req.user?.id
+};
