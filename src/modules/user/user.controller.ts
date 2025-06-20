@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import userSchema from "../authentication/auth.model";
+import { AppError } from "../../utils/appError";
 
 // Get all customers list for admin and seller
 export const getAllCustomer = async (
@@ -54,6 +55,26 @@ export const getCustomerProfile = async (
   res: Response,
   next: NextFunction
 ) => {
-  // Get customer id from user authentication
-  const userId = req.user?.id
+  try {
+    // Get customer id from user authentication
+    const userId = req.user?.id;
+    if (!userId) {
+      return next(new AppError("Unauthorized", 401));
+    }
+    // Find the user by id and also check role is customer
+    const customer = await userSchema
+      .findOne({ _id: userId, role: "customer" })
+      .select("-password");
+    // Check the user is present or not
+    if (!customer) {
+      throw new AppError("Customer not found", 404);
+    }
+    // Id have to find any user return as a response
+    res.status(200).json({
+      success: true,
+      customer,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
