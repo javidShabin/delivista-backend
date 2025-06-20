@@ -14,7 +14,7 @@ export const getAllCustomer = async (
     const limit = parseInt(req.query.limit as string) || 10;
     const search = (req.query.search as string) || "";
 
-    const skip = (page - 1) * limit;
+    const skip = (page - 1) * limit;  // Calculate how many documents to skip for pagination
 
     // Build filter condition
     const filter = {
