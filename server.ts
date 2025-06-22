@@ -20,32 +20,15 @@ const limiter = rateLimit({
 });
 server.use(limiter); // Apply rate limiting middleware globally
 
-
-const allowedOrigins = [
-  "https://delivista-customer-page.vercel.app",
-  "http://localhost:3000"
-];
-
+// Enable CORS for specific origins and restrict allowed HTTP methods
 server.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+ cors({
+    origin:true, // Only allow requests from this origin
+    credentials: true,// Enable cookies & credentials
+    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
   })
 );
 
-// Optional fallback for some edge cases
-server.use((req, res, next) => {
-  res.header("Access-Control-Allow-Credentials", "true");
-  next();
-});
 
 server.use(cookieParser()); // Parse cookies attached to client requests
 server.use(helmet()); // Secure HTTP headers to protect against common vulnerabilities
