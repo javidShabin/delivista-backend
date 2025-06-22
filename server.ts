@@ -23,7 +23,7 @@ server.use(limiter); // Apply rate limiting middleware globally
 // Enable CORS for specific origins and restrict allowed HTTP methods
 server.use(
   cors({
-    origin:["http://192.168.1.4:3000"], // Only allow requests from this origin
+    origin:["https://delivista-customer-page-j621.vercel.app"], // Only allow requests from this origin
     credentials: true,// Enable cookies & credentials
     methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
   })
