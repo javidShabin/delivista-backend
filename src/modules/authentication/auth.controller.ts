@@ -111,8 +111,8 @@ export const verifyOtpandCreateUser = async (
     });
     res.cookie("userToken", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
     });
     await tempAuthSchema.deleteOne({ email });
     res.status(201).json({
@@ -157,8 +157,8 @@ export const loginUser = async (
     // Send the token to cookie
     res.cookie("userToken", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
     });
     res.status(200).json({ message: "User logged in successfully" });
   } catch (error) {
@@ -176,8 +176,8 @@ export const logoutUser = async (
     // Clear the token from cookie
     res.clearCookie("userToken", {
       httpOnly: true,
-      secure: false,
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
     });
     res.status(200).json({ message: "User logged out successfully" });
   } catch (error) {
