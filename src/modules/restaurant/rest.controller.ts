@@ -51,22 +51,31 @@ export const createRestaurant = async (
   }
 };
 
-// Get all restaurants
+// Get all restaurants with pagination
 export const getAllRestaurants = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    // Find the all restaurants
-    const restaurants = await restSchema.find({});
-    // If not have any restaurants return a error
+    const page = parseInt(req.query.page as string) || 1; // default page = 1
+    const limit = parseInt(req.query.limit as string) || 8; // default limit = 8
+
+    const skip = (page - 1) * limit;
+
+    const totalRestaurants = await restSchema.countDocuments();
+    const restaurants = await restSchema.find().skip(skip).limit(limit);
+
     if (restaurants.length === 0) {
-      throw next(new AppError("Not found restaurants", 404));
+      return next(new AppError("No restaurants found", 404));
     }
+
     res.status(200).json({
       success: true,
-      message: "Find the resuataurants",
+      message: "Fetched restaurants",
+      currentPage: page,
+      totalPages: Math.ceil(totalRestaurants / limit),
+      totalRestaurants,
       restaurants,
     });
   } catch (error) {
