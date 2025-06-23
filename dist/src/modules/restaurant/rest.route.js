@@ -14,7 +14,7 @@ router.post("/create-restaurant", auth_middleware_1.authenticate, (0, authorize_
 // Get all restaurant list
 router.get("/get-all-restaurants", rest_controller_1.getAllRestaurants);
 // Get admin verified restaurant list
-router.get("/verified-restaurants", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer", "admin"), rest_controller_1.getVerifiedRestaurants);
+router.get("/verified-restaurants", rest_controller_1.getVerifiedRestaurants);
 // Admin restaurant verification
 router.patch("/verification-restaurant/:restaurantId", auth_middleware_1.authenticate, (0, authorize_1.authorize)("admin"), rest_controller_1.adminVerifyingRestaurant);
 // Get restaurant by id

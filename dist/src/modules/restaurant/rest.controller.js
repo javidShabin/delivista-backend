@@ -84,18 +84,30 @@ const getAllRestaurants = (req, res, next) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.getAllRestaurants = getAllRestaurants;
-// Get verified restaurants
+// Get verified restaurants with pagination
 const getVerifiedRestaurants = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Get admin verifyed restaurant list for customers and admin
-        const verifiedRestaurants = yield rest_model_1.default.find({ isVerified: true });
-        // If not haver any verified restaurants
+        // Read page and limit from query params (default: page=1, limit=8)
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 8;
+        const skip = (page - 1) * limit;
+        // Fetch only verified restaurants with pagination
+        const verifiedRestaurants = yield rest_model_1.default
+            .find({ isVerified: true })
+            .skip(skip)
+            .limit(limit);
+        const total = yield rest_model_1.default.countDocuments({ isVerified: true });
+        const totalPages = Math.ceil(total / limit);
         if (verifiedRestaurants.length === 0) {
-            throw next(new appError_1.AppError("Not have any verified restaurants", 404));
+            throw next(new appError_1.AppError("No verified restaurants found", 404));
         }
         res.status(200).json({
             success: true,
             message: "Admin verified restaurants",
+            total,
+            currentPage: page,
+            totalPages,
+            limit,
             verifiedRestaurants,
         });
     }
