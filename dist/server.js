@@ -14,27 +14,31 @@ const connectDb_1 = require("./src/configs/connectDb");
 const app_1 = __importDefault(require("./src/app"));
 const server = (0, express_1.default)();
 const PORT = 5000; // Server listening port
-// Rate limiter configuration: limit each IP to 100 requests per 15 minutes
+// Rate limiter configuration
 const limiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // max requests per IP
+    max: 100,
     message: "Too many requests from this IP, please try again later.",
 });
-server.use(limiter); // Apply rate limiting middleware globally
-// Enable CORS for specific origins and restrict allowed HTTP methods
+server.use(limiter);
+// Enable CORS for deployed frontend
 server.use((0, cors_1.default)({
-    origin: true, // Only allow requests from this origin
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+    origin: "https://delivista-customer-page-g86b.vercel.app", // Your Vercel frontend
+    credentials: true, // Allow cookies & sessions
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"], // Optional: Allow headers
 }));
-server.use((0, cookie_parser_1.default)()); // Parse cookies attached to client requests
-server.use((0, helmet_1.default)()); // Secure HTTP headers to protect against common vulnerabilities
-server.use(express_1.default.json()); // Parse incoming JSON payloads into JavaScript objects
+// Other security and parsing middleware
+server.use((0, cookie_parser_1.default)());
+server.use((0, helmet_1.default)());
+server.use(express_1.default.json());
+// Use app routes under /app
 server.use("/app", app_1.default);
-// Root route for server health check
+// Root route
 server.get("/", (req, res) => {
-    res.send("Welcome to Zippyzag!");
+    res.send("Welcome to Delivista!");
 });
-// Connect to MongoDB, then start the Express server
+// Connect DB and start server
 (0, connectDb_1.connectDb)()
     .then(() => {
     console.log("Connected to MongoDB");

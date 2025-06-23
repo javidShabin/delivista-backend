@@ -59,6 +59,7 @@ const singupUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         res.status(200).json({
             status: "success",
             message: "OTP sent to your email. Please verify to complete signup.",
+            otp
         });
     }
     catch (error) {
@@ -73,7 +74,6 @@ const verifyOtpandCreateUser = (req, res, next) => __awaiter(void 0, void 0, voi
         (0, auth_validation_1.validateUserOTPandEmail)(req.body);
         // Destructer OTP and email from request body
         const { otp, email } = req.body;
-        console.log(otp);
         // Check if the user exists as a temporary user
         const tempUser = yield auth_tempModel_1.default.findOne({ email });
         if (!tempUser) {

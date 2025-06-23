@@ -59,18 +59,23 @@ const createRestaurant = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.createRestaurant = createRestaurant;
-// Get all restaurants
+// Get all restaurants with pagination
 const getAllRestaurants = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Find the all restaurants
-        const restaurants = yield rest_model_1.default.find({});
-        // If not have any restaurants return a error
+        const page = parseInt(req.query.page) || 1; // default page = 1
+        const limit = parseInt(req.query.limit) || 8; // default limit = 8
+        const skip = (page - 1) * limit;
+        const totalRestaurants = yield rest_model_1.default.countDocuments();
+        const restaurants = yield rest_model_1.default.find().skip(skip).limit(limit);
         if (restaurants.length === 0) {
-            throw next(new appError_1.AppError("Not found restaurants", 404));
+            return next(new appError_1.AppError("No restaurants found", 404));
         }
         res.status(200).json({
             success: true,
-            message: "Find the resuataurants",
+            message: "Fetched restaurants",
+            currentPage: page,
+            totalPages: Math.ceil(totalRestaurants / limit),
+            totalRestaurants,
             restaurants,
         });
     }

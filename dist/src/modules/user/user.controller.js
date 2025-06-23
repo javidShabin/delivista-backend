@@ -22,7 +22,7 @@ const getAllCustomer = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const search = req.query.search || "";
-        const skip = (page - 1) * limit;
+        const skip = (page - 1) * limit; // Calculate how many documents to skip for pagination
         // Build filter condition
         const filter = {
             role: "customer",
