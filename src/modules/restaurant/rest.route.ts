@@ -27,10 +27,7 @@ router.post(
 // Get all restaurant list
 router.get("/get-all-restaurants", getAllRestaurants);
 // Get admin verified restaurant list
-router.get(
-  "/verified-restaurants",
-  getVerifiedRestaurants
-);
+router.get("/verified-restaurants",getVerifiedRestaurants);
 // Admin restaurant verification
 router.patch(
   "/verification-restaurant/:restaurantId",
