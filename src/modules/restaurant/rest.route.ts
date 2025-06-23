@@ -29,8 +29,6 @@ router.get("/get-all-restaurants", getAllRestaurants);
 // Get admin verified restaurant list
 router.get(
   "/verified-restaurants",
-  authenticate,
-  authorize("customer", "admin"),
   getVerifiedRestaurants
 );
 // Admin restaurant verification
