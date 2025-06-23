@@ -83,29 +83,45 @@ export const getAllRestaurants = async (
   }
 };
 
-// Get verified restaurants
+// Get verified restaurants with pagination
 export const getVerifiedRestaurants = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    // Get admin verifyed restaurant list for customers and admin
-    const verifiedRestaurants = await restSchema.find({ isVerified: true });
-    // If not haver any verified restaurants
+    // Read page and limit from query params (default: page=1, limit=8)
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 8;
+    const skip = (page - 1) * limit;
+
+    // Fetch only verified restaurants with pagination
+    const verifiedRestaurants = await restSchema
+      .find({ isVerified: true })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await restSchema.countDocuments({ isVerified: true });
+    const totalPages = Math.ceil(total / limit);
+
     if (verifiedRestaurants.length === 0) {
-      throw next(new AppError("Not have any verified restaurants", 404));
+      throw next(new AppError("No verified restaurants found", 404));
     }
 
     res.status(200).json({
       success: true,
       message: "Admin verified restaurants",
+      total,
+      currentPage: page,
+      totalPages,
+      limit,
       verifiedRestaurants,
     });
   } catch (error) {
     next(error);
   }
 };
+
 
 // Verification restaurant for admin
 export const adminVerifyingRestaurant = async (
