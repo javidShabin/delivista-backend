@@ -199,6 +199,8 @@ export const checkUser = async (
       return next(new AppError("User not authorized", 401));
     }
 
+    const isUser = await authSchema.findOne({email: user.email})
+
     // If find the user by authentication send as a reaponxe
     res.status(200).json({
       success: true,
@@ -207,6 +209,7 @@ export const checkUser = async (
         id: user.id,
         email: user.email,
         role: user.role,
+        profile: isUser?.avatar
       },
     });
   } catch (error) {
