@@ -181,6 +181,7 @@ const checkUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         if (!user) {
             return next(new appError_1.AppError("User not authorized", 401));
         }
+        const isUser = yield auth_model_1.default.findOne({ email: user.email });
         // If find the user by authentication send as a reaponxe
         res.status(200).json({
             success: true,
@@ -189,6 +190,7 @@ const checkUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function
                 id: user.id,
                 email: user.email,
                 role: user.role,
+                profile: isUser === null || isUser === void 0 ? void 0 : isUser.avatar
             },
         });
     }
