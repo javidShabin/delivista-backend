@@ -20,10 +20,9 @@ const limiter = (0, express_rate_limit_1.default)({
     max: 100,
     message: "Too many requests from this IP, please try again later.",
 });
-server.use(limiter);
 // Enable CORS for deployed frontend
 server.use((0, cors_1.default)({
-    origin: "https://delivista-customer-page-g86b.vercel.app", // Your Vercel frontend
+    origin: "https://delivista-customer-page.vercel.app", // Your Vercel frontend
     credentials: true, // Allow cookies & sessions
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"], // Optional: Allow headers
@@ -32,6 +31,7 @@ server.use((0, cors_1.default)({
 server.use((0, cookie_parser_1.default)());
 server.use((0, helmet_1.default)());
 server.use(express_1.default.json());
+server.use(limiter);
 // Use app routes under /app
 server.use("/app", app_1.default);
 // Root route
