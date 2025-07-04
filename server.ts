@@ -18,7 +18,7 @@ const limiter = rateLimit({
   max: 100,
   message: "Too many requests from this IP, please try again later.",
 });
-server.use(limiter);
+
 
 // Enable CORS for deployed frontend
 server.use(
@@ -34,7 +34,7 @@ server.use(
 server.use(cookieParser());
 server.use(helmet());
 server.use(express.json());
-
+server.use(limiter);
 // Use app routes under /app
 server.use("/app", app);
 
