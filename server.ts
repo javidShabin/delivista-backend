@@ -23,7 +23,7 @@ server.use(limiter);
 // Enable CORS for deployed frontend
 server.use(
   cors({
-    origin: "https://delivista-customer-page-g86b.vercel.app", // Your Vercel frontend
+    origin: "https://delivista-customer-page.vercel.app", // Your Vercel frontend
     credentials: true, // Allow cookies & sessions
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"], // Optional: Allow headers
