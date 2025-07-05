@@ -48,3 +48,11 @@ export interface IuserLogin {
   email: string;
   password: string;
 }
+
+// Update user passowrd interface
+export interface IupdateUserPassword {
+  email: string;
+  otp: string;
+  password: string;
+  confirmPassword: string;
+}
