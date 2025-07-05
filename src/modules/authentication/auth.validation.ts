@@ -1,5 +1,6 @@
 import { AppError } from "../../utils/appError";
 import {
+  IupdateUserPassword,
   IuserCreaction,
   IuserLogin,
   IuserOTPverifying,
@@ -58,3 +59,17 @@ export const validateUserLogin = (data: IuserLogin) => {
     throw new AppError("Password must be at least 6 characters", 400);
   }
 };
+
+// Validation for update user password
+export const validateUpdateUserPassword = (data: IupdateUserPassword) => {
+  // Destructer the user email, otp, password and confirm password
+  const { email, otp, password, confirmPassword } = data;
+  // Check the required fields are present or not
+  if (!email ||!otp ||!password ||!confirmPassword) {
+    throw new AppError("All fields are required", 400);
+  }
+  // Compare the password and conform password
+  if (password!== confirmPassword) {
+    throw new AppError("Passwords do not match", 400);
+  }
+}
