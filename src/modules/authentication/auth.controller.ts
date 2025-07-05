@@ -4,6 +4,7 @@ import authSchema from "./auth.model";
 import { AppError } from "../../utils/appError";
 import {
   validateSignupUser,
+  validateUpdateUserPassword,
   validateUserLogin,
   validateUserOTPandEmail,
 } from "./auth.validation";
@@ -218,6 +219,27 @@ export const sendForgotPasswordOtp = async (
     });
   } catch (error) {
     next(error);
+  }
+};
+
+// Verify forgot password otp and update new password
+export const verifyOtpAndUpdatePassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Validate first the datas from request body
+    validateUpdateUserPassword(req.body);
+    // Destructer the fields
+    const { otp, email, password } = req.body;
+    // Check if the user exists as a temporary user
+    const tempUser = await tempAuthSchema.findOne({ email });
+    if (!tempUser) {
+      throw new AppError("User not found", 400);
+    }
+  } catch (error) {
+    next(error)
   }
 };
 
