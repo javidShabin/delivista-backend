@@ -8,6 +8,7 @@ import {
   sendForgotPasswordOtp,
   singupUser,
   verifyOtpandCreateUser,
+  verifyOtpAndUpdatePassword,
 } from "./auth.controller";
 
 const router = express.Router();
@@ -28,5 +29,7 @@ router.get(
 router.delete("/user-logout", logoutUser);
 
 router.post("/forgot-password", sendForgotPasswordOtp);
+
+router.patch("/update-password", verifyOtpAndUpdatePassword);
 
 export default router;
