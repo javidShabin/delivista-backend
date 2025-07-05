@@ -13,4 +13,6 @@ router.post("/verify-user-otp", auth_controller_1.verifyOtpandCreateUser);
 router.post("/user-login", auth_controller_1.loginUser);
 router.get("/verify-auth", auth_middleware_1.authenticate, (0, authorize_1.authorize)("admin", "customer", "seller"), auth_controller_1.checkUser);
 router.delete("/user-logout", auth_controller_1.logoutUser);
+router.post("/forgot-password", auth_controller_1.sendForgotPasswordOtp);
+router.patch("/update-password", auth_controller_1.verifyOtpAndUpdatePassword);
 exports.default = router;

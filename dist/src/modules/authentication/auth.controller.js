@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkUser = exports.logoutUser = exports.loginUser = exports.verifyOtpandCreateUser = exports.singupUser = void 0;
+exports.checkUser = exports.verifyOtpAndUpdatePassword = exports.sendForgotPasswordOtp = exports.logoutUser = exports.loginUser = exports.verifyOtpandCreateUser = exports.singupUser = void 0;
 const auth_tempModel_1 = __importDefault(require("./auth.tempModel"));
 const auth_model_1 = __importDefault(require("./auth.model"));
 const appError_1 = require("../../utils/appError");
@@ -59,7 +59,7 @@ const singupUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         res.status(200).json({
             status: "success",
             message: "OTP sent to your email. Please verify to complete signup.",
-            otp
+            otp,
         });
     }
     catch (error) {
@@ -172,6 +172,72 @@ const logoutUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.logoutUser = logoutUser;
+// Send OTP for reset the user password
+const sendForgotPasswordOtp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Destructer the user email from request body
+        const { email } = req.body;
+        if (!email) {
+            throw new appError_1.AppError("Email is required", 400);
+        }
+        // Find the user by email
+        const isUser = yield auth_model_1.default.findOne({ email });
+        if (!isUser) {
+            throw new appError_1.AppError("User not found", 404);
+        } // Generate 6 digit OTP using otpGenerating function
+        const otp = (0, auth_service_1.generateOTP)();
+        yield auth_tempModel_1.default.findOneAndUpdate({ email }, {
+            otp,
+            otpExpires: new Date(Date.now() + 10 * 60 * 1000),
+        }, { upsert: true, new: true });
+        // Send the OTP to the user's emial
+        yield (0, send_mail_1.sendOtpEmail)(email, otp);
+        res.status(200).json({
+            status: "success",
+            message: "OTP sent to your email. Please verify to complete signup.",
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.sendForgotPasswordOtp = sendForgotPasswordOtp;
+// Verify forgot password otp and update new password
+const verifyOtpAndUpdatePassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Validate first the datas from request body
+        (0, auth_validation_1.validateUpdateUserPassword)(req.body);
+        // Destructer the fields
+        const { otp, email, password } = req.body;
+        // Check if the user exists as a temporary user
+        const tempUser = yield auth_tempModel_1.default.findOne({ email });
+        if (!tempUser) {
+            throw new appError_1.AppError("User not found", 400);
+        }
+        // Compare the OTP with tmepuser OTP
+        if (tempUser.otp !== otp) {
+            throw new appError_1.AppError("Invalid OTP", 400);
+        }
+        // Check the OTP is expire or not
+        if (tempUser.otpExpires.getTime() < Date.now()) {
+            throw new appError_1.AppError("OTP has expired", 400);
+        }
+        // Hash new passowrd using bcrypt
+        const hashedPassword = yield (0, auth_service_1.hashPassword)(password);
+        // Update the user password
+        yield auth_model_1.default.findOneAndUpdate({ email }, { password: hashedPassword }, { new: true });
+        // Delete the temporary user
+        yield auth_tempModel_1.default.deleteOne({ email });
+        res.status(200).json({
+            success: true,
+            message: "Password updated successfully",
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.verifyOtpAndUpdatePassword = verifyOtpAndUpdatePassword;
 // Verifying the user is authonticaed or not
 const checkUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -190,7 +256,7 @@ const checkUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function
                 id: user.id,
                 email: user.email,
                 role: user.role,
-                profile: isUser === null || isUser === void 0 ? void 0 : isUser.avatar
+                profile: isUser === null || isUser === void 0 ? void 0 : isUser.avatar,
             },
         });
     }

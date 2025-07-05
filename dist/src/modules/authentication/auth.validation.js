@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateUserLogin = exports.validateUserOTPandEmail = exports.validateSignupUser = void 0;
+exports.validateUpdateUserPassword = exports.validateUserLogin = exports.validateUserOTPandEmail = exports.validateSignupUser = void 0;
 const appError_1 = require("../../utils/appError");
 // Validation for user signupn
 const validateSignupUser = (data) => {
@@ -54,3 +54,17 @@ const validateUserLogin = (data) => {
     }
 };
 exports.validateUserLogin = validateUserLogin;
+// Validation for update user password
+const validateUpdateUserPassword = (data) => {
+    // Destructer the user email, otp, password and confirm password
+    const { email, otp, password, confirmPassword } = data;
+    // Check the required fields are present or not
+    if (!email || !otp || !password || !confirmPassword) {
+        throw new appError_1.AppError("All fields are required", 400);
+    }
+    // Compare the password and conform password
+    if (password !== confirmPassword) {
+        throw new appError_1.AppError("Passwords do not match", 400);
+    }
+};
+exports.validateUpdateUserPassword = validateUpdateUserPassword;
