@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import userSchema from "../authentication/auth.model";
 import { AppError } from "../../utils/appError";
+import { handleImageUpload } from "../../shared/cloudinary/upload.file";
 
 // Get all customers list for admin and seller
 export const getAllCustomer = async (
@@ -85,18 +86,41 @@ export const updateCustomerProfile = async (
   res: Response,
   next: NextFunction
 ) => {
-  // Get customer id from user authentication
-  const userId = req.user?.id;
-  if (!userId) {
-    return next(new AppError("Unauthorized", 401));
+  try {
+    // Get customer id from user authentication
+    const userId = req.user?.id;
+    if (!userId) {
+      return next(new AppError("Unauthorized", 401));
+    }
+    // Extract update fields from request body
+    const { name, email, phone, avatar } = req.body;
+    // Prepare the update data
+    const updatedData: any = {
+      name,
+      email,
+      phone,
+      avatar,
+    };
+    // If file is provided, upload it to cloudinary
+    if (req.file) {
+      const userProfileImage = await handleImageUpload(req.file);
+      updatedData.avatar = userProfileImage;
+    }
+    // Update the customer profile
+    const updatedUser = await userSchema.findByIdAndUpdate(
+      userId,
+      { $set: updatedData },
+      { new: true }
+    );
+    if (!updatedUser) {
+      return next(new AppError("User not found", 404));
+    }
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    next(error);
   }
-  // Extract update fields from request body
-  const { name, email, phone, avatar } = req.body;
-  // Prepare the update data
-  const updatedData: any = {
-    name,
-    email,
-    phone,
-    avatar,
-  };
 };
