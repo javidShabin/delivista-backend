@@ -28,31 +28,53 @@ export const createMenu = async (
       tags,
     } = req.body;
     // Check the same item already exists in the menu collection
-    const isMenuItemExist = await menuSchema.findOne({ productName, restaurantId });
+    const isMenuItemExist = await menuSchema.findOne({
+      productName,
+      restaurantId,
+    });
     if (isMenuItemExist) {
       return next(new AppError("The item already exists", 400));
     }
-     // Check the restarant is verified
-    const isVerifiedRestaurant = await restaurantSchema.findById(restaurantId)
+    // Check the restarant is verified
+    const isVerifiedRestaurant = await restaurantSchema.findById(restaurantId);
     if (!isVerifiedRestaurant) {
       return next(new AppError("Restaurant not verified", 400));
     }
-     let menuImage;
+    let menuImage;
     // If any file is uploaded, handle the image upload and get the file path
     if (req.file) {
       const uploadImage = await handleImageUpload(req.file);
       menuImage = uploadImage;
     }
     let parsedVariants = variants;
-if (typeof variants === 'string') {
-  try {
-    parsedVariants = JSON.parse(variants);
-  } catch (err) {
-    return next(new AppError("Invalid format for variants", 400));
+    if (typeof variants === "string") {
+      try {
+        parsedVariants = JSON.parse(variants);
+      } catch (err) {
+        return next(new AppError("Invalid format for variants", 400));
+      }
+    }
+    // Create new menu item
+    const newMenuItem = await menuSchema.create({
+      productName,
+      description,
+      category,
+      price,
+      image: menuImage,
+      sellerId,
+      restaurantId,
+      variants: parsedVariants,
+      isVeg,
+      tags,
+    });
+    res.status(201).json({
+      success: true,
+      message: "Menu item created successfully",
+      data: newMenuItem,
+    });
+  } catch (error) {
+    next(error);
   }
-}
-
-  } catch (error) {}
 };
 
 // updateMenu
