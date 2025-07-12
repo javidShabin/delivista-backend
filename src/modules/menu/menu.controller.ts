@@ -11,9 +11,26 @@ export const createMenu = async (
   next: NextFunction
 ) => {
   try {
-  } catch (error) {
-    
-  }
+    // Validate the details first
+    validateMenuCreation(req.body);
+    // Destructure the menu details from request body after validation
+    const {
+      productName,
+      description,
+      category,
+      price,
+      restaurantId,
+      sellerId,
+      variants,
+      isVeg,
+      tags,
+    } = req.body;
+    // Check the same item already exists in the menu collection
+    const isMenuItemExist = await menuSchema.findOne({ productName, restaurantId });
+    if (isMenuItemExist) {
+      return next(new AppError("The item already exists", 400));
+    }
+  } catch (error) {}
 };
 
 // updateMenu
