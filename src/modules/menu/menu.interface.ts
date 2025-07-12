@@ -23,6 +23,8 @@ export interface IMenu {
 
 // Create menu interface
 export interface IMenuCreation {
+  restaurantId: Types.ObjectId;
+  sellerId: Types.ObjectId;
   productName: string;
   description: string;
   category: string;

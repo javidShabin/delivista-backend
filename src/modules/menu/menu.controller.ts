@@ -11,7 +11,9 @@ export const createMenu = async (
   next: NextFunction
 ) => {
   try {
-  } catch (error) {}
+  } catch (error) {
+    
+  }
 };
 
 // updateMenu
