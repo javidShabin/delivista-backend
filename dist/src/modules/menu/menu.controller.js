@@ -12,23 +12,155 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createMenu = void 0;
+exports.searchMenus = exports.getNonVegMenus = exports.getVegMenus = exports.getRecommendedMenus = exports.getMenusByAvailability = exports.getMenusByTag = exports.getMenusByPriceRange = exports.getMenusByCategory = exports.getMenusBySeller = exports.getMenusByRestaurant = exports.deleteMenu = exports.updateMenu = exports.createMenu = void 0;
 const menu_model_1 = __importDefault(require("./menu.model"));
 const appError_1 = require("../../utils/appError");
 const menu_validation_1 = require("./menu.validation");
-// Create menu
+const rest_model_1 = __importDefault(require("../restaurant/rest.model"));
+const upload_file_1 = require("../../shared/cloudinary/upload.file");
+// *************Main Menu CRUD Operations********************
+// Create a new menu item
 const createMenu = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Validate the details first
         (0, menu_validation_1.validateMenuCreation)(req.body);
-        // Destructer data from request body after validation
-        const { productName, description, category, price } = req.body;
-        // Check the same item already in db
-        const isMenuItem = yield menu_model_1.default.find({ productName });
-        if (isMenuItem) {
+        // Destructure the menu details from request body after validation
+        const { productName, description, category, price, restaurantId, sellerId, variants, isVeg, tags, } = req.body;
+        // Check the same item already exists in the menu collection
+        const isMenuItemExist = yield menu_model_1.default.findOne({
+            productName,
+            restaurantId,
+        });
+        if (isMenuItemExist) {
             return next(new appError_1.AppError("The item already exists", 400));
         }
+        // Check the restarant is verified
+        const isVerifiedRestaurant = yield rest_model_1.default.findById(restaurantId);
+        if (!isVerifiedRestaurant) {
+            return next(new appError_1.AppError("Restaurant not verified", 400));
+        }
+        let menuImage;
+        // If any file is uploaded, handle the image upload and get the file path
+        if (req.file) {
+            const uploadImage = yield (0, upload_file_1.handleImageUpload)(req.file);
+            menuImage = uploadImage;
+        }
+        let parsedVariants = variants;
+        if (typeof variants === "string") {
+            try {
+                parsedVariants = JSON.parse(variants);
+            }
+            catch (err) {
+                return next(new appError_1.AppError("Invalid format for variants", 400));
+            }
+        }
+        // Create new menu item
+        const newMenuItem = yield menu_model_1.default.create({
+            productName,
+            description,
+            category,
+            price,
+            image: menuImage,
+            sellerId,
+            restaurantId,
+            variants: parsedVariants,
+            isVeg,
+            tags,
+        });
+        res.status(201).json({
+            success: true,
+            message: "Menu item created successfully",
+            data: newMenuItem,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.createMenu = createMenu;
+// updateMenu
+const updateMenu = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
     }
     catch (error) { }
 });
-exports.createMenu = createMenu;
+exports.updateMenu = updateMenu;
+// deleteMenu
+const deleteMenu = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) { }
+});
+exports.deleteMenu = deleteMenu;
+// ************Get menus by association**********************
+// getMenusByRestaurant
+const getMenusByRestaurant = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) { }
+});
+exports.getMenusByRestaurant = getMenusByRestaurant;
+// getMenusBySeller
+const getMenusBySeller = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) { }
+});
+exports.getMenusBySeller = getMenusBySeller;
+// ************Filtering functions for menus**********************
+// getMenusByCategory
+const getMenusByCategory = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) { }
+});
+exports.getMenusByCategory = getMenusByCategory;
+// getMenusByPriceRange
+const getMenusByPriceRange = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) { }
+});
+exports.getMenusByPriceRange = getMenusByPriceRange;
+// getMenusByTag
+const getMenusByTag = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) { }
+});
+exports.getMenusByTag = getMenusByTag;
+// getMenusByAvailability
+const getMenusByAvailability = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) { }
+});
+exports.getMenusByAvailability = getMenusByAvailability;
+// getRecommendedMenus
+const getRecommendedMenus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) { }
+});
+exports.getRecommendedMenus = getRecommendedMenus;
+// getVegMenus
+const getVegMenus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) { }
+});
+exports.getVegMenus = getVegMenus;
+// getNonVegMenus
+const getNonVegMenus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) { }
+});
+exports.getNonVegMenus = getNonVegMenus;
+// get menus by search
+const searchMenus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) { }
+});
+exports.searchMenus = searchMenus;

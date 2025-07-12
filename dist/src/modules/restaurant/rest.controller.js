@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteRestaurant = exports.updateRestaurant = exports.toggleRestaurantStatus = exports.getRestaurantBySeller = exports.getRestaurant = exports.adminVerifyingRestaurant = exports.getVerifiedRestaurants = exports.getAllRestaurants = exports.createRestaurant = void 0;
 const rest_model_1 = __importDefault(require("./rest.model"));
-const rest_service_1 = require("./rest.service");
+const upload_file_1 = require("../../shared/cloudinary/upload.file");
 const appError_1 = require("../../utils/appError");
 const rest_validation_1 = require("./rest.validation");
 // Create restaurant
@@ -39,7 +39,7 @@ const createRestaurant = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         // If an image file is uploaded
         if (req.file) {
             // Handle the image upload and get the file path
-            uploadImage = yield (0, rest_service_1.handleImageUpload)(req.file);
+            uploadImage = yield (0, upload_file_1.handleImageUpload)(req.file);
         }
         // Save restaurant data to database
         const restaurant = new rest_model_1.default({
@@ -248,7 +248,7 @@ const updateRestaurant = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         };
         // If image file is uploaded, handle it
         if (req.file) {
-            const restaurantImage = yield (0, rest_service_1.handleImageUpload)(req.file);
+            const restaurantImage = yield (0, upload_file_1.handleImageUpload)(req.file);
             updateData.image = restaurantImage;
         }
         // Remove undefined fields to avoid overwriting with undefined

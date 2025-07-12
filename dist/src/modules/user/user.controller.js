@@ -12,9 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCustomerProfile = exports.getAllCustomer = void 0;
+exports.updateCustomerProfile = exports.getCustomerProfile = exports.getAllCustomer = void 0;
 const auth_model_1 = __importDefault(require("../authentication/auth.model"));
 const appError_1 = require("../../utils/appError");
+const upload_file_1 = require("../../shared/cloudinary/upload.file");
 // Get all customers list for admin and seller
 const getAllCustomer = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -82,3 +83,42 @@ const getCustomerProfile = (req, res, next) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.getCustomerProfile = getCustomerProfile;
+// Update customer profile using id from authentication
+const updateCustomerProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        // Get customer id from user authentication
+        const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+        if (!userId) {
+            return next(new appError_1.AppError("Unauthorized", 401));
+        }
+        // Extract update fields from request body
+        const { name, email, phone, avatar } = req.body;
+        // Prepare the update data
+        const updatedData = {
+            name,
+            email,
+            phone,
+            avatar,
+        };
+        // If file is provided, upload it to cloudinary
+        if (req.file) {
+            const userProfileImage = yield (0, upload_file_1.handleImageUpload)(req.file);
+            updatedData.avatar = userProfileImage;
+        }
+        // Update the customer profile
+        const updatedUser = yield auth_model_1.default.findByIdAndUpdate(userId, { $set: updatedData }, { new: true });
+        if (!updatedUser) {
+            return next(new appError_1.AppError("User not found", 404));
+        }
+        res.status(200).json({
+            success: true,
+            message: "Profile updated successfully",
+            data: updatedUser,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.updateCustomerProfile = updateCustomerProfile;

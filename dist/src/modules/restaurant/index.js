@@ -36,13 +36,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.restValidation = exports.restInterfaces = exports.restModel = exports.restService = exports.restController = exports.restRouter = void 0;
+exports.restValidation = exports.restInterfaces = exports.restModel = exports.restController = exports.restRouter = void 0;
 const rest_route_1 = __importDefault(require("./rest.route"));
 exports.restRouter = rest_route_1.default;
 const restController = __importStar(require("./rest.controller"));
 exports.restController = restController;
-const restService = __importStar(require("./rest.service"));
-exports.restService = restService;
 const restModel = __importStar(require("./rest.model"));
 exports.restModel = restModel;
 const restInterfaces = __importStar(require("./rest.interface"));
