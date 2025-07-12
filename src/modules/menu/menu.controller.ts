@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import menuSchema from "./menu.model";
 import { AppError } from "../../utils/appError";
 import { validateMenuCreation } from "./menu.validation";
+import restaurantSchema from "../restaurant/rest.model";
 
 // *************Main Menu CRUD Operations********************
 // Create a new menu item
@@ -29,6 +30,11 @@ export const createMenu = async (
     const isMenuItemExist = await menuSchema.findOne({ productName, restaurantId });
     if (isMenuItemExist) {
       return next(new AppError("The item already exists", 400));
+    }
+     // Check the restarant is verified
+    const isVerifiedRestaurant = await restaurantSchema.findById(restaurantId)
+    if (!isVerifiedRestaurant) {
+      return next(new AppError("Restaurant not verified", 400));
     }
   } catch (error) {}
 };
