@@ -3,6 +3,7 @@ import menuSchema from "./menu.model";
 import { AppError } from "../../utils/appError";
 import { validateMenuCreation } from "./menu.validation";
 import restaurantSchema from "../restaurant/rest.model";
+import { handleImageUpload } from "../../shared/cloudinary/upload.file";
 
 // *************Main Menu CRUD Operations********************
 // Create a new menu item
@@ -36,6 +37,21 @@ export const createMenu = async (
     if (!isVerifiedRestaurant) {
       return next(new AppError("Restaurant not verified", 400));
     }
+     let menuImage;
+    // If any file is uploaded, handle the image upload and get the file path
+    if (req.file) {
+      const uploadImage = await handleImageUpload(req.file);
+      menuImage = uploadImage;
+    }
+    let parsedVariants = variants;
+if (typeof variants === 'string') {
+  try {
+    parsedVariants = JSON.parse(variants);
+  } catch (err) {
+    return next(new AppError("Invalid format for variants", 400));
+  }
+}
+
   } catch (error) {}
 };
 
