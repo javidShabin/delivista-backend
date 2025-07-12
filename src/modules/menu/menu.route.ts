@@ -6,4 +6,12 @@ import { createMenu } from "./menu.controller";
 
 const router = express.Router();
 
+router.post(
+  "/create-menu",
+  authenticate,
+  authorize("seller"),
+  upload.single("image"),
+  createMenu
+);
+
 export default router;
