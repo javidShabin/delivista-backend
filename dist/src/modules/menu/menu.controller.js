@@ -25,7 +25,7 @@ const createMenu = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         // Validate the details first
         (0, menu_validation_1.validateMenuCreation)(req.body);
         // Destructure the menu details from request body after validation
-        const { productName, description, category, price, restaurantId, sellerId, variants, isVeg, tags, } = req.body;
+        const { productName, description, category, price, restaurantId, sellerId, isVeg, tags, } = req.body;
         // Check the same item already exists in the menu collection
         const isMenuItemExist = yield menu_model_1.default.findOne({
             productName,
@@ -45,15 +45,6 @@ const createMenu = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             const uploadImage = yield (0, upload_file_1.handleImageUpload)(req.file);
             menuImage = uploadImage;
         }
-        let parsedVariants = variants;
-        if (typeof variants === "string") {
-            try {
-                parsedVariants = JSON.parse(variants);
-            }
-            catch (err) {
-                return next(new appError_1.AppError("Invalid format for variants", 400));
-            }
-        }
         // Create new menu item
         const newMenuItem = yield menu_model_1.default.create({
             productName,
@@ -63,7 +54,6 @@ const createMenu = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             image: menuImage,
             sellerId,
             restaurantId,
-            variants: parsedVariants,
             isVeg,
             tags,
         });
@@ -94,10 +84,31 @@ const deleteMenu = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
 exports.deleteMenu = deleteMenu;
 // ************Get menus by association**********************
 // getMenusByRestaurant
+// Get menus by pagination
 const getMenusByRestaurant = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { restaurantId } = req.params;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 8;
+        if (!restaurantId) {
+            throw new appError_1.AppError("Restaurant not found", 400);
+        }
+        const skip = (page - 1) * limit;
+        const [menus, total] = yield Promise.all([
+            menu_model_1.default.find({ restaurantId }).skip(skip).limit(limit),
+            menu_model_1.default.countDocuments({ restaurantId }),
+        ]);
+        res.status(200).json({
+            success: true,
+            message: "Menus fetched successfully",
+            menus,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page,
+        });
     }
-    catch (error) { }
+    catch (error) {
+        next(error);
+    }
 });
 exports.getMenusByRestaurant = getMenusByRestaurant;
 // getMenusBySeller

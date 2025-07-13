@@ -85,12 +85,6 @@ const menuSchema = new mongoose_1.Schema({
         type: Number,
         required: true,
     },
-    variants: [
-        {
-            name: { type: String, required: true },
-            price: { type: Number, required: true },
-        },
-    ],
     image: {
         type: String,
         default: "",
