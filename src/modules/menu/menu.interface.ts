@@ -8,7 +8,6 @@ export interface IMenu {
   description: string;
   category: string;
   price: number;
-  variants?: { name: string; price: number }[];
   image: string;
   isAvailable: boolean;
   isVeg: boolean;

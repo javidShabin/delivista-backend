@@ -23,7 +23,6 @@ export const createMenu = async (
       price,
       restaurantId,
       sellerId,
-      variants,
       isVeg,
       tags,
     } = req.body;
@@ -46,14 +45,7 @@ export const createMenu = async (
       const uploadImage = await handleImageUpload(req.file);
       menuImage = uploadImage;
     }
-    let parsedVariants = variants;
-    if (typeof variants === "string") {
-      try {
-        parsedVariants = JSON.parse(variants);
-      } catch (err) {
-        return next(new AppError("Invalid format for variants", 400));
-      }
-    }
+    
     // Create new menu item
     const newMenuItem = await menuSchema.create({
       productName,
@@ -63,7 +55,6 @@ export const createMenu = async (
       image: menuImage,
       sellerId,
       restaurantId,
-      variants: parsedVariants,
       isVeg,
       tags,
     });
@@ -99,13 +90,38 @@ export const deleteMenu = async (
 
 // ************Get menus by association**********************
 // getMenusByRestaurant
+// Get menus by pagination
 export const getMenusByRestaurant = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-  } catch (error) {}
+    const { restaurantId } = req.params;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 8;
+
+    if (!restaurantId) {
+      throw new AppError("Restaurant not found", 400);
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [menus, total] = await Promise.all([
+      menuSchema.find({ restaurantId }).skip(skip).limit(limit),
+      menuSchema.countDocuments({ restaurantId }),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      message: "Menus fetched successfully",
+      menus,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // getMenusBySeller
