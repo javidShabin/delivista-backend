@@ -10,4 +10,5 @@ const multer_1 = require("../../middlewares/multer");
 const menu_controller_1 = require("./menu.controller");
 const router = express_1.default.Router();
 router.post("/create-menu", auth_middleware_1.authenticate, (0, authorize_1.authorize)("seller"), multer_1.upload.single("image"), menu_controller_1.createMenu);
+router.get("/get-all-menus/:restaurantId", auth_middleware_1.authenticate, (0, authorize_1.authorize)("admin", "customer"), menu_controller_1.getMenusByRestaurant);
 exports.default = router;
