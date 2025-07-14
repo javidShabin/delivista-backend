@@ -2,7 +2,7 @@ import express from "express";
 import { authenticate } from "../../middlewares/auth.middleware";
 import { authorize } from "../../middlewares/authorize";
 import { upload } from "../../middlewares/multer";
-import { createMenu, deleteMenu, getMenusByCategory, getMenusByRestaurant, searchMenus, updateMenu } from "./menu.controller";
+import { createMenu, deleteMenu, getMenusByCategory, getMenusByRestaurant, getMenusByTag, searchMenus, updateMenu } from "./menu.controller";
 
 const router = express.Router();
 
@@ -42,6 +42,14 @@ router.get(
   authorize("admin", "customer"),
   getMenusByCategory
 );
+
+router.get(
+  "/menu-by-tag",
+  authenticate,
+  authorize("admin", "customer"),
+  getMenusByTag
+)
+
 
 router.get(
   "/search-menu",
