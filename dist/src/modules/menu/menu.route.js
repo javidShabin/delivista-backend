@@ -11,4 +11,5 @@ const menu_controller_1 = require("./menu.controller");
 const router = express_1.default.Router();
 router.post("/create-menu", auth_middleware_1.authenticate, (0, authorize_1.authorize)("seller"), multer_1.upload.single("image"), menu_controller_1.createMenu);
 router.get("/get-all-menus/:restaurantId", auth_middleware_1.authenticate, (0, authorize_1.authorize)("admin", "customer"), menu_controller_1.getMenusByRestaurant);
+router.get("/get-menu-by-catagory/:category", auth_middleware_1.authenticate, (0, authorize_1.authorize)("admin", "customer"), menu_controller_1.getMenusByCategory);
 exports.default = router;
