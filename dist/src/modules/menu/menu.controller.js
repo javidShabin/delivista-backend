@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchMenus = exports.getNonVegMenus = exports.getVegMenus = exports.getRecommendedMenus = exports.getMenusByAvailability = exports.getMenusByTag = exports.getMenusByPriceRange = exports.getMenusByCategory = exports.getMenusBySeller = exports.getMenusByRestaurant = exports.deleteMenu = exports.updateMenu = exports.createMenu = void 0;
+exports.searchMenus = exports.getNonVegMenus = exports.getVegMenus = exports.getRecommendedMenus = exports.getMenusByAvailability = exports.getMenusByTag = exports.getMenusByCategory = exports.getMenusByRestaurant = exports.deleteMenu = exports.updateMenu = exports.createMenu = void 0;
 const menu_model_1 = __importDefault(require("./menu.model"));
 const appError_1 = require("../../utils/appError");
 const menu_validation_1 = require("./menu.validation");
@@ -68,18 +68,73 @@ const createMenu = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.createMenu = createMenu;
-// updateMenu
+// Update menu
 const updateMenu = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { id } = req.params;
+        // Destructure fields from request body
+        const { productName, description, category, price, isVeg, isAvailable, isRecommended, tags, } = req.body;
+        // Check if the menu item exists
+        const existingMenu = yield menu_model_1.default.findById(id);
+        if (!existingMenu) {
+            return next(new appError_1.AppError("Menu item not found", 404));
+        }
+        // Handle image update if a file is uploaded
+        let updatedImage = existingMenu.image;
+        if (req.file) {
+            const uploadResult = yield (0, upload_file_1.handleImageUpload)(req.file);
+            updatedImage = uploadResult;
+        }
+        // Prepare updated data
+        const updatedData = {
+            productName,
+            description,
+            category,
+            price,
+            isVeg,
+            isAvailable,
+            isRecommended,
+            tags,
+            image: updatedImage,
+        };
+        // Update menu
+        const updatedMenu = yield menu_model_1.default.findByIdAndUpdate(id, updatedData, {
+            new: true,
+            runValidators: true,
+        });
+        res.status(200).json({
+            success: true,
+            message: "Menu item updated successfully",
+            data: updatedMenu,
+        });
     }
-    catch (error) { }
+    catch (error) {
+        next(error);
+    }
 });
 exports.updateMenu = updateMenu;
-// deleteMenu
+// Delete a menu item by its id
 const deleteMenu = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // Get menu id from request parameters
+        const { id } = req.params;
+        // Check if the menu item exists in the database
+        const menuItem = yield menu_model_1.default.findById(id);
+        if (!menuItem) {
+            return next(new appError_1.AppError("Menu item not found", 404));
+        }
+        // If found, delete the menu item
+        yield menu_model_1.default.findByIdAndDelete(id);
+        // Send success response
+        res.status(200).json({
+            success: true,
+            message: "Menu item deleted successfully",
+        });
     }
-    catch (error) { }
+    catch (error) {
+        // Forward error to global error handler
+        next(error);
+    }
 });
 exports.deleteMenu = deleteMenu;
 // ************Get menus by association**********************
@@ -111,13 +166,6 @@ const getMenusByRestaurant = (req, res, next) => __awaiter(void 0, void 0, void 
     }
 });
 exports.getMenusByRestaurant = getMenusByRestaurant;
-// getMenusBySeller
-const getMenusBySeller = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-    }
-    catch (error) { }
-});
-exports.getMenusBySeller = getMenusBySeller;
 // ************Filtering functions for menus**********************
 // getMenusByCategory
 const getMenusByCategory = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -163,18 +211,44 @@ const getMenusByCategory = (req, res, next) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.getMenusByCategory = getMenusByCategory;
-// getMenusByPriceRange
-const getMenusByPriceRange = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-    }
-    catch (error) { }
-});
-exports.getMenusByPriceRange = getMenusByPriceRange;
 // getMenusByTag
 const getMenusByTag = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // Extract query parameters
+        const { restaurantId, tag } = req.query;
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 8;
+        const skip = (page - 1) * limit;
+        // Check if required parameters are present
+        if (!restaurantId || !tag) {
+            return next(new appError_1.AppError("restaurantId and tag are required", 400));
+        }
+        // Find menu items that match the tag under the given restaurant
+        const menus = yield menu_model_1.default
+            .find({
+            restaurantId,
+            tags: tag, // exact match within the tags array
+        })
+            .skip(skip)
+            .limit(limit);
+        // Count total matching items for pagination
+        const totalMenus = yield menu_model_1.default.countDocuments({
+            restaurantId,
+            tags: tag,
+        });
+        const totalPages = Math.ceil(totalMenus / limit);
+        // Send the response
+        res.status(200).json({
+            success: true,
+            totalMenus,
+            totalPages,
+            currentPage: page,
+            data: menus,
+        });
     }
-    catch (error) { }
+    catch (error) {
+        next(error);
+    }
 });
 exports.getMenusByTag = getMenusByTag;
 // getMenusByAvailability
