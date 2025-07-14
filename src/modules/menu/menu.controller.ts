@@ -254,5 +254,42 @@ export const searchMenus = async (
   next: NextFunction
 ) => {
   try {
-  } catch (error) {}
+    // Get restaurant id and keyword
+    const { restaurantId, keyword } = req.query;
+    // Set page code
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 8;
+    const skip = (page - 1) * limit;
+    // Check the restaurant id and keyword (search word) is present or not
+    if (!restaurantId || !keyword) {
+      throw new AppError("RestaurantId and keyword are required", 400);
+    }
+    // Regular expression
+    const searchRegex = new RegExp(keyword as string, "i");
+
+    // regular MongoDB query filter using the query language
+    const filter = {
+      restaurantId,
+      $or: [
+        { productName: searchRegex },
+        { description: searchRegex },
+        { category: searchRegex },
+      ],
+    };
+
+    // Count and find the menu items by keywords from request
+    const total = await menuSchema.countDocuments(filter);
+    const results = await menuSchema.find(filter).skip(skip).limit(limit);
+
+    res.status(200).json({
+      // send the response
+      success: true,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+      data: results,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
