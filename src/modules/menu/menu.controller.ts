@@ -45,7 +45,7 @@ export const createMenu = async (
       const uploadImage = await handleImageUpload(req.file);
       menuImage = uploadImage;
     }
-    
+
     // Create new menu item
     const newMenuItem = await menuSchema.create({
       productName,
@@ -142,7 +142,49 @@ export const getMenusByCategory = async (
   next: NextFunction
 ) => {
   try {
-  } catch (error) {}
+    // Destructer the category and restaurant id from params and query
+    const { category } = req.params;
+    const { restaurantId } = req.query;
+
+    // Set the pagination
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 8;
+    const skip = (page - 1) * limit;
+
+    // Check the category and restaurant id is present or not
+    if (!category || !restaurantId) {
+      throw new AppError("RestaurantId or category is required", 404);
+    }
+    // Find the menu by category and restaurant id, then make pagination
+    // Find paginated menus
+    const menus = await menuSchema
+      .find({ category, restaurantId })
+      .skip(skip)
+      .limit(limit);
+
+    const totalMenus = await menuSchema.countDocuments({
+      category,
+      restaurantId,
+    });
+
+    if (!menus || menus.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "No menus found for this category and restaurant.",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      count: menus.length,
+      currentPage: page,
+      totalPages: Math.ceil(totalMenus / limit),
+      data: menus,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // getMenusByPriceRange
