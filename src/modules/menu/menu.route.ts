@@ -2,7 +2,7 @@ import express from "express";
 import { authenticate } from "../../middlewares/auth.middleware";
 import { authorize } from "../../middlewares/authorize";
 import { upload } from "../../middlewares/multer";
-import { createMenu, getMenusByCategory, getMenusByRestaurant, searchMenus } from "./menu.controller";
+import { createMenu, getMenusByCategory, getMenusByRestaurant, searchMenus, updateMenu } from "./menu.controller";
 
 const router = express.Router();
 
@@ -13,6 +13,14 @@ router.post(
   upload.single("image"),
   createMenu
 );
+
+router.put(
+  "/update-menu/:id",
+  authenticate,
+  authorize("seller"),
+  upload.single("image"),
+  updateMenu
+)
 
 router.get(
   "/get-all-menus/:restaurantId",
