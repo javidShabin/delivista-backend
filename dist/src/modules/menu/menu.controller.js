@@ -208,7 +208,41 @@ exports.getNonVegMenus = getNonVegMenus;
 // get menus by search
 const searchMenus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // Get restaurant id and keyword
+        const { restaurantId, keyword } = req.query;
+        // Set page code
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 8;
+        const skip = (page - 1) * limit;
+        // Check the restaurant id and keyword (search word) is present or not
+        if (!restaurantId || !keyword) {
+            throw new appError_1.AppError("RestaurantId and keyword are required", 400);
+        }
+        // Regular expression
+        const searchRegex = new RegExp(keyword, "i");
+        // regular MongoDB query filter using the query language
+        const filter = {
+            restaurantId,
+            $or: [
+                { productName: searchRegex },
+                { description: searchRegex },
+                { category: searchRegex },
+            ],
+        };
+        // Count and find the menu items by keywords from request
+        const total = yield menu_model_1.default.countDocuments(filter);
+        const results = yield menu_model_1.default.find(filter).skip(skip).limit(limit);
+        res.status(200).json({
+            // send the response
+            success: true,
+            total,
+            page,
+            totalPages: Math.ceil(total / limit),
+            data: results,
+        });
     }
-    catch (error) { }
+    catch (error) {
+        next(error);
+    }
 });
 exports.searchMenus = searchMenus;
