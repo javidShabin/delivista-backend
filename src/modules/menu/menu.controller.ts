@@ -258,8 +258,47 @@ export const getMenusByTag = async (
   next: NextFunction
 ) => {
   try {
-  } catch (error) {}
+    // Extract query parameters
+    const { restaurantId, tag } = req.query;
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 8;
+    const skip = (page - 1) * limit;
+
+    // Check if required parameters are present
+    if (!restaurantId || !tag) {
+      return next(new AppError("restaurantId and tag are required", 400));
+    }
+
+    // Find menu items that match the tag under the given restaurant
+    const menus = await menuSchema
+      .find({
+        restaurantId,
+        tags: tag, // exact match within the tags array
+      })
+      .skip(skip)
+      .limit(limit);
+
+    // Count total matching items for pagination
+    const totalMenus = await menuSchema.countDocuments({
+      restaurantId,
+      tags: tag,
+    });
+
+    const totalPages = Math.ceil(totalMenus / limit);
+
+    // Send the response
+    res.status(200).json({
+      success: true,
+      totalMenus,
+      totalPages,
+      currentPage: page,
+      data: menus,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
+
 
 // getMenusByAvailability
 export const getMenusByAvailability = async (
