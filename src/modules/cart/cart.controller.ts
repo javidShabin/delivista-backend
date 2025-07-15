@@ -10,7 +10,7 @@ export const addToCart = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void>  => {
   try {
     // Validate the data from request body
     validateCartCreation(req.body);
@@ -49,7 +49,7 @@ export const addToCart = async (
       );
 
       if (duplicateIds.length > 0) {
-        return res.status(400).json({
+         res.status(400).json({
           status: "error",
           message: "One or more menu items already exist in the cart",
         });
@@ -66,7 +66,7 @@ export const addToCart = async (
 
       const updatedCart = await existingCart.save();
 
-      return res.status(200).json({
+      res.status(200).json({
         message: "Items added to existing cart",
         cart: updatedCart,
       });
