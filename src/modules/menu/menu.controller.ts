@@ -307,7 +307,50 @@ export const getMenusByAvailability = async (
   next: NextFunction
 ) => {
   try {
-  } catch (error) {}
+    // Extract query parameters
+    const { restaurantId, isAvailable } = req.query;
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 8;
+    const skip = (page - 1) * limit;
+
+    // Validation: restaurantId and isAvailable are required
+    if (!restaurantId || isAvailable === undefined) {
+      return next(
+        new AppError("restaurantId and isAvailable are required", 400)
+      );
+    }
+
+    // Convert isAvailable string to boolean
+    const availableStatus = isAvailable === "true";
+
+    // Query menu items by restaurantId and isAvailable
+    const menus = await menuSchema
+      .find({
+        restaurantId,
+        isAvailable: availableStatus,
+      })
+      .skip(skip)
+      .limit(limit);
+
+    // Count total matching menus
+    const totalMenus = await menuSchema.countDocuments({
+      restaurantId,
+      isAvailable: availableStatus,
+    });
+
+    const totalPages = Math.ceil(totalMenus / limit);
+
+    // Send response
+    res.status(200).json({
+      success: true,
+      totalMenus,
+      totalPages,
+      currentPage: page,
+      data: menus,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // getRecommendedMenus
