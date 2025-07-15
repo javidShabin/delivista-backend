@@ -23,6 +23,7 @@ export const createMenu = async (
       price,
       restaurantId,
       sellerId,
+      customerId,
       isVeg,
       tags,
     } = req.body;
@@ -55,6 +56,7 @@ export const createMenu = async (
       image: menuImage,
       sellerId,
       restaurantId,
+      customerId,
       isVeg,
       tags,
     });

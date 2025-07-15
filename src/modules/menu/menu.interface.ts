@@ -5,6 +5,7 @@ export interface IMenu {
   productName: string;
   restaurantId: Types.ObjectId;
   sellerId: Types.ObjectId;
+  customerId: Types.ObjectId;
   description: string;
   category: string;
   price: number;
@@ -24,6 +25,7 @@ export interface IMenu {
 export interface IMenuCreation {
   restaurantId: Types.ObjectId;
   sellerId: Types.ObjectId;
+  customerId: Types.ObjectId;
   productName: string;
   description: string;
   category: string;

@@ -21,6 +21,11 @@ const menuSchema: Schema<IMenuModel> = new Schema(
       ref: "Seller",
       required: true,
     },
+    customerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     description: {
       type: String,
       required: true,
