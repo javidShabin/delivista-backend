@@ -254,8 +254,43 @@ exports.getMenusByTag = getMenusByTag;
 // getMenusByAvailability
 const getMenusByAvailability = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // Extract query parameters
+        const { restaurantId, isAvailable } = req.query;
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 8;
+        const skip = (page - 1) * limit;
+        // Validation: restaurantId and isAvailable are required
+        if (!restaurantId || isAvailable === undefined) {
+            return next(new appError_1.AppError("restaurantId and isAvailable are required", 400));
+        }
+        // Convert isAvailable string to boolean
+        const availableStatus = isAvailable === "true";
+        // Query menu items by restaurantId and isAvailable
+        const menus = yield menu_model_1.default
+            .find({
+            restaurantId,
+            isAvailable: availableStatus,
+        })
+            .skip(skip)
+            .limit(limit);
+        // Count total matching menus
+        const totalMenus = yield menu_model_1.default.countDocuments({
+            restaurantId,
+            isAvailable: availableStatus,
+        });
+        const totalPages = Math.ceil(totalMenus / limit);
+        // Send response
+        res.status(200).json({
+            success: true,
+            totalMenus,
+            totalPages,
+            currentPage: page,
+            data: menus,
+        });
     }
-    catch (error) { }
+    catch (error) {
+        next(error);
+    }
 });
 exports.getMenusByAvailability = getMenusByAvailability;
 // getRecommendedMenus
