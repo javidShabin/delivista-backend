@@ -3,43 +3,6 @@ import { ICart } from "./cart.interface";
 
 export interface ICartModel extends ICart, Document {}
 
-// Subschema for items
-const cartItemSchema = new Schema<ICart["items"][0]>(
-  {
-    menuItem: {
-      type: Schema.Types.ObjectId,
-      ref: "MenuItem",
-      required: true,
-    },
-    quantity: {
-      type: Number,
-      required: true,
-      min: 1,
-    },
-    price: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    image: {
-      type: String,
-    },
-    productName: {
-      type: String,
-      required: true,
-    },
-    category: {
-      type: String,
-      required: true,
-    },
-    isVeg: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  { _id: false }
-);
-
 // Main Cart schema
 const cartSchema = new Schema<ICartModel>(
   {
@@ -59,7 +22,40 @@ const cartSchema = new Schema<ICartModel>(
       required: true,
     },
     items: {
-      type: [cartItemSchema],
+      type: [
+        {
+          menuId: {
+            type: Schema.Types.ObjectId,
+            ref: "MenuItem",
+            required: true,
+          },
+          quantity: {
+            type: Number,
+            required: true,
+            min: 1,
+          },
+          price: {
+            type: Number,
+            required: true,
+            min: 0,
+          },
+          image: {
+            type: String,
+          },
+          productName: {
+            type: String,
+            required: true,
+          },
+          category: {
+            type: String,
+            required: true,
+          },
+          isVeg: {
+            type: Boolean,
+            required: true,
+          },
+        },
+      ],
       required: true,
     },
     totalPrice: {
