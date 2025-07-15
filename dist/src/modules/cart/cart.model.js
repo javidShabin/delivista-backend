@@ -1,39 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-// Subschema for items
-const cartItemSchema = new mongoose_1.Schema({
-    menuItem: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: "MenuItem",
-        required: true,
-    },
-    quantity: {
-        type: Number,
-        required: true,
-        min: 1,
-    },
-    price: {
-        type: Number,
-        required: true,
-        min: 0,
-    },
-    image: {
-        type: String,
-    },
-    productName: {
-        type: String,
-        required: true,
-    },
-    category: {
-        type: String,
-        required: true,
-    },
-    isVeg: {
-        type: Boolean,
-        required: true,
-    },
-}, { _id: false });
 // Main Cart schema
 const cartSchema = new mongoose_1.Schema({
     sellerId: {
@@ -52,7 +19,40 @@ const cartSchema = new mongoose_1.Schema({
         required: true,
     },
     items: {
-        type: [cartItemSchema],
+        type: [
+            {
+                menuId: {
+                    type: mongoose_1.Schema.Types.ObjectId,
+                    ref: "MenuItem",
+                    required: true,
+                },
+                quantity: {
+                    type: Number,
+                    required: true,
+                    min: 1,
+                },
+                price: {
+                    type: Number,
+                    required: true,
+                    min: 0,
+                },
+                image: {
+                    type: String,
+                },
+                productName: {
+                    type: String,
+                    required: true,
+                },
+                category: {
+                    type: String,
+                    required: true,
+                },
+                isVeg: {
+                    type: Boolean,
+                    required: true,
+                },
+            },
+        ],
         required: true,
     },
     totalPrice: {

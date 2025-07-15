@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cartInterfaces = exports.cartModel = exports.cartController = exports.cartRouter = void 0;
+exports.cartValidation = exports.cartInterfaces = exports.cartModel = exports.cartController = exports.cartRouter = void 0;
 const cart_route_1 = __importDefault(require("./cart.route"));
 exports.cartRouter = cart_route_1.default;
 const cartController = __importStar(require("./cart.controller"));
@@ -45,3 +45,5 @@ const cartModel = __importStar(require("./cart.model"));
 exports.cartModel = cartModel;
 const cartInterfaces = __importStar(require("./cart.interface"));
 exports.cartInterfaces = cartInterfaces;
+const cartValidation = __importStar(require("./cart.validation"));
+exports.cartValidation = cartValidation;
