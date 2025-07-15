@@ -25,7 +25,7 @@ const createMenu = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         // Validate the details first
         (0, menu_validation_1.validateMenuCreation)(req.body);
         // Destructure the menu details from request body after validation
-        const { productName, description, category, price, restaurantId, sellerId, isVeg, tags, } = req.body;
+        const { productName, description, category, price, restaurantId, sellerId, customerId, isVeg, tags, } = req.body;
         // Check the same item already exists in the menu collection
         const isMenuItemExist = yield menu_model_1.default.findOne({
             productName,
@@ -54,6 +54,7 @@ const createMenu = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             image: menuImage,
             sellerId,
             restaurantId,
+            customerId,
             isVeg,
             tags,
         });

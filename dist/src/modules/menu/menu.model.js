@@ -50,6 +50,11 @@ const menuSchema = new mongoose_1.Schema({
         ref: "Seller",
         required: true,
     },
+    customerId: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
     description: {
         type: String,
         required: true,
