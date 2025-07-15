@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import cartSchema from "./cart.model";
 import { AppError } from "../../utils/appError";
+import { validateCartCreation } from "./cart.validation";
 
 // *************Main Cart CRUD Operations********************
 
@@ -11,8 +12,89 @@ export const addToCart = async (
   next: NextFunction
 ) => {
   try {
-  } catch (error) {}
+    // Validate the data from request body
+    validateCartCreation(req.body);
+
+    // Destructure data from request body
+    const { sellerId, customerId, restaurantId, items } = req.body;
+
+    console.log(sellerId)
+
+    // Validate all items contain menuId
+    for (const item of items) {
+      if (!item.menuId) {
+        throw new AppError("Each item must include a valid menuId", 400);
+      }
+    }
+
+    // Extract menuIds safely
+    const incomingMenuIds = items
+      .filter((item: any) => item.menuId)
+      .map((item: any) => item.menuId.toString());
+
+    // Find existing cart
+    const existingCart = await cartSchema.findOne({
+      sellerId,
+      customerId,
+      restaurantId,
+    });
+
+    if (existingCart) {
+      const existingMenuIds = existingCart.items
+        .filter((item: any) => item.menuId)
+        .map((item: any) => item.menuId.toString());
+
+      const duplicateIds = incomingMenuIds.filter((id:any) =>
+        existingMenuIds.includes(id)
+      );
+
+      if (duplicateIds.length > 0) {
+        return res.status(400).json({
+          status: "error",
+          message: "One or more menu items already exist in the cart",
+        });
+      }
+
+      // No duplicates — add new items
+      existingCart.items.push(...items);
+
+      // Update total price
+      existingCart.totalPrice += items.reduce(
+        (total: number, item: any) => total + item.price * item.quantity,
+        0
+      );
+
+      const updatedCart = await existingCart.save();
+
+      return res.status(200).json({
+        message: "Items added to existing cart",
+        cart: updatedCart,
+      });
+    }
+
+    // No existing cart — create new
+    const totalPrice = items.reduce(
+      (total: number, item: any) => total + item.price * item.quantity,
+      0
+    );
+
+    const newCart = await cartSchema.create({
+      sellerId,
+      customerId,
+      restaurantId,
+      totalPrice,
+      items,
+    });
+
+    res.status(201).json({
+      message: "Cart created and items added",
+      cart: newCart,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
+
 
 // Update the cart
 export const updateCart = async (
