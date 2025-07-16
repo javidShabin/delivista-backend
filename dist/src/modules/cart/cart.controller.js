@@ -61,6 +61,7 @@ const addToCart = (req, res, next) => __awaiter(void 0, void 0, void 0, function
                 message: "Items added to existing cart",
                 cart: updatedCart,
             });
+            return;
         }
         // No existing cart — create new
         const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -98,9 +99,25 @@ exports.deleteFromCart = deleteFromCart;
 // ************Get menus by association**********************
 // Get the cart by user id
 const getCartByUserId = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
+        // Get customer id from user authentication
+        const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+        if (!userId) {
+            return next(new appError_1.AppError("Unauthorized", 401));
+        }
+        // Find the cart by customer id
+        const cart = yield cart_model_1.default.findOne({ customerId: userId });
+        // If not find the cart return error
+        if (!cart) {
+            throw new appError_1.AppError("Cart not found", 404);
+        }
+        // Send as a response
+        res.status(200).json(cart);
     }
-    catch (error) { }
+    catch (error) {
+        next(error);
+    }
 });
 exports.getCartByUserId = getCartByUserId;
 // Get the cart by seller id
