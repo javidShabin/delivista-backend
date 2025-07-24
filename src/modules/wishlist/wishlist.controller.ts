@@ -65,3 +65,30 @@ export const addToWishlist = async (
         return next(error);
     }
 };
+
+// Get favoite list by user id
+export const getFavListbyUserId = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+    } catch (error) {
+
+    }
+}
+
+// Remove items from favorites list
+export const removeFavItem = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+    } catch (error) {
+
+    }
+}
+
+// Clear all item
+export const clearAllItems = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+    } catch (error) {
+
+    }
+}
