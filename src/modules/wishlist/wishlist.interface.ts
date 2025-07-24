@@ -12,6 +12,7 @@ export interface IWishlist {
     isAvailable: boolean;
     isVeg: boolean;
     ratings: number;
+    isFav: boolean;
 }
 
 // Create wishlist interface
