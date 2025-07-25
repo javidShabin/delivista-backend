@@ -66,14 +66,36 @@ export const addToWishlist = async (
     }
 };
 
-// Get favoite list by user id
+// Get favorite list by user id
 export const getFavListbyUserId = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // Get user id from authentication
+        const userId = req.user?.id;
+
+        if (!userId) {
+            return next(new AppError("User not authenticated", 401));
+        }
+
+        // Find the list of favorite items from db
+        const favItemList = await wishlistSchema.find( {userId} ).populate("menuId");
+        console.log(favItemList)
+
+        if (!favItemList || favItemList.length === 0) {
+            return next(new AppError("No items found in favorites", 404));
+        }
+
+        // Send response
+        res.status(200).json({
+            status: "success",
+            results: favItemList.length,
+            data: favItemList,
+        });
 
     } catch (error) {
-
+        console.error(error);
+        return next(new AppError("Error fetching favorite list", 500));
     }
-}
+};
 
 // Remove items from favorites list
 export const removeFavItem = async (req: Request, res: Response, next: NextFunction) => {
