@@ -10,4 +10,5 @@ const cart_controller_1 = require("./cart.controller");
 const router = express_1.default.Router();
 router.post("/add-cart", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), cart_controller_1.addToCart);
 router.get("/cart-items", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), cart_controller_1.getCartByUserId);
+router.delete("/remove-item", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), cart_controller_1.deleteFromCart);
 exports.default = router;

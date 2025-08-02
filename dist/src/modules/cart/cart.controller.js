@@ -91,9 +91,44 @@ const updateCart = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
 exports.updateCart = updateCart;
 // Delete item from the cart
 const deleteFromCart = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
+        // Get user id from authenticaton
+        const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+        // Get the menu id from request body
+        const { menuId } = req.body;
+        // Check the menu id is present
+        if (!menuId) {
+            return next(new appError_1.AppError("Menu ID is required", 400));
+        }
+        // Find the user's cart
+        const cart = yield cart_model_1.default.findOne({ customerId: userId });
+        if (!cart) {
+            return next(new appError_1.AppError("Cart not found", 404));
+        }
+        // Check if the item exists in the cart
+        const itemIndex = cart.items.findIndex((item) => item.menuId.toString() === menuId.toString());
+        if (itemIndex === -1) {
+            return next(new appError_1.AppError("Menu item not found in cart", 404));
+        }
+        // Remove the item
+        const removedItem = cart.items.splice(itemIndex, 1)[0];
+        // Update total price
+        cart.totalPrice -= removedItem.price * removedItem.quantity;
+        // Ensure totalPrice doesn't go negative
+        if (cart.totalPrice < 0) {
+            cart.totalPrice = 0;
+        }
+        // Save updated cart
+        const updatedCart = yield cart.save();
+        res.status(200).json({
+            message: "Item removed from cart successfully",
+            cart: updatedCart,
+        });
     }
-    catch (error) { }
+    catch (error) {
+        next(error);
+    }
 });
 exports.deleteFromCart = deleteFromCart;
 // ************Get menus by association**********************
