@@ -10,7 +10,7 @@ export const addToCart = async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void>  => {
+): Promise<void> => {
   try {
     // Validate the data from request body
     validateCartCreation(req.body);
@@ -18,7 +18,7 @@ export const addToCart = async (
     // Destructure data from request body
     const { sellerId, customerId, restaurantId, items } = req.body;
 
-    console.log(sellerId)
+    console.log(sellerId);
 
     // Validate all items contain menuId
     for (const item of items) {
@@ -44,12 +44,12 @@ export const addToCart = async (
         .filter((item: any) => item.menuId)
         .map((item: any) => item.menuId.toString());
 
-      const duplicateIds = incomingMenuIds.filter((id:any) =>
+      const duplicateIds = incomingMenuIds.filter((id: any) =>
         existingMenuIds.includes(id)
       );
 
       if (duplicateIds.length > 0) {
-         res.status(400).json({
+        res.status(400).json({
           status: "error",
           message: "One or more menu items already exist in the cart",
         });
@@ -96,7 +96,6 @@ export const addToCart = async (
   }
 };
 
-
 // Update the cart
 export const updateCart = async (
   req: Request,
@@ -114,7 +113,50 @@ export const deleteFromCart = async (
   next: NextFunction
 ) => {
   try {
-  } catch (error) {}
+    // Get user id from authenticaton
+    const userId = req.user?.id;
+    // Get the menu id from request body
+    const { menuId } = req.body;
+    // Check the menu id is present
+    if (!menuId) {
+      return next(new AppError("Menu ID is required", 400));
+    }
+
+    // Find the user's cart
+    const cart = await cartSchema.findOne({ customerId: userId });
+    if (!cart) {
+      return next(new AppError("Cart not found", 404));
+    }
+
+    // Check if the item exists in the cart
+    const itemIndex = cart.items.findIndex(
+      (item: any) => item.menuId.toString() === menuId.toString()
+    );
+
+    if (itemIndex === -1) {
+      return next(new AppError("Menu item not found in cart", 404));
+    }
+
+    // Remove the item
+    const removedItem = cart.items.splice(itemIndex, 1)[0];
+    // Update total price
+    cart.totalPrice -= removedItem.price * removedItem.quantity;
+
+    // Ensure totalPrice doesn't go negative
+    if (cart.totalPrice < 0) {
+      cart.totalPrice = 0;
+    }
+
+    // Save updated cart
+    const updatedCart = await cart.save();
+
+    res.status(200).json({
+      message: "Item removed from cart successfully",
+      cart: updatedCart,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // ************Get menus by association**********************
