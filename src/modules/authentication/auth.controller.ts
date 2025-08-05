@@ -47,10 +47,13 @@ export const singupUser = async (
         phone,
         otp,
         otpExpires: new Date(Date.now() + 10 * 60 * 1000), // OTP expires in 10 minutes
-      }
+      },
+      { upsert: true, new: true }
     );
     // Send the OTP to the user's emial
     await sendOtpEmail(email, otp);
+    let user = tempAuthSchema.find({ email });
+    console.log(user);
     // Respond with a success message
     res.status(200).json({
       status: "success",
@@ -59,4 +62,15 @@ export const singupUser = async (
   } catch (error) {
     next(error);
   }
+};
+
+// verify the user OTP and create new user
+export const verifyOtpandCreateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Validate OTP and email
+  } catch (error) {}
 };
