@@ -23,7 +23,7 @@ const PORT = 5000; // Server listening port
 // Enable CORS for deployed frontend
 server.use(
   cors({
-    origin: ["https://delivista-customer-page.vercel.app", true] , // Your Vercel frontend
+    origin: ["https://delivista-customer-page.vercel.app"] , // Your Vercel frontend
     credentials: true, // Allow cookies & sessions
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"], // Optional: Allow headers
