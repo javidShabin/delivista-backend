@@ -1,7 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 import { ITempUser } from "./auth.interface";
 
-
 export interface ITempUserModel extends ITempUser, Document {}
 
 const tempUserSchema: Schema<ITempUserModel> = new Schema(
@@ -23,6 +22,10 @@ const tempUserSchema: Schema<ITempUserModel> = new Schema(
       minlength: 6,
     },
     phone: {
+      type: String,
+      required: true,
+    },
+    address: {
       type: String,
       required: true,
     },
