@@ -51,3 +51,59 @@ export const createAddress = async (
         next(error);
     }
 };
+
+// Update address (without editing isDefault)
+export const updateAddress = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const customerId = req.user?.id;
+        const addressId = req.params.addressId;
+
+        if (!customerId) {
+            return next(new AppError("Unauthorized: customerId missing", 401));
+        }
+
+        // Destructure allowed fields
+        const {
+            fullName,
+            phoneNumber,
+            address,
+            city,
+            state,
+            pincode,
+            addressType,
+        } = req.body;
+
+        // Prepare update object (no isDefault here)
+        const updateFields = {
+            fullName,
+            phoneNumber,
+            address,
+            city,
+            state,
+            pincode,
+            addressType,
+        };
+
+        const updatedAddress = await addressSchema.findOneAndUpdate(
+            { _id: addressId, customerId },
+            { $set: updateFields },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedAddress) {
+            return next(new AppError("Address not found or not authorized", 404));
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Address updated successfully",
+            data: updatedAddress,
+        });
+    } catch (error) {
+        next(error);
+    }
+};

@@ -1,10 +1,11 @@
 import express from "express";
 import { authenticate } from "../../middlewares/auth.middleware";
 import { authorize } from "../../middlewares/authorize";
-import { createAddress } from "./address.controller";
+import { createAddress, updateAddress } from "./address.controller";
 
 const router = express.Router()
 
 router.post("/create-address", authenticate, authorize("customer"), createAddress)
+router.put("/update-address/:addressId", authenticate, authorize("customer"), updateAddress)
 
 export default router;
