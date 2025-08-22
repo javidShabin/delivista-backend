@@ -143,3 +143,44 @@ export const deleteAddress = async (
     }
 };
 
+// ***************** Update default and get all address ********************
+// Set address as default
+export const setDefaultAddress = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const customerId = req.user?.id;
+        const addressId = req.params.addressId;
+
+        if (!customerId) {
+            return next(new AppError("Unauthorized: customerId missing", 401));
+        }
+
+        // First reset all to false
+        await addressSchema.updateMany(
+            { customerId },
+            { $set: { isDefault: false } }
+        );
+
+        // Then set this one to true
+        const updated = await addressSchema.findOneAndUpdate(
+            { _id: addressId, customerId },
+            { $set: { isDefault: true } },
+            { new: true }
+        );
+
+        if (!updated) {
+            return next(new AppError("Address not found or not authorized", 404));
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Default address updated successfully",
+            data: updated,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
