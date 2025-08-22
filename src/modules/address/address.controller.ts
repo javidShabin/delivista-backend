@@ -184,3 +184,28 @@ export const setDefaultAddress = async (
         next(error);
     }
 };
+
+// Get all addresses by user (latest first)
+export const getAllAddresses = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const customerId = req.user?.id; // from auth middleware
+
+        if (!customerId) {
+            return next(new AppError("Unauthorized: customerId missing", 401));
+        }
+
+        const addresses = await addressSchema.find({ customerId }).sort({ createdAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            count: addresses.length,
+            data: addresses,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
