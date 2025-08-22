@@ -59,9 +59,11 @@ export const updateAddress = async (
     next: NextFunction
 ): Promise<void> => {
     try {
+        // Get the user id from authentication
         const customerId = req.user?.id;
-        const addressId = req.params.addressId;
+        const addressId = req.params.addressId; // Get the address id from parameter
 
+        // Check the user id is present or not
         if (!customerId) {
             return next(new AppError("Unauthorized: customerId missing", 401));
         }
@@ -88,6 +90,7 @@ export const updateAddress = async (
             addressType,
         };
 
+        // find and update the address
         const updatedAddress = await addressSchema.findOneAndUpdate(
             { _id: addressId, customerId },
             { $set: updateFields },
@@ -98,7 +101,7 @@ export const updateAddress = async (
             return next(new AppError("Address not found or not authorized", 404));
         }
 
-        res.status(200).json({
+        res.status(200).json({ // Send response
             success: true,
             message: "Address updated successfully",
             data: updatedAddress,
@@ -107,3 +110,36 @@ export const updateAddress = async (
         next(error);
     }
 };
+
+// Delete address
+export const deleteAddress = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const customerId = req.user?.id;
+        const addressId = req.params.addressId;
+
+        if (!customerId) {
+            return next(new AppError("Unauthorized: customerId missing", 401));
+        }
+
+        const deletedAddress = await addressSchema.findOneAndDelete({
+            _id: addressId,
+            customerId,
+        });
+
+        if (!deletedAddress) {
+            return next(new AppError("Address not found or not authorized", 404));
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Address deleted successfully",
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
