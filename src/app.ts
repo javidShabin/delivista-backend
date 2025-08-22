@@ -6,6 +6,7 @@ import { authRouter } from "./modules/authentication";
 import { userRouter } from "./modules/user";
 import { menuRouter } from "./modules/menu";
 import { cartRouter } from "./modules/cart";
+import { addressRouter } from "./modules/address";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use("/user", userRouter);
 app.use("/restaurant", restRouter);
 app.use("/menu", menuRouter)
 app.use("/cart", cartRouter)
+app.use("/address", addressRouter)
 
 // Global error handler
 app.use(globalErrorHandler);
