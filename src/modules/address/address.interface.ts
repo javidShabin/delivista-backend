@@ -12,3 +12,14 @@ export interface IAddress {
     addressType: "home" | "work" | "other";
     isDefault: boolean;
 }
+
+// Create address interface
+export interface IAddressCreation {
+    fullName: string;
+    phoneNumber: string;
+    address: string;
+    city: string;
+    state: string;
+    pincode: string;
+    addressType: "home" | "work" | "other";
+}
