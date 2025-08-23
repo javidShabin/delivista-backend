@@ -19,16 +19,23 @@ const cart_validation_1 = require("./cart.validation");
 // *************Main Cart CRUD Operations********************
 // Add item to the cart
 const addToCart = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
+        // Ensure customerId comes from the authenticated user
+        const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+        if (!userId) {
+            return next(new appError_1.AppError("Unauthorized", 401));
+        }
+        // Force the customerId to match the authenticated user to keep cart retrieval consistent
+        req.body.customerId = userId;
         // Validate the data from request body
         (0, cart_validation_1.validateCartCreation)(req.body);
         // Destructure data from request body
         const { sellerId, customerId, restaurantId, items } = req.body;
-        console.log(sellerId);
         // Validate all items contain menuId
         for (const item of items) {
             if (!item.menuId) {
-                throw new appError_1.AppError("Each item must include a valid menuId", 400);
+                return next(new appError_1.AppError("Each item must include a valid menuId", 400));
             }
         }
         // Extract menuIds safely
@@ -51,6 +58,7 @@ const addToCart = (req, res, next) => __awaiter(void 0, void 0, void 0, function
                     status: "error",
                     message: "One or more menu items already exist in the cart",
                 });
+                return;
             }
             // No duplicates — add new items
             existingCart.items.push(...items);
@@ -67,7 +75,7 @@ const addToCart = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
         const newCart = yield cart_model_1.default.create({
             sellerId,
-            customerId,
+            customerId: userId,
             restaurantId,
             totalPrice,
             items,
@@ -78,15 +86,70 @@ const addToCart = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         });
     }
     catch (error) {
-        next(error);
+        console.log(error);
+        return next(error);
     }
 });
 exports.addToCart = addToCart;
 // Update the cart
 const updateCart = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
+        // Get user id from authentication
+        const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+        if (!userId) {
+            return next(new appError_1.AppError("Unauthorized", 401));
+        }
+        // Get the menu id and action from request body
+        const { menuId, action } = req.body;
+        // Check if menu id and action are present
+        if (!menuId) {
+            return next(new appError_1.AppError("Menu ID is required", 400));
+        }
+        if (!action || !['increment', 'decrement'].includes(action)) {
+            return next(new appError_1.AppError("Action must be 'increment' or 'decrement'", 400));
+        }
+        // Find the user's cart
+        const cart = yield cart_model_1.default.findOne({ customerId: userId });
+        if (!cart) {
+            return next(new appError_1.AppError("Cart not found", 404));
+        }
+        // Check if the item exists in the cart
+        const itemIndex = cart.items.findIndex((item) => item.menuId.toString() === menuId.toString());
+        if (itemIndex === -1) {
+            return next(new appError_1.AppError("Menu item not found in cart", 404));
+        }
+        const item = cart.items[itemIndex];
+        const oldTotal = item.price * item.quantity;
+        // Update quantity based on action
+        if (action === 'increment') {
+            item.quantity += 1;
+        }
+        else if (action === 'decrement') {
+            if (item.quantity <= 1) {
+                return next(new appError_1.AppError("Quantity cannot be less than 1", 400));
+            }
+            item.quantity -= 1;
+        }
+        // Calculate new total for this item
+        const newTotal = item.price * item.quantity;
+        // Update cart total price
+        cart.totalPrice = cart.totalPrice - oldTotal + newTotal;
+        // Ensure totalPrice doesn't go negative
+        if (cart.totalPrice < 0) {
+            cart.totalPrice = 0;
+        }
+        // Save updated cart
+        const updatedCart = yield cart.save();
+        res.status(200).json({
+            message: `Item quantity ${action === 'increment' ? 'increased' : 'decreased'} successfully`,
+            cart: updatedCart,
+        });
     }
-    catch (error) { }
+    catch (error) {
+        console.log(error);
+        return next(error);
+    }
 });
 exports.updateCart = updateCart;
 // Delete item from the cart

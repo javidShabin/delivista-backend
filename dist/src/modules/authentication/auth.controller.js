@@ -27,7 +27,7 @@ const singupUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         // Validate the user details in validate function
         (0, auth_validation_1.validateSignupUser)(req.body);
         // Destructer the details from request body
-        const { name, email, password, phone, role } = req.body;
+        const { name, email, password, phone, role, address } = req.body;
         // Validate the role
         const validRoles = ["admin", "seller", "customer"];
         if (!validRoles.includes(role)) {
@@ -49,6 +49,7 @@ const singupUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             password: hashedPassword,
             phone,
             role,
+            address,
             otp,
             otpExpires: new Date(Date.now() + 10 * 60 * 1000), // OTP expires in 10 minutes
         }, { upsert: true, new: true });
@@ -64,6 +65,7 @@ const singupUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
     catch (error) {
         next(error);
+        console.log(error);
     }
 });
 exports.singupUser = singupUser;
@@ -94,6 +96,7 @@ const verifyOtpandCreateUser = (req, res, next) => __awaiter(void 0, void 0, voi
             password: tempUser.password,
             phone: tempUser.phone,
             role: tempUser.role,
+            address: tempUser.address,
             avatar: tempUser.avatar,
         });
         yield newUser.save();

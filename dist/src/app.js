@@ -10,12 +10,14 @@ const authentication_1 = require("./modules/authentication");
 const user_1 = require("./modules/user");
 const menu_1 = require("./modules/menu");
 const cart_1 = require("./modules/cart");
+const address_1 = require("./modules/address");
 const app = (0, express_1.default)();
 app.use("/authentication", authentication_1.authRouter);
 app.use("/user", user_1.userRouter);
 app.use("/restaurant", restaurant_1.restRouter);
 app.use("/menu", menu_1.menuRouter);
 app.use("/cart", cart_1.cartRouter);
+app.use("/address", address_1.addressRouter);
 // Global error handler
 app.use(errorHandler_1.globalErrorHandler);
 exports.default = app;

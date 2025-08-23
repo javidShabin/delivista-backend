@@ -32,43 +32,18 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importStar(require("mongoose"));
-const UserSchema = new mongoose_1.Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-    },
-    password: {
-        type: String,
-        required: true,
-        minlength: 6,
-    },
-    phone: {
-        type: String,
-        required: true,
-    },
-    address: {
-        type: String,
-        required: true,
-    },
-    role: {
-        type: String,
-        enum: ["customer", "admin", "seller"],
-        default: "customer",
-    },
-    avatar: {
-        type: String,
-        default: "https://media.istockphoto.com/id/2041572395/vector/blank-avatar-photo-placeholder-icon-vector-illustration.jpg?s=612x612&w=0&k=20&c=wSuiu-si33m-eiwGhXiX_5DvKQDHNS--CBLcyuy68n0=",
-    },
-}, {
-    timestamps: true,
-});
-exports.default = mongoose_1.default.model("User", UserSchema);
+exports.addressValidation = exports.addressInterface = exports.addressModel = exports.addressController = exports.addressRouter = void 0;
+const address_routes_1 = __importDefault(require("./address.routes"));
+exports.addressRouter = address_routes_1.default;
+const addressController = __importStar(require("./address.controller"));
+exports.addressController = addressController;
+const addressModel = __importStar(require("./address.model"));
+exports.addressModel = addressModel;
+const addressInterface = __importStar(require("./address.interface"));
+exports.addressInterface = addressInterface;
+const addressValidation = __importStar(require("./address.validation"));
+exports.addressValidation = addressValidation;
