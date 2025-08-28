@@ -12,4 +12,5 @@ router.post("/add-cart", auth_middleware_1.authenticate, (0, authorize_1.authori
 router.get("/cart-items", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), cart_controller_1.getCartByUserId);
 router.put("/update-cart", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), cart_controller_1.updateCart);
 router.delete("/remove-item", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), cart_controller_1.deleteFromCart);
+router.delete("/remove-cart", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), cart_controller_1.deleteCart);
 exports.default = router;

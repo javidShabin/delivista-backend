@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCartBySellerId = exports.getCartByUserId = exports.deleteFromCart = exports.updateCart = exports.addToCart = void 0;
+exports.deleteCart = exports.getCartBySellerId = exports.getCartByUserId = exports.deleteFromCart = exports.updateCart = exports.addToCart = void 0;
 const cart_model_1 = __importDefault(require("./cart.model"));
 const appError_1 = require("../../utils/appError");
 const cart_validation_1 = require("./cart.validation");
@@ -225,3 +225,24 @@ const getCartBySellerId = (req, res, next) => __awaiter(void 0, void 0, void 0, 
     catch (error) { }
 });
 exports.getCartBySellerId = getCartBySellerId;
+// ********************* Remove cart ***************************
+// remove the cart
+// remove the cart
+const deleteCart = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const customerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id; // comes from auth middleware
+        if (!customerId) {
+            return next(new appError_1.AppError("Unauthorized", 401));
+        }
+        const isCart = yield cart_model_1.default.findOneAndDelete({ customerId });
+        if (!isCart) {
+            return next(new appError_1.AppError("Cart not found", 404));
+        }
+        res.status(200).json({ message: "Remove cart successful" });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.deleteCart = deleteCart;

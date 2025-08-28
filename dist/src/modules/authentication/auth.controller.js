@@ -257,6 +257,7 @@ const checkUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function
             message: "User is authorized",
             user: {
                 id: user.id,
+                name: isUser === null || isUser === void 0 ? void 0 : isUser.name,
                 email: user.email,
                 role: user.role,
                 profile: isUser === null || isUser === void 0 ? void 0 : isUser.avatar,
