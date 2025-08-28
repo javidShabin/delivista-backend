@@ -3,10 +3,10 @@ import { IWishlistCreation, IRemoveWishlistItem } from "./wishlist.interface";
 
 // Validation for wishlist creation
 export const validateWishlistCreation = (data: IWishlistCreation) => {
-    const { productName, restaurantId, category, price } = data;
+    const {menuId, productName, restaurantId, category,image, price } = data;
     
     // Check required fields
-    if (!productName || !restaurantId || !category || price === undefined) {
+    if (!menuId ||!productName || !restaurantId || !category || !image || price === undefined) {
         throw new AppError("Product name, restaurant ID, category, and price are required", 400);
     }
     

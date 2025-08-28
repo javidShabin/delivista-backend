@@ -5,6 +5,11 @@ export interface IWishlistModel extends IWishlist, Document { }
 
 const wishlistSchema: Schema<IWishlistModel> = new Schema(
     {
+        menuId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Menu",
+            required: true,
+        },
         productName: {
             type: String,
             required: true,
