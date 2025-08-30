@@ -7,6 +7,7 @@ export interface IOrderModel extends IOrder, Document {}
 const orderSchema = new Schema<IOrderModel>(
   {
     customerId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    sellerId: {type: Schema.Types.ObjectId, ref: "Seller", required: true},
     sessionId: { type: String, required: true },
 
     // Address

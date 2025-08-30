@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 // Order schema interface
 export interface IOrder {
     customerId: Types.ObjectId;
+    sellerId: Types.ObjectId;
     sessionId: string;
 
     // Address

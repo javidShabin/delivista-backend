@@ -10,6 +10,7 @@ export const makePayment = async (req: Request, res: Response) => {
             addressId,
             items,
             totalAmount,
+            sellerId
         } = req.body;
 
         // Find the user details from db
@@ -37,6 +38,7 @@ export const makePayment = async (req: Request, res: Response) => {
         // 2. Save pending order
         const order = await orderSchema.create({
             customerId,
+            sellerId,
             sessionId: session.id,
             addressId,
             fullName: isAddress?.fullName,
