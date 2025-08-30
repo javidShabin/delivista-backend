@@ -70,15 +70,14 @@ export const addToWishlist = async (
 export const getFavListbyUserId = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Get user id from authentication
-        const userId = req.user?.id;
+        const customerId = req.user?.id;
 
-        if (!userId) {
+        if (!customerId) {
             return next(new AppError("User not authenticated", 401));
         }
 
         // Find the list of favorite items from db
-        const favItemList = await wishlistSchema.find( {userId} ).populate("menuId");
-        console.log(favItemList)
+        const favItemList = await wishlistSchema.find( {customerId} ).populate("menuId");
 
         if (!favItemList || favItemList.length === 0) {
             return next(new AppError("No items found in favorites", 404));
