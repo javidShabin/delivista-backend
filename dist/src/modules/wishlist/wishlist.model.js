@@ -35,6 +35,11 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const wishlistSchema = new mongoose_1.Schema({
+    menuId: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "Menu",
+        required: true,
+    },
     productName: {
         type: String,
         required: true,
@@ -97,6 +102,10 @@ const wishlistSchema = new mongoose_1.Schema({
         type: Number,
         default: 0.0,
     },
+    isFav: {
+        type: Boolean,
+        default: false
+    }
 }, { timestamps: true });
 // Create the wishlist model
 exports.default = mongoose_1.default.model("wishlist", wishlistSchema);

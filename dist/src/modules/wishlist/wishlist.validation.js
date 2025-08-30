@@ -4,9 +4,9 @@ exports.validateRemoveWishlistItem = exports.validateWishlistCreation = void 0;
 const appError_1 = require("../../utils/appError");
 // Validation for wishlist creation
 const validateWishlistCreation = (data) => {
-    const { productName, restaurantId, category, price } = data;
+    const { menuId, productName, restaurantId, category, image, price } = data;
     // Check required fields
-    if (!productName || !restaurantId || !category || price === undefined) {
+    if (!menuId || !productName || !restaurantId || !category || !image || price === undefined) {
         throw new appError_1.AppError("Product name, restaurant ID, category, and price are required", 400);
     }
     // Validate price

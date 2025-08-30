@@ -10,10 +10,10 @@ const wishlist_controller_1 = require("./wishlist.controller");
 const router = express_1.default.Router();
 // Add item to wishlist
 router.post("/add", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), wishlist_controller_1.addToWishlist);
-// Get all wishlist items by user ID
-router.get("/items", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), wishlist_controller_1.getAllWishlistByUserId);
+// Get all list of wishlist
+router.get("/get-list", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), wishlist_controller_1.getFavListbyUserId);
 // Remove item from wishlist
-router.delete("/remove", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), wishlist_controller_1.removeWishlistItem);
-// Check if item exists in wishlist (optional)
-router.get("/check", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), wishlist_controller_1.checkWishlistItem);
+router.delete("/remove", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), wishlist_controller_1.removeFavItem);
+// Clear all list form wishlist
+router.delete("/clear-all", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), wishlist_controller_1.clearAllItems);
 exports.default = router;

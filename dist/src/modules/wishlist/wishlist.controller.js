@@ -8,11 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkWishlistItem = exports.removeWishlistItem = exports.getAllWishlistByUserId = exports.addToWishlist = void 0;
+exports.clearAllItems = exports.removeFavItem = exports.getFavListbyUserId = exports.addToWishlist = void 0;
 const appError_1 = require("../../utils/appError");
-const wishlist_validation_1 = require("./wishlist.validation");
-const wishlist_service_1 = require("./wishlist.service");
+const wishlist_model_1 = __importDefault(require("./wishlist.model"));
+const menu_model_1 = __importDefault(require("../menu/menu.model"));
 // Add item to wishlist
 const addToWishlist = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -22,102 +25,133 @@ const addToWishlist = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         if (!userId) {
             return next(new appError_1.AppError("Unauthorized", 401));
         }
-        // Validate the data from request body
-        (0, wishlist_validation_1.validateWishlistCreation)(req.body);
-        // Add item to wishlist
-        const newWishlistItem = yield (0, wishlist_service_1.addToWishlistService)(userId, req.body);
+        // Get menuId from request body
+        const { menuId } = req.body;
+        if (!menuId) {
+            return next(new appError_1.AppError("Menu ID is required", 400));
+        }
+        // Find the menu item by ID
+        const menuItem = yield menu_model_1.default.findById(menuId);
+        if (!menuItem) {
+            return next(new appError_1.AppError("Menu item not found", 404));
+        }
+        // Check if item already exists in wishlist
+        const existingItem = yield wishlist_model_1.default.findOne({
+            menuId: menuItem._id,
+            customerId: userId,
+        });
+        if (existingItem) {
+            return next(new appError_1.AppError("Already add to wishlist", 400));
+        }
+        // Prepare wishlist entry
+        const wishlistItem = new wishlist_model_1.default({
+            menuId: menuItem._id,
+            productName: menuItem.productName,
+            restaurantId: menuItem.restaurantId,
+            customerId: userId, // from logged-in user
+            category: menuItem.category,
+            price: menuItem.price,
+            image: menuItem.image,
+            isAvailable: menuItem.isAvailable,
+            isVeg: menuItem.isVeg,
+            ratings: menuItem.ratings,
+        });
+        // Save wishlist item
+        yield wishlistItem.save();
         res.status(201).json({
             status: "success",
-            message: "Item added to wishlist successfully",
-            data: newWishlistItem
+            message: "Item added to wishlist",
+            data: wishlistItem,
         });
     }
     catch (error) {
-        if (error.message === "Item already exists in wishlist") {
-            return next(new appError_1.AppError("Item already exists in wishlist", 400));
-        }
-        console.log(error);
         return next(error);
     }
 });
 exports.addToWishlist = addToWishlist;
-// Get all wishlist items by user ID
-const getAllWishlistByUserId = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    try {
-        // Get customer id from user authentication
-        const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-        if (!userId) {
-            return next(new appError_1.AppError("Unauthorized", 401));
-        }
-        // Get wishlist items
-        const wishlistItems = yield (0, wishlist_service_1.getAllWishlistByUserIdService)(userId);
-        res.status(200).json({
-            status: "success",
-            message: "Wishlist items retrieved successfully",
-            data: wishlistItems,
-            count: wishlistItems.length
-        });
-    }
-    catch (error) {
-        console.log(error);
-        return next(error);
-    }
-});
-exports.getAllWishlistByUserId = getAllWishlistByUserId;
-// Remove item from wishlist
-const removeWishlistItem = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+// Get favorite list by user id
+const getFavListbyUserId = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         // Get user id from authentication
-        const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-        if (!userId) {
-            return next(new appError_1.AppError("Unauthorized", 401));
+        const customerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+        if (!customerId) {
+            return next(new appError_1.AppError("User not authenticated", 401));
         }
-        // Validate the request body
-        (0, wishlist_validation_1.validateRemoveWishlistItem)(req.body);
-        const { wishlistItemId } = req.body;
-        // Remove item from wishlist
-        const deletedItem = yield (0, wishlist_service_1.removeWishlistItemService)(userId, wishlistItemId);
+        // Find the list of favorite items from db
+        const favItemList = yield wishlist_model_1.default.find({ customerId });
+        if (!favItemList || favItemList.length === 0) {
+            return next(new appError_1.AppError("No items found in favorites", 404));
+        }
+        // Send response
         res.status(200).json({
             status: "success",
-            message: "Item removed from wishlist successfully",
-            data: deletedItem
+            results: favItemList.length,
+            data: favItemList,
         });
     }
     catch (error) {
-        if (error.message === "Wishlist item not found or unauthorized") {
-            return next(new appError_1.AppError("Wishlist item not found or unauthorized", 404));
-        }
-        console.log(error);
-        return next(error);
+        console.error(error);
+        return next(new appError_1.AppError("Error fetching favorite list", 500));
     }
 });
-exports.removeWishlistItem = removeWishlistItem;
-// Check if item exists in wishlist (optional endpoint)
-const checkWishlistItem = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getFavListbyUserId = getFavListbyUserId;
+// Remove items from favorites list
+const removeFavItem = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        // Ensure customerId comes from the authenticated user
+        const customerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+        if (!customerId) {
+            return next(new appError_1.AppError("User not authenticated", 401));
+        }
+        // Get the wishlist item id or menuId from request params/body
+        const { menuId } = req.body; // Or req.params.id if you pass via URL
+        if (!menuId) {
+            return next(new appError_1.AppError("Menu ID is required", 400));
+        }
+        // Find the wishlist item
+        const wishlistItem = yield wishlist_model_1.default.findOneAndDelete({
+            menuId,
+            customerId,
+        });
+        if (!wishlistItem) {
+            return next(new appError_1.AppError("Item not found in wishlist", 404));
+        }
+        // Send response
+        res.status(200).json({
+            status: "success",
+            message: "Item removed from wishlist",
+            data: wishlistItem,
+        });
+    }
+    catch (error) {
+        console.error(error);
+        return next(new appError_1.AppError("Error removing item from wishlist", 500));
+    }
+});
+exports.removeFavItem = removeFavItem;
+// Clear the all list
+const clearAllItems = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         // Get user id from authentication
-        const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-        if (!userId) {
-            return next(new appError_1.AppError("Unauthorized", 401));
+        const customerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+        if (!customerId) {
+            return next(new appError_1.AppError("User not authenticated", 401));
         }
-        const { restaurantId, productName } = req.query;
-        if (!restaurantId || !productName) {
-            return next(new appError_1.AppError("Restaurant ID and product name are required", 400));
-        }
-        // Check if item exists in wishlist
-        const existingItem = yield (0, wishlist_service_1.checkWishlistItemExistsService)(userId, restaurantId, productName);
+        // Remove all list from schema using delete many method
+        yield wishlist_model_1.default.deleteMany({ customerId });
+        // Add resposne to client
         res.status(200).json({
             status: "success",
-            exists: !!existingItem,
-            data: existingItem || null
+            message: "All items cleared from wishlist",
+            data: [],
         });
     }
     catch (error) {
-        console.log(error);
-        return next(error);
+        console.error(error);
+        return next(new appError_1.AppError("Error clearing wishlist", 500));
     }
 });
-exports.checkWishlistItem = checkWishlistItem;
+exports.clearAllItems = clearAllItems;
