@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.stripe = void 0;
 const stripe_1 = __importDefault(require("stripe"));
-exports.stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2024-06-20",
-});
+if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error("Stripe secret key is missing! Add STRIPE_SECRET_KEY to environment variables.");
+}
+exports.stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY);
