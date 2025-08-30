@@ -30,8 +30,8 @@ export const makePayment = async (req: Request, res: Response) => {
                 quantity: item.quantity,
             })),
             mode: "payment",
-            success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.CLIENT_URL}/payment-failed`,
+            success_url: `${process.env.CLIENT_URL}/user/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.CLIENT_URL}/user/payment-failed`,
         });
 
         // 2. Save pending order
