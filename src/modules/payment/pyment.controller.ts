@@ -70,7 +70,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
         const { session_id } = req.query;
 
         if (!session_id) {
-            return res.status(400).json({ success: false, message: "Session ID missing" });
+           res.status(400).json({ success: false, message: "Session ID missing" });
         }
 
         // 1. Retrieve session details from Stripe
