@@ -3,6 +3,7 @@ import { authenticate } from "../../middlewares/auth.middleware";
 import { authorize } from "../../middlewares/authorize";
 import {
     addToWishlist,
+    clearAllItems,
     getFavListbyUserId,
     removeFavItem,
     
@@ -18,5 +19,8 @@ router.get("/get-list", authenticate, authorize("customer"), getFavListbyUserId)
 
 // Remove item from wishlist
 router.delete("/remove",authenticate, authorize("customer"), removeFavItem)
+
+// Clear all list form wishlist
+router.delete("/clear-all", authenticate, authorize("customer"),clearAllItems)
 
 export default router;
