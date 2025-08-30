@@ -77,7 +77,7 @@ export const getFavListbyUserId = async (req: Request, res: Response, next: Next
         }
 
         // Find the list of favorite items from db
-        const favItemList = await wishlistSchema.find( {customerId} ).populate("menuId");
+        const favItemList = await wishlistSchema.find( {customerId} );
 
         if (!favItemList || favItemList.length === 0) {
             return next(new AppError("No items found in favorites", 404));
