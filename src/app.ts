@@ -8,6 +8,7 @@ import { menuRouter } from "./modules/menu";
 import { cartRouter } from "./modules/cart";
 import { addressRouter } from "./modules/address";
 import { wishlistRouter } from "./modules/wishlist";
+import { pymentRouter } from "./modules/payment";
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use("/menu", menuRouter)
 app.use("/cart", cartRouter)
 app.use("/address", addressRouter)
 app.use("/wishlist", wishlistRouter)
+app.use("/pyment", pymentRouter)
 
 // Global error handler
 app.use(globalErrorHandler);
