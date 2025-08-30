@@ -99,11 +99,40 @@ export const getFavListbyUserId = async (req: Request, res: Response, next: Next
 // Remove items from favorites list
 export const removeFavItem = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // Ensure customerId comes from the authenticated user
+        const customerId = req.user?.id;
+        if (!customerId) {
+            return next(new AppError("User not authenticated", 401));
+        }
+
+        // Get the wishlist item id or menuId from request params/body
+        const { menuId } = req.body; // Or req.params.id if you pass via URL
+        if (!menuId) {
+            return next(new AppError("Menu ID is required", 400));
+        }
+
+        // Find the wishlist item
+        const wishlistItem = await wishlistSchema.findOneAndDelete({
+            menuId,
+            customerId,
+        });
+
+        if (!wishlistItem) {
+            return next(new AppError("Item not found in wishlist", 404));
+        }
+
+        // Send response
+        res.status(200).json({
+            status: "success",
+            message: "Item removed from wishlist",
+            data: wishlistItem,
+        });
 
     } catch (error) {
-
+        console.error(error);
+        return next(new AppError("Error removing item from wishlist", 500));
     }
-}
+};
 
 // Clear all item
 export const clearAllItems = async (req: Request, res: Response, next: NextFunction) => {
