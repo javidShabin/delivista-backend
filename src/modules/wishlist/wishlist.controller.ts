@@ -134,11 +134,26 @@ export const removeFavItem = async (req: Request, res: Response, next: NextFunct
     }
 };
 
-// Clear all item
+// Clear the all list
 export const clearAllItems = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // Get user id from authentication
+        const customerId = req.user?.id;
+        if (!customerId) {
+            return next(new AppError("User not authenticated", 401));
+        }
 
+        // Remove all list from schema using delete many method
+        await wishlistSchema.deleteMany({ customerId });
+
+        // Add resposne to client
+        res.status(200).json({
+            status: "success",
+            message: "All items cleared from wishlist",
+            data: [],
+        });
     } catch (error) {
-
+        console.error(error);
+        return next(new AppError("Error clearing wishlist", 500));
     }
-}
+};
