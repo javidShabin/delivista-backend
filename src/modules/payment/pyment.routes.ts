@@ -2,7 +2,7 @@ import express from "express";
 import { makePayment, verifyPayment } from "./pyment.controller";
 import { authenticate } from "../../middlewares/auth.middleware";
 import { authorize } from "../../middlewares/authorize";
-import { orderCancel, orderListByCustomer, singleOrder } from "./order.controller";
+import { orderCancel, orderListByCustomer, orderListBySeller, singleOrder } from "./order.controller";
 
 const router = express.Router();
 
@@ -14,6 +14,7 @@ router.post("/verify-payment",authenticate, authorize('customer'), verifyPayment
 router.get('/get-all-orders', authenticate, authorize('customer'),orderListByCustomer)
 router.get('/single-order/:orderId', authenticate, authorize("customer"), singleOrder)
 router.put('/cancel-order/:orderId', authenticate, authorize("customer"), orderCancel)
+router.put('/get-orders', authenticate, authorize("seller"), orderListBySeller)
 
 
 export default router;
