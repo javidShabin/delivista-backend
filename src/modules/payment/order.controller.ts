@@ -56,9 +56,11 @@ export const singleOrder = async (req: Request, res: Response, next: NextFunctio
 // Cancel the order
 export const orderCancel = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        
         // Get order id from params
         const { orderId } = req.params;
         const customerId = req.user?.id;
+
 
         if (!customerId) {
             return next(new AppError("Customer not authenticated", 401));
@@ -89,12 +91,15 @@ export const orderCancel = async (req: Request, res: Response, next: NextFunctio
         }
 
         // Update status
-        order.orderStatus = "cancelled";
-        await order.save();
+        const updatedOrder = await orderSchema.findByIdAndUpdate(
+            orderId,
+            { orderStatus: "cancelled" },
+            { new: true, runValidators: false }
+        );
 
         res.status(200).json({
             message: "Order cancelled successfully",
-            data: order,
+            data: updatedOrder,
         });
     } catch (error) {
         next(error);
