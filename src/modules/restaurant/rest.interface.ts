@@ -1,4 +1,13 @@
 import { Types } from "mongoose";
+
+// Individual rating interface
+export interface IIndividualRating {
+  customerId: Types.ObjectId;
+  rating: number;
+  review: string;
+  createdAt: Date;
+}
+
 // Restaurant main schema interface
 export interface IRestaurant {
   name: string;
@@ -11,6 +20,8 @@ export interface IRestaurant {
   isOpen: boolean;
   openTime: string;
   closeTime: string;
+  ratings: number;
+  individualRatings: IIndividualRating[];
   totalReviews: number;
   isVerified: boolean;
   createdAt: Date;

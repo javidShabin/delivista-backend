@@ -4,7 +4,6 @@ import { handleImageUpload } from "../../shared/cloudinary/upload.file";
 import { AppError } from "../../utils/appError";
 import { validateRestaurantCreation } from "./rest.validation";
 
-
 // Create restaurant
 export const createRestaurant = async (
   req: Request,
@@ -121,7 +120,6 @@ export const getVerifiedRestaurants = async (
     next(error);
   }
 };
-
 
 // Verification restaurant for admin
 export const adminVerifyingRestaurant = async (
@@ -315,7 +313,6 @@ export const updateRestaurant = async (
   }
 };
 
-
 // Delete restaurant (forAdmin)
 export const deleteRestaurant = async (
   req: Request,
@@ -342,5 +339,36 @@ export const deleteRestaurant = async (
     });
   } catch (error) {
     next(error);
+  }
+};
+
+// Add rating and review for the restaurant
+export const ratingReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const customerId = req.user?.id
+    const {sellerId} = req.body
+
+    const isRestaurant = await restSchema.findOne({ sellerId });
+
+   if(!isRestaurant){
+    return next(new AppError("Restaurant not found", 404));
+   }
+   const {rating} = req.body
+   if(!rating){
+    return next(new AppError("Rating is required", 400));
+   }
+   isRestaurant.ratings = rating
+   await isRestaurant.save()
+   res.status(200).json({
+    success: true,
+    message: "Rating added successfully",
+    data: isRestaurant
+   })
+  } catch (error) {
+    console.log(error)
   }
 };

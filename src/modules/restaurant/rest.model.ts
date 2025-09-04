@@ -54,6 +54,10 @@ const restaurantSchema: Schema<IRestaurantModel> = new Schema(
       type: Boolean,
       default: false,
     },
+    ratings: {
+      type: Number,
+      default: 0.0,
+    },
     totalReviews: {
       type: Number,
       default: 0,
