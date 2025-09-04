@@ -37,7 +37,7 @@ const orderSchema = new mongoose_1.Schema({
     transactionId: { type: String },
     orderStatus: {
         type: String,
-        enum: ["placed", "confirmed", "shipped", "delivered", "cancelled"],
+        enum: ["placed", "confirmed", "delivered", "cancelled"],
         default: "placed",
     },
 }, { timestamps: true });

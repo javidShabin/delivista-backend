@@ -83,6 +83,10 @@ const restaurantSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
+    ratings: {
+        type: Number,
+        default: 0.0,
+    },
     totalReviews: {
         type: Number,
         default: 0,

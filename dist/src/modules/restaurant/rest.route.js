@@ -27,4 +27,6 @@ router.patch("/restaurant-toggle", auth_middleware_1.authenticate, (0, authorize
 router.put("/update-restaurant/:restaurantId", auth_middleware_1.authenticate, (0, authorize_1.authorize)("seller"), multer_1.upload.single("image"), rest_controller_1.updateRestaurant);
 // Remove restauratn
 router.delete("/remove-restaurant/:restaurantId", rest_controller_1.deleteRestaurant);
+// Rate and review route for the restaurant
+router.put("/review", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), rest_controller_1.ratingReview);
 exports.default = router;
