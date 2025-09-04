@@ -18,6 +18,7 @@ A robust, scalable backend server for a food ordering platform inspired by Zomat
 - [Email Services](#email-services)
 - [Development](#development)
 - [Deployment](#deployment)
+- [API Documentation](#api-documentation)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -30,62 +31,77 @@ Delivista is a comprehensive food ordering platform backend that handles user au
 ### 🔐 Authentication & User Management
 - User registration and login with email verification
 - JWT-based authentication with refresh tokens
-- Role-based access control (User, Seller, Admin)
+- Role-based access control (Customer, Seller, Admin)
 - Password encryption with bcrypt
 - OTP generation and verification
+- Secure cookie-based session management
 
 ### 🏪 Restaurant Management
 - Restaurant registration and profile management
-- Menu creation and management
-- Category-based food organization
-- Restaurant search and filtering
+- Multi-cuisine support with detailed categorization
+- Operating hours and availability management
+- Restaurant verification system
+- Rating and review system
+
+### 🍽️ Menu Management
+- Comprehensive menu item creation with 18+ categories
+- Advanced food categorization (Veg/Non-Veg, dietary preferences)
+- Rich food tags system (Spicy, Sweet, Healthy, etc.)
+- Image management for food items
+- Availability and recommendation system
 
 ### 🛒 Shopping Experience
-- Add/remove items from cart
-- Wishlist functionality
-- Address management for delivery
-- Order tracking and status updates
+- Advanced cart management with restaurant-specific items
+- Wishlist functionality for favorite items
+- Multiple address management for delivery
+- Real-time cart updates and pricing
 
 ### 💳 Payment & Orders
-- Stripe payment integration
-- Order processing and management
+- Stripe payment integration with secure processing
+- Comprehensive order management system
 - Order status tracking (placed, confirmed, delivered, cancelled)
-- Payment validation and security
+- Payment status monitoring (pending, success, failed)
+- Transaction ID tracking
 
 ### 📧 Communication
 - Email notifications using Nodemailer
-- Order confirmation emails
-- Password reset functionality
+- Order confirmation and status update emails
+- Password reset and account verification
+- SMTP-based email delivery system
 
 ### 🖼️ File Management
-- Cloudinary integration for image uploads
-- Profile picture management
-- Restaurant and food image handling
+- Cloudinary integration for optimized image uploads
+- Profile picture and restaurant image management
+- Automatic image compression and CDN delivery
+- Multiple format support with security validation
 
 ## 🛠️ Tech Stack
 
 ### Backend
 - **Runtime**: Node.js
-- **Language**: TypeScript
-- **Framework**: Express.js 5.x
-- **Database**: MongoDB with Mongoose ODM
-- **Authentication**: JWT (JSON Web Tokens)
+- **Language**: TypeScript 5.8.3
+- **Framework**: Express.js 5.1.0
+- **Database**: MongoDB with Mongoose 8.15.1
+- **Authentication**: JWT (JSON Web Tokens) 9.0.2
 
 ### Security & Middleware
-- **Security**: Helmet.js, CORS
-- **Rate Limiting**: Express Rate Limit
-- **File Upload**: Multer
+- **Security**: Helmet.js 8.1.0, CORS 2.8.5
+- **Rate Limiting**: Express Rate Limit 7.5.0
+- **File Upload**: Multer 2.0.0
+- **Cookie Management**: Cookie Parser 1.4.7
 - **Validation**: Custom validation middleware
 
 ### External Services
-- **Cloud Storage**: Cloudinary
-- **Payment Gateway**: Stripe
-- **Email Service**: Nodemailer
-- **Password Hashing**: bcrypt
+- **Cloud Storage**: Cloudinary 2.6.1
+- **Payment Gateway**: Stripe 18.4.0
+- **Email Service**: Nodemailer 7.0.3
+- **Password Hashing**: bcrypt 6.0.0
+- **OTP Generation**: OTP Generator 4.0.1
 
 ### Development Tools
 - **TypeScript Compiler**: tsc
-- **Development Server**: ts-node-dev
+- **Development Server**: ts-node-dev 2.0.0
+- **Environment Management**: dotenv 16.5.0
 - **Code Quality**: ESLint (recommended)
 
 ## 📁 Project Structure
@@ -129,54 +145,62 @@ src/
 ## 🌐 API Endpoints
 
 ### Authentication Routes (`/app/authentication`)
-- `POST /register` - User registration
-- `POST /login` - User login
-- `POST /logout` - User logout
-- `POST /verify-email` - Email verification
+- `POST /register` - User registration with email verification
+- `POST /login` - User login with JWT tokens
+- `POST /logout` - User logout and token invalidation
+- `POST /verify-email` - Email verification with OTP
 - `POST /forgot-password` - Password reset request
-- `POST /reset-password` - Password reset
+- `POST /reset-password` - Password reset with token validation
 
 ### User Routes (`/app/user`)
-- `GET /profile` - Get user profile
-- `PUT /profile` - Update user profile
-- `DELETE /profile` - Delete user account
+- `GET /profile` - Get authenticated user profile
+- `PUT /profile` - Update user profile information
+- `DELETE /profile` - Delete user account permanently
 
 ### Restaurant Routes (`/app/restaurant`)
-- `POST /register` - Restaurant registration
-- `GET /` - Get all restaurants
-- `GET /:id` - Get restaurant by ID
-- `PUT /:id` - Update restaurant
-- `DELETE /:id` - Delete restaurant
+- `POST /register` - Restaurant registration by sellers
+- `GET /` - Get all restaurants with filtering
+- `GET /:id` - Get restaurant details by ID
+- `PUT /:id` - Update restaurant information
+- `DELETE /:id` - Delete restaurant (admin/seller only)
 
 ### Menu Routes (`/app/menu`)
-- `POST /` - Create menu item
-- `GET /` - Get menu items
-- `GET /:id` - Get menu item by ID
-- `PUT /:id` - Update menu item
+- `POST /` - Create new menu item
+- `GET /` - Get menu items with category filtering
+- `GET /:id` - Get specific menu item details
+- `PUT /:id` - Update menu item information
 - `DELETE /:id` - Delete menu item
 
 ### Cart Routes (`/app/cart`)
-- `POST /add` - Add item to cart
-- `GET /` - Get cart items
-- `PUT /:id` - Update cart item
+- `POST /add` - Add item to user's cart
+- `GET /` - Get user's cart items
+- `PUT /:id` - Update cart item quantity
 - `DELETE /:id` - Remove item from cart
+- `DELETE /clear` - Clear entire cart
 
 ### Payment Routes (`/app/pyment`)
 - `POST /create-payment-intent` - Create Stripe payment intent
-- `POST /confirm-payment` - Confirm payment
-- `GET /orders` - Get user orders
-- `GET /orders/:id` - Get order by ID
+- `POST /confirm-payment` - Confirm payment and create order
+- `GET /orders` - Get user's order history
+- `GET /orders/:id` - Get specific order details
+- `PUT /orders/:id/status` - Update order status
 
 ### Address Routes (`/app/address`)
-- `POST /` - Add new address
-- `GET /` - Get user addresses
-- `PUT /:id` - Update address
-- `DELETE /:id` - Delete address
+- `POST /` - Add new delivery address
+- `GET /` - Get user's saved addresses
+- `PUT /:id` - Update address information
+- `DELETE /:id` - Delete saved address
 
 ### Wishlist Routes (`/app/wishlist`)
-- `POST /add` - Add item to wishlist
-- `GET /` - Get wishlist items
+- `POST /add` - Add menu item to wishlist
+- `GET /` - Get user's wishlist items
 - `DELETE /:id` - Remove item from wishlist
+
+### Admin Routes (`/app/admin`)
+- `GET /users` - Get all users (admin only)
+- `GET /restaurants` - Get all restaurants for admin
+- `PUT /restaurants/:id/verify` - Verify restaurant (admin only)
+- `DELETE /users/:id` - Delete user account (admin only)
 
 ## 🚀 Installation & Setup
 
@@ -268,33 +292,42 @@ npm start
 ## 🗄️ Database Schema
 
 ### User Model
-- Basic info (name, email, phone)
-- Authentication (password, refresh tokens)
-- Role-based access control
-- Profile information
+- **Basic Info**: name, email, phone, address
+- **Authentication**: password (bcrypt hashed), role (customer/seller/admin)
+- **Profile**: avatar URL with default placeholder
+- **Timestamps**: createdAt, updatedAt
 
 ### Restaurant Model
-- Restaurant details (name, description, cuisine)
-- Location and contact information
-- Operating hours and status
-- Owner information
+- **Details**: name, phone, address, pinCode
+- **Cuisine**: array of cuisine types
+- **Media**: image URL for restaurant photo
+- **Operations**: isOpen, openTime, closeTime
+- **Verification**: isVerified status
+- **Ratings**: ratings (0.0-5.0), totalReviews count
+- **Relations**: sellerId reference
 
 ### Menu Model
-- Food item details (name, description, price)
-- Category and dietary information
-- Image URLs and availability status
-- Restaurant reference
+- **Product Info**: productName, description, price
+- **Categorization**: category (18+ options), isVeg boolean
+- **Media**: image URL for food photo
+- **Availability**: isAvailable, isRecommended
+- **Tags**: array of food tags (Spicy, Sweet, Healthy, etc.)
+- **Performance**: ratings, totalReviews, totalOrders
+- **Relations**: restaurantId, sellerId, customerId references
 
 ### Order Model
-- Order details and items
-- Customer and restaurant information
-- Payment status and order status
-- Delivery address and tracking
+- **Customer Info**: customerId, sellerId, sessionId
+- **Address**: addressId, fullName, address, city, phoneNumber, addressType
+- **Items**: array of menu items with quantity, price, and details
+- **Pricing**: totalAmount
+- **Status**: paymentStatus (pending/success/failed), orderStatus (placed/confirmed/delivered/cancelled)
+- **Transaction**: transactionId for payment tracking
 
 ### Cart Model
-- User cart items
-- Quantity and pricing
-- Restaurant association
+- **User Relations**: sellerId, customerId, restaurantId
+- **Items**: array of cart items with menuId, quantity, price, productName, category, isVeg
+- **Pricing**: totalPrice calculation
+- **Status**: orderStatus (pending/in-progress/completed)
 
 ## 🔐 Authentication & Security
 
@@ -390,31 +423,104 @@ npm run build
 
 ### Environment Setup
 - Set `NODE_ENV=production`
-- Configure production MongoDB
+- Configure production MongoDB connection
 - Set up production environment variables
-- Configure CORS for production frontend
+- Configure CORS for production frontend URL
+- Ensure all external service credentials are production-ready
 
 ### Deployment Options
-- **Vercel**: Serverless deployment
-- **Railway**: Easy deployment with MongoDB
-- **Heroku**: Traditional hosting
-- **DigitalOcean**: VPS deployment
-- **AWS**: Scalable cloud deployment
+- **Vercel**: Serverless deployment with automatic builds
+- **Railway**: Easy deployment with MongoDB Atlas integration
+- **Heroku**: Traditional hosting with add-ons
+- **DigitalOcean**: VPS deployment with Docker support
+- **AWS**: Scalable cloud deployment with EC2/ECS
+- **Render**: Modern cloud platform with automatic deployments
+
+### Production Checklist
+- [ ] Environment variables configured
+- [ ] MongoDB Atlas cluster set up
+- [ ] Cloudinary account configured
+- [ ] Stripe keys updated for production
+- [ ] Email service configured
+- [ ] CORS origins updated
+- [ ] Rate limiting enabled
+- [ ] Error logging configured
+
+## 📚 API Documentation
+
+### Base URL
+```
+Development: http://localhost:5000/app
+Production: https://your-domain.com/app
+```
+
+### Authentication
+All protected routes require a valid JWT token in the Authorization header:
+```
+Authorization: Bearer <your-jwt-token>
+```
+
+### Response Format
+All API responses follow a consistent format:
+```json
+{
+  "success": true,
+  "message": "Operation successful",
+  "data": { ... },
+  "error": null
+}
+```
+
+### Error Handling
+The API uses HTTP status codes and structured error responses:
+```json
+{
+  "success": false,
+  "message": "Error description",
+  "data": null,
+  "error": {
+    "code": "ERROR_CODE",
+    "details": "Detailed error information"
+  }
+}
+```
+
+### Rate Limiting
+- 100 requests per 15 minutes per IP address
+- Rate limit headers included in responses
+- Exceeded limits return 429 status code
+
+### File Upload
+- Maximum file size: 10MB
+- Supported formats: JPG, PNG, GIF, WebP
+- Images automatically optimized via Cloudinary
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+We welcome contributions to Delivista! Please follow these steps:
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes** following our coding standards
+4. **Test your changes** thoroughly
+5. **Commit your changes**: `git commit -m 'Add amazing feature'`
+6. **Push to the branch**: `git push origin feature/amazing-feature`
+7. **Open a Pull Request** with a detailed description
 
 ### Development Guidelines
-- Follow TypeScript best practices
-- Maintain consistent code style
-- Add proper error handling
-- Include input validation
-- Write meaningful commit messages
+- **TypeScript**: Follow TypeScript best practices and strict typing
+- **Code Style**: Maintain consistent formatting and naming conventions
+- **Error Handling**: Add comprehensive error handling and validation
+- **Documentation**: Update documentation for new features
+- **Testing**: Include tests for new functionality
+- **Security**: Follow security best practices for authentication and data handling
+- **Performance**: Consider performance implications of changes
+
+### Code Review Process
+- All PRs require review before merging
+- Ensure all tests pass
+- Follow the existing code structure and patterns
+- Include proper error messages and logging
 
 ## 📄 License
 
@@ -426,11 +532,23 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Inspired by Zomato and Swiggy
-- Built with modern web technologies
-- Designed for scalability and performance
-- Community-driven development approach
+- **Inspiration**: Inspired by Zomato and Swiggy's user experience
+- **Technologies**: Built with modern web technologies and best practices
+- **Community**: Open source community contributions and feedback
+- **Design**: Focus on scalability, performance, and user experience
+
+## 🔗 Related Projects
+
+- **Frontend**: [Delivista Customer App](https://delivista-customer-page.vercel.app)
+- **Admin Panel**: Coming soon
+- **Mobile App**: Planned for future development
+
+## 📞 Support
+
+For support, email support@delivista.com or create an issue in this repository.
 
 ---
 
-**Delivista** - Bringing delicious food to your doorstep with technology! 🍕🚀
+**Delivista** - Bringing delicious food to your doorstep with cutting-edge technology! 🍕🚀
+
+*Built with ❤️ by the Delivista team*
