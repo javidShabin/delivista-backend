@@ -10,7 +10,6 @@ import {
   getRestaurant,
   getRestaurantBySeller,
   getVerifiedRestaurants,
-  ratingReview,
   toggleRestaurantStatus,
   updateRestaurant,
 } from "./rest.controller";
@@ -68,7 +67,5 @@ router.put(
 // Remove restauratn
 router.delete("/remove-restaurant/:restaurantId", deleteRestaurant);
 
-// Rate and review route for the restaurant
-router.put("/review", authenticate, authorize("customer"), ratingReview)
 
 export default router;
