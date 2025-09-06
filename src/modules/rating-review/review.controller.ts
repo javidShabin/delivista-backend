@@ -1,26 +1,68 @@
 import { Request, Response, NextFunction } from "express";
-import Review from "./review.model";
-import Restaurant from "../restaurant/rest.model";
-import Menu from "../menu/menu.model";
+import reviewSchema from "./review.model";
+import restaurantSchema from "../restaurant/rest.model";
+import customerSchema from "../authentication/auth.model";
+import orderSchema from "../payment/order.model";
 import { AppError } from "../../utils/appError";
 
-// ******************************* Restaurnts and menu item review and raitng functions ****************************
-// ******************************************************************************************************************
-
-// Add review and rating for the restaurnats
-export const ratingRestaurant = async (req: Request,
-  res: Response,
-  next: NextFunction) => {
+// Add review and rating for the restaurants
+export const ratingRestaurant = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const customerId = req.user?.id
-    const { sellerId, menuItemId, orderId, rating, review } = req.body
+    // Get customer id from authentication
+    const customerId = req.user?.id;
 
-    if (!sellerId || !menuItemId || !orderId) {
-      res.status(404).json({ messge: "all fields are required" })
+    // Destructure the details from request body
+    const { sellerId, orderId, rating, review } = req.body;
+
+    if (!sellerId || !orderId || rating === undefined || !review) {
+      return next(new AppError("All fields are required", 404));
     }
 
-    console.log(customerId, sellerId, menuItemId, orderId)
+    const user = await customerSchema.findById(customerId);
+
+    // Find the restaurant by seller id
+    const restaurant = await restaurantSchema.findOne({ sellerId });
+
+    if (!restaurant) {
+      return next(new AppError("Restaurant not found", 404));
+    }
+
+    // Update restaurant ratings and total reviews
+    restaurant.ratings = rating;
+    restaurant.totalReviews = (restaurant.totalReviews || 0) + 1;
+    await restaurant.save();
+
+    // Find the current order
+    const currentOrder = await orderSchema.findById(orderId);
+
+    if (!currentOrder) {
+      return next(new AppError("Order not found", 404));
+    }
+
+    // Safely assign and save
+    currentOrder.isReviewed = true;
+    await currentOrder.save();
+
+
+    // Create and save new review
+    const newReview = new reviewSchema({
+      customerId,
+      restaurantId: restaurant._id,
+      orderId,
+      rating,
+      review,
+      avatar: user?.avatar,
+    });
+
+    await newReview.save();
+
+    res.status(201).json({
+      status: "success",
+      message: "Review added successfully",
+      data: newReview,
+    });
+
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
