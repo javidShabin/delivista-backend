@@ -47,6 +47,10 @@ const orderSchema = new Schema<IOrderModel>(
       enum: ["placed", "confirmed", "delivered", "cancelled"],
       default: "placed",
     },
+    isReviewed: {
+      type: Boolean,
+      default: false
+    }
 
   },
   { timestamps: true }

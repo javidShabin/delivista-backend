@@ -25,7 +25,7 @@ export interface IOrder {
         category: string;
         price: number;
     }[];
-
+    isReviewed: boolean,
     // Pricing
     totalAmount: number;
 
