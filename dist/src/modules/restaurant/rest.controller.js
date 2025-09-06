@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ratingReview = exports.deleteRestaurant = exports.updateRestaurant = exports.toggleRestaurantStatus = exports.getRestaurantBySeller = exports.getRestaurant = exports.adminVerifyingRestaurant = exports.getVerifiedRestaurants = exports.getAllRestaurants = exports.createRestaurant = void 0;
+exports.deleteRestaurant = exports.updateRestaurant = exports.toggleRestaurantStatus = exports.getRestaurantBySeller = exports.getRestaurant = exports.adminVerifyingRestaurant = exports.getVerifiedRestaurants = exports.getAllRestaurants = exports.createRestaurant = void 0;
 const rest_model_1 = __importDefault(require("./rest.model"));
 const upload_file_1 = require("../../shared/cloudinary/upload.file");
 const appError_1 = require("../../utils/appError");
@@ -300,30 +300,3 @@ const deleteRestaurant = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.deleteRestaurant = deleteRestaurant;
-// Add rating and review for the restaurant
-const ratingReview = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    try {
-        const customerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-        const { sellerId } = req.body;
-        const isRestaurant = yield rest_model_1.default.findOne({ sellerId });
-        if (!isRestaurant) {
-            return next(new appError_1.AppError("Restaurant not found", 404));
-        }
-        const { rating } = req.body;
-        if (!rating) {
-            return next(new appError_1.AppError("Rating is required", 400));
-        }
-        isRestaurant.ratings = rating;
-        yield isRestaurant.save();
-        res.status(200).json({
-            success: true,
-            message: "Rating added successfully",
-            data: isRestaurant
-        });
-    }
-    catch (error) {
-        console.log(error);
-    }
-});
-exports.ratingReview = ratingReview;
