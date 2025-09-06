@@ -35,7 +35,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const reviewSchema = new mongoose_1.Schema({
-    userId: {
+    customerId: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: "User",
         required: true,
@@ -65,20 +65,14 @@ const reviewSchema = new mongoose_1.Schema({
             message: 'Rating must be a whole number between 1 and 5'
         }
     },
-    reviewText: {
+    review: {
         type: String,
         maxlength: 1000,
         trim: true,
     },
-    images: [{
-            type: String,
-            validate: {
-                validator: function (images) {
-                    return images.length <= 5;
-                },
-                message: 'Maximum 5 images allowed per review'
-            }
-        }],
+    avatar: {
+        type: String
+    },
 }, {
     timestamps: true,
     toJSON: { virtuals: true },

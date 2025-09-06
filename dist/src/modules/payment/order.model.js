@@ -40,5 +40,9 @@ const orderSchema = new mongoose_1.Schema({
         enum: ["placed", "confirmed", "delivered", "cancelled"],
         default: "placed",
     },
+    isReviewed: {
+        type: Boolean,
+        default: false
+    }
 }, { timestamps: true });
 exports.default = (0, mongoose_1.model)("Order", orderSchema);
