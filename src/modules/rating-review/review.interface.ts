@@ -1,13 +1,13 @@
 import { Document, Types } from "mongoose";
 
 export interface IReview extends Document {
-  userId: Types.ObjectId;
+  customerId: Types.ObjectId;
   restaurantId: Types.ObjectId;
   menuItemId?: Types.ObjectId;
   orderId: Types.ObjectId;
   rating: number;
-  reviewText?: string;
-  images?: string[];
+  review?: string;
+  avatar?: string;
   createdAt: Date;
   updatedAt: Date;
 }

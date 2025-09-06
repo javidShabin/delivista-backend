@@ -12,8 +12,15 @@ export const ratingRestaurant = async (req: Request,
   res: Response,
   next: NextFunction) => {
   try {
-    
-  } catch (error) {
+    const customerId = req.user?.id
+    const { sellerId, menuItemId, orderId, rating, review } = req.body
 
+    if (!sellerId || !menuItemId || !orderId) {
+      res.status(404).json({ messge: "all fields are required" })
+    }
+
+    console.log(customerId, sellerId, menuItemId, orderId)
+  } catch (error) {
+    next(error)
   }
 }

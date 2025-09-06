@@ -6,7 +6,7 @@ export interface IReviewModel extends IReview, Document {}
 
 const reviewSchema: Schema<IReviewModel> = new Schema(
   {
-    userId: {
+    customerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -36,20 +36,14 @@ const reviewSchema: Schema<IReviewModel> = new Schema(
         message: 'Rating must be a whole number between 1 and 5'
       }
     },
-    reviewText: {
+    review: {
       type: String,
       maxlength: 1000,
       trim: true,
     },
-    images: [{
-      type: String,
-      validate: {
-        validator: function(images: string[]) {
-          return images.length <= 5;
-        },
-        message: 'Maximum 5 images allowed per review'
-      }
-    }],
+    avatar: {
+        type: String
+    },
   },
   { 
     timestamps: true,

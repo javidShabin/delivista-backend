@@ -9,6 +9,7 @@ import { cartRouter } from "./modules/cart";
 import { addressRouter } from "./modules/address";
 import { wishlistRouter } from "./modules/wishlist";
 import { pymentRouter } from "./modules/payment";
+import {reviewRouter} from "./modules/rating-review"
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use("/cart", cartRouter)
 app.use("/address", addressRouter)
 app.use("/wishlist", wishlistRouter)
 app.use("/pyment", pymentRouter)
+app.use("/review", reviewRouter)
 
 // Global error handler
 app.use(globalErrorHandler);
