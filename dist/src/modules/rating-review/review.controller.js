@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ratingRestaurant = void 0;
+exports.getAllReviewsBySellerId = exports.ratingRestaurant = void 0;
 const review_model_1 = __importDefault(require("./review.model"));
 const rest_model_1 = __importDefault(require("../restaurant/rest.model"));
 const auth_model_1 = __importDefault(require("../authentication/auth.model"));
@@ -68,3 +68,19 @@ const ratingRestaurant = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.ratingRestaurant = ratingRestaurant;
+// Get all reviews by seller id
+const getAllReviewsBySellerId = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const customerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+        const { sellerId } = req.body;
+        const isRestaurant = yield rest_model_1.default.findOne({ sellerId: sellerId });
+        const restId = isRestaurant === null || isRestaurant === void 0 ? void 0 : isRestaurant.id;
+        const allReview = yield review_model_1.default.find({ restaurantId: restId });
+        res.send(allReview);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.getAllReviewsBySellerId = getAllReviewsBySellerId;

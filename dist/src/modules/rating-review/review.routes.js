@@ -9,4 +9,5 @@ const authorize_1 = require("../../middlewares/authorize");
 const review_controller_1 = require("./review.controller");
 const router = express_1.default.Router();
 router.post("/restaurant-review", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), review_controller_1.ratingRestaurant);
+router.post("/get-all-review", auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), review_controller_1.getAllReviewsBySellerId);
 exports.default = router;
