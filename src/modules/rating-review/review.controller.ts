@@ -66,3 +66,21 @@ export const ratingRestaurant = async (req: Request, res: Response, next: NextFu
     next(error);
   }
 };
+
+// Get all reviews by seller id
+export const getAllReviewsBySellerId = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const customerId = req.user?.id
+    const {sellerId} = req.body
+
+
+  const isRestaurant = await restaurantSchema.findOne({sellerId: sellerId})
+ const restId =  isRestaurant?.id
+ const allReview = await reviewSchema.find({restaurantId: restId})
+
+ res.send(allReview)
+
+  } catch (error) {
+next(error)
+  }
+}
