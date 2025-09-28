@@ -14,7 +14,7 @@ router.post("/verify-payment",authenticate, authorize('customer'), verifyPayment
 router.get('/get-all-orders', authenticate, authorize('customer'),orderListByCustomer)
 router.get('/single-order/:orderId', authenticate, authorize("customer"), singleOrder)
 router.put('/cancel-order/:orderId', authenticate, authorize("customer"), orderCancel)
-router.put('/get-orders', authenticate, authorize("seller"), orderListBySeller)
+router.get('/get-orders', authenticate, authorize("seller"), orderListBySeller)
 
 
 export default router;

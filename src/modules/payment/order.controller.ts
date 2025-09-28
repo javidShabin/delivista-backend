@@ -132,7 +132,7 @@ export const orderListBySeller = async (
     }
 
     // Find all orders for this seller
-    const orderList = await orderSchema.find({ sellerId });
+    const orderList = await orderSchema.find({ sellerId }).sort({ createdAt: -1 });
 
     if (!orderList || orderList.length === 0) {
       return next(new AppError("No orders found for this seller", 404));

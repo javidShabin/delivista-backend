@@ -51,7 +51,7 @@ export const getAllCustomer = async (
 };
 
 // Get customer profile using id from user authentication
-export const getCustomerProfile = async (
+export const getUsererProfile = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -64,7 +64,7 @@ export const getCustomerProfile = async (
     }
     // Find the user by id and also check role is customer
     const customer = await userSchema
-      .findOne({ _id: userId, role: "customer" })
+      .findOne({ _id: userId })
       .select("-password");
     // Check the user is present or not
     if (!customer) {
@@ -81,7 +81,7 @@ export const getCustomerProfile = async (
 };
 
 // Update customer profile using id from authentication
-export const updateCustomerProfile = async (
+export const updateUsererProfile = async (
   req: Request,
   res: Response,
   next: NextFunction

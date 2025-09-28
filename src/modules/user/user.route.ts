@@ -4,8 +4,9 @@ import { authorize } from "../../middlewares/authorize";
 import { upload } from "../../middlewares/multer";
 import {
   getAllCustomer,
-  getCustomerProfile,
-  updateCustomerProfile,
+  getUsererProfile,
+  updateUsererProfile,
+  
 } from "./user.controller";
 
 const router = express.Router();
@@ -18,18 +19,18 @@ router.get(
 );
 
 router.get(
-  "/customer-profile",
+  "/user-profile",
   authenticate,
-  authorize("customer"),
-  getCustomerProfile
+  authorize("customer", "seller", "admin"),
+  getUsererProfile
 );
 
 router.put(
-  "/update-customer-profile",
+  "/update-user-profile",
   authenticate,
-  authorize("customer"),
+  authorize("customer", "seller", "admin"),
   upload.single("avatar"),
-  updateCustomerProfile
+  updateUsererProfile
 );
 
 export default router;
