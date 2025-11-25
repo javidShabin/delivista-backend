@@ -47,7 +47,7 @@ router.delete(
 router.get(
   "/get-all-menus/:restaurantId",
   authenticate,
-  authorize("admin", "customer"),
+  authorize("seller", "customer"),
   getMenusByRestaurant
 );
 
