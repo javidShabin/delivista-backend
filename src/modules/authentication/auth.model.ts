@@ -27,10 +27,6 @@ const UserSchema: Schema<IUserModel> = new Schema(
       type: String,
       required: true,
     },
-    address: {
-      type: String,
-      required: true,
-    },
     role: {
       type: String,
       enum: ["customer", "admin", "seller"],

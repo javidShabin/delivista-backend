@@ -23,7 +23,7 @@ export const singupUser = async (
     // Validate the user details in validate function
     validateSignupUser(req.body);
     // Destructer the details from request body
-    const { name, email, password, phone, role, address } = req.body;
+    const { name, email, password, phone, role } = req.body;
     // Validate the role
     const validRoles = ["admin", "seller", "customer"];
     if (!validRoles.includes(role)) {
@@ -48,7 +48,6 @@ export const singupUser = async (
         password: hashedPassword,
         phone,
         role,
-        address,
         otp,
         otpExpires: new Date(Date.now() + 10 * 60 * 1000), // OTP expires in 10 minutes
       },
@@ -101,7 +100,6 @@ export const verifyOtpandCreateUser = async (
       password: tempUser.password,
       phone: tempUser.phone,
       role: tempUser.role,
-      address: tempUser.address,
       avatar: tempUser.avatar,
     });
     await newUser.save();
