@@ -16,5 +16,5 @@ router.post("/verify-payment", auth_middleware_1.authenticate, (0, authorize_1.a
 router.get('/get-all-orders', auth_middleware_1.authenticate, (0, authorize_1.authorize)('customer'), order_controller_1.orderListByCustomer);
 router.get('/single-order/:orderId', auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), order_controller_1.singleOrder);
 router.put('/cancel-order/:orderId', auth_middleware_1.authenticate, (0, authorize_1.authorize)("customer"), order_controller_1.orderCancel);
-router.put('/get-orders', auth_middleware_1.authenticate, (0, authorize_1.authorize)("seller"), order_controller_1.orderListBySeller);
+router.get('/get-orders', auth_middleware_1.authenticate, (0, authorize_1.authorize)("seller"), order_controller_1.orderListBySeller);
 exports.default = router;

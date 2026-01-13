@@ -100,7 +100,6 @@ export const verifyOtpandCreateUser = async (
       password: tempUser.password,
       phone: tempUser.phone,
       role: tempUser.role,
-      avatar: tempUser.avatar,
     });
     await newUser.save();
     //Token creation

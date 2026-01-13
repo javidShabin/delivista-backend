@@ -17,7 +17,7 @@ router.put("/update-menu/:id", auth_middleware_1.authenticate, (0, authorize_1.a
 // Route for delete existing menu by id by seller
 router.delete("/remove-menu/:id", auth_middleware_1.authenticate, (0, authorize_1.authorize)("seller"), menu_controller_1.deleteMenu);
 // Route for get all menus by restaurant by admin or customer
-router.get("/get-all-menus/:restaurantId", auth_middleware_1.authenticate, (0, authorize_1.authorize)("admin", "customer"), menu_controller_1.getMenusByRestaurant);
+router.get("/get-all-menus/:restaurantId", auth_middleware_1.authenticate, (0, authorize_1.authorize)("seller", "customer"), menu_controller_1.getMenusByRestaurant);
 // Route for get all menus by category by admin or customer
 router.get("/get-menu-by-catagory/:category", auth_middleware_1.authenticate, (0, authorize_1.authorize)("admin", "customer"), menu_controller_1.getMenusByCategory);
 // Route for get all menus by tag by admin or customer

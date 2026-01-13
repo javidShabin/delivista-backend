@@ -114,7 +114,7 @@ const orderListBySeller = (req, res, next) => __awaiter(void 0, void 0, void 0, 
             return next(new appError_1.AppError("Seller not authenticated", 401));
         }
         // Find all orders for this seller
-        const orderList = yield order_model_1.default.find({ sellerId });
+        const orderList = yield order_model_1.default.find({ sellerId }).sort({ createdAt: -1 });
         if (!orderList || orderList.length === 0) {
             return next(new appError_1.AppError("No orders found for this seller", 404));
         }

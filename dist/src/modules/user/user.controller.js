@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCustomerProfile = exports.getCustomerProfile = exports.getAllCustomer = void 0;
+exports.updateUsererProfile = exports.getUsererProfile = exports.getAllCustomer = void 0;
 const auth_model_1 = __importDefault(require("../authentication/auth.model"));
 const appError_1 = require("../../utils/appError");
 const upload_file_1 = require("../../shared/cloudinary/upload.file");
@@ -56,7 +56,7 @@ const getAllCustomer = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
 });
 exports.getAllCustomer = getAllCustomer;
 // Get customer profile using id from user authentication
-const getCustomerProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const getUsererProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         // Get customer id from user authentication
@@ -66,7 +66,7 @@ const getCustomerProfile = (req, res, next) => __awaiter(void 0, void 0, void 0,
         }
         // Find the user by id and also check role is customer
         const customer = yield auth_model_1.default
-            .findOne({ _id: userId, role: "customer" })
+            .findOne({ _id: userId })
             .select("-password");
         // Check the user is present or not
         if (!customer) {
@@ -82,9 +82,9 @@ const getCustomerProfile = (req, res, next) => __awaiter(void 0, void 0, void 0,
         next(error);
     }
 });
-exports.getCustomerProfile = getCustomerProfile;
+exports.getUsererProfile = getUsererProfile;
 // Update customer profile using id from authentication
-const updateCustomerProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const updateUsererProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         // Get customer id from user authentication
@@ -121,4 +121,4 @@ const updateCustomerProfile = (req, res, next) => __awaiter(void 0, void 0, void
         next(error);
     }
 });
-exports.updateCustomerProfile = updateCustomerProfile;
+exports.updateUsererProfile = updateUsererProfile;

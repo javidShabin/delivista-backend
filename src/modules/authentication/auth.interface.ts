@@ -5,7 +5,6 @@ export interface IUser {
   password: string;
   phone: string;
   role: "customer";
-  address: string,
   avatar?: {
     public_id: string;
     url: string;
@@ -19,7 +18,6 @@ export interface ITempUser {
   email: string;
   password: string;
   phone: string;
-  address: string,
   otp: string;
   otpExpires: Date;
   role: "customer" | "admin" | "seller";
@@ -36,7 +34,6 @@ export interface IuserCreaction {
   email: string;
   password: string;
   confirmPassword: string;
-  address: string,
   phone: string;
 }
 
